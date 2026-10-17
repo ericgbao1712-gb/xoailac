@@ -1,7 +1,13 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 27, nhãn v2.6.16, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 28, nhãn v2.6.17, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.17 (17/10): Đóng cửa sớm trong hộp Tạm dừng
+Commit 35f67a1.
+- Bấm nút Tạm dừng (‖) trên HUD: dưới "Chơi tiếp" có thêm nút đỏ "Đóng cửa sớm". Bấm vào thì hỏi lại; chọn "Đóng cửa" thì quán ngưng nhận khách, phục vụ nốt khách ở quầy rồi tổng kết ngày.
+- Nút chỉ bấm được khi quán đang mở bán. Thẻ "Đóng cửa sớm" trong Cài đặt (v2.6.16) vẫn giữ.
+- **Kiểm tra:** mở quán → Tạm dừng → Đóng cửa sớm → xác nhận: hộp tạm dừng tự đóng và quán qua báo cáo cuối ngày. `test_core.mjs` 251 kiểm tra đều đạt.
 
 ## v2.6.16 (17/10): nút Ly/Hộp to hơn, Đóng cửa sớm trong Cài đặt, lời nhắn gọn ở giữa
 Commit 66cdf21.

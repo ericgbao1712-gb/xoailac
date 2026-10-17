@@ -162,6 +162,22 @@ export function mountHud(root) {
   return { update, moneyAnchor, els: { quest, lvl, money, speed, gear, rating } };
 }
 
+/** v2.6.17: "Đóng cửa sớm" in the pause box too (only while the shop is open); asks once more before closing. */
+function closeEarlyBtn(m) {
+  const open = S().phase === 'open';
+  const b = h('button', { class: 'btn warn block pz-close', disabled: !open }, ico('ui_home', 16), open ? 'Đóng cửa sớm' : S().phase === 'closing' ? 'Quán đang dọn hàng' : 'Đóng cửa sớm (khi đang bán)');
+  b.addEventListener('click', () => {
+    if (S().phase !== 'open') return;
+    sfx('click');
+    ctx.confirm({
+      title: 'Đóng cửa sớm hôm nay?', icon: 'ui_home', yes: 'Đóng cửa', no: 'Bán tiếp',
+      text: 'Không nhận thêm khách mới. Khách đang ở quầy vẫn được phục vụ xong rồi mới tổng kết ngày.',
+      onYes: () => { const r = act('closeEarly'); if (r && r.ok === false) return; sfx('door'); m.close('closed'); },
+    });
+  });
+  return b;
+}
+
 /** pause: a pausing modal (ctx.modal pauses the sim while it is open) */
 function openPause() {
   return ctx.modal({
@@ -169,6 +185,7 @@ function openPause() {
     build: (m) => frame('Tạm dừng', { icon: 'ui_pause', onClose: () => m.close('x') },
       div('pause-box',
         span('pz-txt', 'Quán đang tạm nghỉ — khách đứng yên, đồng hồ không chạy. Bấm chơi tiếp khi sẵn sàng nha!'),
-        h('button', { class: 'btn jade block', onclick: () => { sfx('click'); m.close('resume'); } }, ico('ui_play', 16), 'Chơi tiếp'))),
+        h('button', { class: 'btn jade block', onclick: () => { sfx('click'); m.close('resume'); } }, ico('ui_play', 16), 'Chơi tiếp'),
+        closeEarlyBtn(m))),
   });
 }
