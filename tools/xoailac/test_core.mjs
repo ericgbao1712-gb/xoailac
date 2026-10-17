@@ -587,7 +587,7 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
 }
 // ── 28. v2.6.20 nguồn hàng giao đúng giờ game · bỏ Mối vựa trái cây · đồ ăn kèm · loa thêm bài
 {
-  const A = await import('../../web/xoailac/src/audio/index.js');
+  const A = await import('../../web/xoailac/src/audio/index.js?v=a21');
   const ING_BY_ID = Object.fromEntries(C.INGREDIENTS.map((x) => [x.id, x]));
   const mk = (seed) => { const g = fresh(seed); g.state.level = 35; g.state.tutorial = { step: 99, done: true }; g.state.money = 1e6; return g; };
   for (const sup of C.SUPPLIERS.filter((x) => !x.prepOnly)) {
@@ -629,7 +629,7 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
 }
 // ── 29. v2.6.21 chọn bài nhạc nền
 {
-  const A = await import('../../web/xoailac/src/audio/index.js');
+  const A = await import('../../web/xoailac/src/audio/index.js?v=a21');
   const g = fresh(291); g.state.tutorial = { step: 99, done: true };
   ok(g.state.settings.song === 'auto', 'default: Tự đổi bài');
   ok(g.act.setSetting('song', 'san').ok === false && g.state.settings.song === 'auto', 'a locked song cannot be picked');

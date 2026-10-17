@@ -1,5 +1,5 @@
 // Generative lo-fi BGM in the Vietnamese pentatonic (C D F G A).
-// Variants (day / night / calm + the speaker-upgrade songs pho / que / san / bolero), each with its own bus gain so they crossfade cleanly. Only the active
+// Variants (day / night / calm + the composed speaker-upgrade songs pho / que / san / bolero), each with its own bus gain so they crossfade cleanly. Only the active
 // variant schedules notes (lookahead scheduler); the old one simply rings out while its bus fades.
 //
 // Layers: soft kick / hat / rim-snare, đàn-tranh-like pluck melody (a 1-2 bar motif that repeats with small
@@ -70,66 +70,91 @@ const VARIANTS = {
     delaySend: 0.34, fb: 0.4, delayLp: 1800, revSend: 0.45, revPad: 0.35,
     progs: [['C', 'F', 'C', 'G'], ['C', 'Am', 'F', 'G'], ['F', 'C', 'G', 'C'], ['Am', 'F', 'C', 'G']],
   },
-  // ── v2.6.20: songs unlocked by the speaker upgrade (Loa nhạc). Same pentatonic palette, different grooves. ──
-  // Lv1 "Phố chiều" — easy bossa-ish shuffle, rim on the off-beats.
+  // ── v2.6.20 / v2.6.21: songs unlocked by the speaker upgrade (Loa nhạc). Unlike day/night/calm (generative
+  // motifs on the đàn-tranh pluck), each of these is a COMPOSED tune: fixed melody (phrase A then B, 4 bars each,
+  // [step, scale degree, length in 16ths]; degree 5 = C5), fixed chords, its own key, lead instrument and groove,
+  // so the four are easy to tell apart.
+  // Lv1 "Phố chiều" — bossa, electric piano, in D.
   pho: {
-    bpm: 100, swing: 0.05, drums: 0.8,
-    padLp: 2100, padAtk: 0.45, padVol: 0.011,
+    bpm: 104, swing: 0.04, drums: 0.9, key: 2, lead: 'epiano', leadVol: 1,
+    padLp: 2200, padAtk: 0.4, padVol: 0.010,
     pluckLp: 3800, pluckVol: 0.95,
-    bassVol: 0.062, bassLp: 650,
-    kickVol: 0.09, hatVol: 0.022, snareVol: 0.04,
-    kickPat: P([1, 0, 0, 0.3, 0, 0, 0, 0, 1, 0, 0, 0.3, 0, 0, 0, 0]),
-    snarePat: P([0, 0, 0, 0.7, 0, 0, 0.6, 0, 0, 0, 0.7, 0, 0, 0.5, 0, 0]),
-    hatPat: P([0.7, 0, 0.6, 0, 0.7, 0, 0.6, 0, 0.7, 0, 0.6, 0, 0.7, 0, 0.6, 0.2]),
-    bassPat: [[0, 1, 0, 3, 1], [3, 0.7, 7, 3, 0.75], [8, 0.9, 7, 3, 0.85], [11, 0.6, 0, 4, 0.7]],
-    motifNotes: 5, keep: 0.9, maxPerBar: 4, restBar: 0.22,
-    delaySend: 0.24, fb: 0.32, delayLp: 2600, revSend: 0.24, revPad: 0.2,
-    progs: [['F', 'G', 'C', 'Am'], ['Dm', 'G', 'C', 'C'], ['F', 'Am', 'Dm', 'G'], ['C', 'Dm', 'F', 'G']],
+    bassVol: 0.065, bassLp: 650,
+    kickVol: 0.09, hatVol: 0.022, snareVol: 0.042,
+    kickPat: P([1, 0, 0, 0.6, 0, 0, 0, 0, 1, 0, 0, 0.6, 0, 0, 0, 0]),
+    snarePat: P([0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0]),
+    hatPat: P([0.8, 0, 0.7, 0, 0.8, 0, 0.7, 0, 0.8, 0, 0.7, 0, 0.8, 0, 0.7, 0.3]),
+    bassPat: [[0, 1, 0, 3, 1], [3, 1, 7, 3, 0.75], [8, 1, 7, 3, 0.85], [11, 1, 0, 4, 0.7]],
+    delaySend: 0.22, fb: 0.3, delayLp: 2600, revSend: 0.24, revPad: 0.2,
+    progs: [['F', 'G', 'C', 'Am'], ['Dm', 'G', 'C', 'C']],
+    melody: {
+      A: [[[0, 9, 4], [4, 8, 2], [6, 7, 2], [8, 8, 6]], [[0, 6, 3], [3, 7, 3], [6, 8, 4], [12, 6, 4]],
+          [[0, 5, 4], [4, 6, 2], [6, 7, 2], [8, 9, 4], [12, 8, 4]], [[0, 7, 8], [10, 6, 2], [12, 5, 4]]],
+      B: [[[0, 10, 3], [3, 9, 3], [6, 8, 2], [8, 9, 8]], [[0, 8, 4], [4, 7, 4], [8, 6, 4], [12, 7, 4]],
+          [[0, 5, 2], [2, 6, 2], [4, 7, 4], [8, 8, 4], [12, 10, 4]], [[0, 9, 6], [8, 8, 8]]],
+    },
   },
-  // Lv1 "Quê nhà" — folk lilt, sparse drums, more melody.
+  // Lv1 "Quê nhà" — slow folk, sáo trúc (bamboo flute) with long notes over a soft guitar arpeggio.
   que: {
-    bpm: 86, swing: 0.13, drums: 0.45,
-    padLp: 1600, padAtk: 0.9, padVol: 0.012,
-    pluckLp: 3000, pluckVol: 1.05,
-    bassVol: 0.055, bassLp: 520,
-    kickVol: 0.09, hatVol: 0.02, snareVol: 0.035,
-    kickPat: P([1, 0, 0, 0, 0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0]),
-    snarePat: P([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.8, 0, 0, 0]),
-    hatPat: P([0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0]),
-    bassPat: [[0, 1, 0, 8, 0.9], [8, 0.7, 7, 8, 0.8]],
-    motifNotes: 6, keep: 0.95, maxPerBar: 5, restBar: 0.12,
-    delaySend: 0.3, fb: 0.36, delayLp: 2200, revSend: 0.3, revPad: 0.22,
-    progs: [['C', 'F', 'C', 'G'], ['Am', 'C', 'F', 'C'], ['C', 'G', 'F', 'C'], ['F', 'G', 'Am', 'C']],
+    bpm: 80, swing: 0.1, drums: 0.35, key: 0, lead: 'flute', leadVol: 0.85, arp: 'guitar', arpVol: 0.45,
+    padLp: 1500, padAtk: 1.0, padVol: 0.011,
+    pluckLp: 3000, pluckVol: 1,
+    bassVol: 0.05, bassLp: 480,
+    kickVol: 0.08, hatVol: 0.016, snareVol: 0.03,
+    kickPat: P([1, 0, 0, 0, 0, 0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0]),
+    snarePat: P([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.7, 0, 0, 0]),
+    hatPat: P([0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0]),
+    bassPat: [[0, 1, 0, 8, 0.9], [8, 0.8, 7, 8, 0.8]],
+    delaySend: 0.3, fb: 0.36, delayLp: 2200, revSend: 0.38, revPad: 0.24,
+    progs: [['C', 'F', 'C', 'G'], ['Am', 'F', 'G', 'C']],
+    melody: {
+      A: [[[0, 8, 6], [6, 9, 2], [8, 10, 8]], [[0, 9, 4], [4, 8, 4], [8, 7, 8]],
+          [[0, 6, 4], [4, 7, 2], [6, 8, 2], [8, 9, 4], [12, 8, 4]], [[0, 7, 12], [12, 6, 4]]],
+      B: [[[0, 5, 4], [4, 6, 4], [8, 7, 4], [12, 8, 4]], [[0, 9, 8], [8, 8, 4], [12, 7, 4]],
+          [[0, 6, 6], [6, 5, 2], [8, 6, 4], [12, 7, 4]], [[0, 5, 16]]],
+    },
   },
-  // Lv2 "Nhạc sàn vui" — four-on-the-floor, bright and quick.
+  // Lv2 "Nhạc sàn vui" — four-on-the-floor, bright synth lead + 8th-note synth arpeggio, in E♭.
   san: {
-    bpm: 112, swing: 0.02, drums: 1,
-    padLp: 2600, padAtk: 0.3, padVol: 0.011,
+    bpm: 120, swing: 0, drums: 1, key: 3, lead: 'synth', leadVol: 0.9, arp: 'synth', arpVol: 0.55,
+    padLp: 2600, padAtk: 0.2, padVol: 0.009,
     pluckLp: 4200, pluckVol: 0.95,
-    bassVol: 0.065, bassLp: 700,
-    kickVol: 0.12, hatVol: 0.032, snareVol: 0.06,
-    kickPat: P([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2]),
-    snarePat: P([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.3]),
-    hatPat: P([0, 0, 0.95, 0, 0, 0, 0.95, 0, 0, 0, 0.95, 0, 0, 0, 0.95, 0.4]),
-    bassPat: [[2, 0.95, 0, 2, 0.9], [6, 0.95, 12, 2, 0.8], [10, 0.95, 0, 2, 0.9], [14, 0.95, 12, 2, 0.8]],
-    motifNotes: 5, keep: 0.94, maxPerBar: 4, restBar: 0.15,
-    delaySend: 0.18, fb: 0.26, delayLp: 2800, revSend: 0.16, revPad: 0.14,
-    progs: [['Am', 'F', 'C', 'G'], ['C', 'G', 'Am', 'F'], ['F', 'G', 'Am', 'Am'], ['Dm', 'F', 'G', 'C']],
+    bassVol: 0.07, bassLp: 750,
+    kickVol: 0.13, hatVol: 0.034, snareVol: 0.065,
+    kickPat: P([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]),
+    snarePat: P([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.4]),
+    hatPat: P([0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5]),
+    bassPat: [[2, 1, 0, 2, 0.9], [6, 1, 12, 2, 0.8], [10, 1, 0, 2, 0.9], [14, 1, 12, 2, 0.8]],
+    delaySend: 0.16, fb: 0.24, delayLp: 3000, revSend: 0.14, revPad: 0.12,
+    progs: [['Am', 'F', 'C', 'G'], ['F', 'G', 'Am', 'Am']],
+    melody: {
+      A: [[[0, 10, 2], [2, 10, 2], [4, 9, 2], [6, 10, 2], [8, 12, 4], [12, 10, 2], [14, 9, 2]],
+          [[0, 8, 2], [2, 8, 2], [4, 7, 2], [6, 8, 2], [8, 9, 6], [14, 8, 2]],
+          [[0, 10, 2], [2, 10, 2], [4, 9, 2], [6, 10, 2], [8, 12, 2], [10, 13, 2], [12, 12, 4]],
+          [[0, 10, 6], [6, 9, 2], [8, 8, 8]]],
+      B: [[[0, 7, 2], [4, 8, 2], [8, 9, 2], [12, 10, 4]], [[0, 9, 2], [4, 8, 2], [8, 7, 2], [12, 8, 4]],
+          [[0, 7, 2], [4, 8, 2], [8, 9, 2], [10, 10, 2], [12, 12, 4]], [[0, 10, 8], [8, 10, 2], [10, 9, 2], [12, 10, 4]]],
+    },
   },
-  // Lv2 "Bolero đêm" — slow, swung, brushed — a night-time song.
+  // Lv2 "Bolero đêm" — slow bolero, a bowed "đàn nhị"-like lead with vibrato over guitar arpeggios, in A minor.
   bolero: {
-    bpm: 68, swing: 0.18, drums: 0.6,
-    padLp: 1250, padAtk: 1.0, padVol: 0.014,
-    pluckLp: 2400, pluckVol: 1.0,
-    bassVol: 0.058, bassLp: 480,
-    kickVol: 0.085, hatVol: 0.018, snareVol: 0.04,
-    kickPat: P([1, 0, 0, 0, 0, 0, 0.5, 0, 1, 0, 0, 0, 0, 0, 0.4, 0]),
-    snarePat: P([0, 0, 0, 0, 0.9, 0, 0, 0, 0, 0, 0, 0, 0.9, 0, 0.3, 0]),
-    hatPat: P([0.5, 0, 0.4, 0.2, 0.5, 0, 0.4, 0.2, 0.5, 0, 0.4, 0.2, 0.5, 0, 0.4, 0.2]),
-    bassPat: [[0, 1, 0, 6, 1], [6, 0.8, 7, 2, 0.7], [8, 1, 7, 6, 0.9], [14, 0.6, 0, 2, 0.6]],
-    motifNotes: 4, keep: 0.9, maxPerBar: 3, restBar: 0.25,
-    delaySend: 0.38, fb: 0.44, delayLp: 1600, revSend: 0.44, revPad: 0.32,
-    progs: [['Am', 'Dm', 'G', 'C'], ['Am', 'F', 'G', 'Am'], ['Dm', 'Am', 'G', 'Am'], ['F', 'G', 'Am', 'Am']],
+    bpm: 66, swing: 0.12, drums: 0.7, key: 0, lead: 'strings', leadVol: 0.9, arp: 'guitar', arpVol: 0.55,
+    padLp: 1200, padAtk: 1.0, padVol: 0.010,
+    pluckLp: 2400, pluckVol: 1,
+    bassVol: 0.06, bassLp: 480,
+    kickVol: 0.085, hatVol: 0.016, snareVol: 0.04,
+    kickPat: P([1, 0, 0, 0, 0, 0, 0.7, 0, 1, 0, 0, 0, 0, 0, 0.5, 0]),
+    snarePat: P([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0.4, 0]),
+    hatPat: P([0.5, 0, 0.4, 0.3, 0.5, 0, 0.4, 0.3, 0.5, 0, 0.4, 0.3, 0.5, 0, 0.4, 0.3]),
+    bassPat: [[0, 1, 0, 6, 1], [6, 1, 7, 2, 0.7], [8, 1, 7, 6, 0.9], [14, 0.7, 0, 2, 0.6]],
+    delaySend: 0.32, fb: 0.4, delayLp: 1700, revSend: 0.42, revPad: 0.3,
+    progs: [['Am', 'Dm', 'G', 'C'], ['F', 'G', 'Am', 'Am']],
+    melody: {
+      A: [[[0, 4, 4], [4, 5, 2], [6, 6, 2], [8, 7, 8]], [[0, 6, 4], [4, 5, 4], [8, 4, 8]],
+          [[0, 6, 4], [4, 7, 2], [6, 8, 2], [8, 9, 6], [14, 8, 2]], [[0, 7, 8], [8, 6, 4], [12, 5, 4]]],
+      B: [[[0, 9, 6], [6, 8, 2], [8, 7, 8]], [[0, 8, 4], [4, 7, 4], [8, 6, 8]],
+          [[0, 5, 4], [4, 6, 4], [8, 7, 4], [12, 6, 4]], [[0, 4, 16]]],
+    },
   },
 };
 export const VARIANT_NAMES = Object.keys(VARIANTS);
@@ -211,7 +236,7 @@ export function createBgm(k, opts) {
     g.gain.exponentialRampToValueAtTime(EPS, t + dur + rel);
     lp.connect(g); g.connect(bus.padBus);
     for (let i = 0; i < chord.tones.length; i++) {
-      const f = mtof(chord.tones[i]);
+      const f = mtof(chord.tones[i] + (c.key || 0));
       const o1 = ctx.createOscillator();
       o1.type = 'sine'; o1.frequency.value = f; o1.detune.value = -6 - rng() * 3;
       const o2 = ctx.createOscillator();
@@ -225,7 +250,7 @@ export function createBgm(k, opts) {
 
   function bass(midi, t, len, vel) {
     const c = cfg;
-    const f = mtof(midi);
+    const f = mtof(midi + (c.key || 0));
     const o1 = ctx.createOscillator();
     o1.type = 'sine'; o1.frequency.value = f;
     const o2 = ctx.createOscillator();
@@ -355,6 +380,87 @@ export function createBgm(k, opts) {
     st.pluck++;
   }
 
+
+  // ───────── v2.6.21 lead instruments for the composed songs ─────────
+  function osc(type, hz, t, end, detune) {
+    const o = ctx.createOscillator(); o.type = type; o.frequency.value = hz; if (detune) o.detune.value = detune;
+    o.start(t); o.stop(end); return o;
+  }
+  function vibrato(o, t, depthCents, rate, delay) {
+    const lfo = ctx.createOscillator(); lfo.frequency.value = rate;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(depthCents, t + delay);
+    lfo.connect(g); g.connect(o.detune); lfo.start(t); return lfo;
+  }
+  function outTo(node) { node.connect(bus.pluckBus); }
+  // electric piano: sine + soft bell partial, fast attack, long decay
+  function epiano(t, hz, vel, dur) {
+    const g = ctx.createGain(), peak = 0.11 * vel * (cfg.leadVol || 1), end = t + Math.max(0.9, dur * 1.4) + 0.05;
+    g.gain.setValueAtTime(EPS, t); g.gain.linearRampToValueAtTime(peak, t + 0.006);
+    g.gain.exponentialRampToValueAtTime(peak * 0.35, t + 0.35); g.gain.exponentialRampToValueAtTime(EPS, end - 0.05);
+    const o1 = osc('sine', hz, t, end), o2 = osc('sine', hz * 2, t, end, 4), o3 = osc('sine', hz * 7, t, t + 0.12);
+    const g2 = makeGain(ctx, 0.28), g3 = ctx.createGain();
+    g3.gain.setValueAtTime(0.12, t); g3.gain.exponentialRampToValueAtTime(EPS, t + 0.1);
+    o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g); outTo(g);
+    st.pluck++;
+  }
+  // sáo trúc: sine + a little breath, slow attack, delayed vibrato, holds the note
+  function flute(t, hz, vel, dur) {
+    const g = ctx.createGain(), peak = 0.068 * vel * (cfg.leadVol || 1), hold = Math.max(0.2, dur * 0.95), end = t + hold + 0.25;
+    g.gain.setValueAtTime(EPS, t); g.gain.linearRampToValueAtTime(peak, t + 0.07);
+    g.gain.setValueAtTime(peak * 0.9, t + hold); g.gain.exponentialRampToValueAtTime(EPS, end - 0.02);
+    const o1 = osc('sine', hz, t, end), o2 = osc('triangle', hz * 2, t, end), g2 = makeGain(ctx, 0.12);
+    const l = vibrato(o1, t, 14, 5.2, 0.25); l.stop(end); const l2 = vibrato(o2, t, 14, 5.2, 0.25); l2.stop(end);
+    const nz = noiseSrc(t, Math.min(0.2, hold)), bp = ctx.createBiquadFilter(), ng = ctx.createGain();
+    bp.type = 'bandpass'; bp.frequency.value = hz * 2; bp.Q.value = 2;
+    ng.gain.setValueAtTime(peak * 0.35, t); ng.gain.exponentialRampToValueAtTime(EPS, t + 0.18);
+    nz.connect(bp); bp.connect(ng); ng.connect(g);
+    o1.connect(g); o2.connect(g2); g2.connect(g); outTo(g);
+    st.pluck++;
+  }
+  // bright synth: two detuned saws through a lowpass with a quick filter envelope
+  function synth(t, hz, vel, dur, vol) {
+    const g = ctx.createGain(), peak = (vol || 0.07) * vel * (cfg.leadVol || 1), end = t + Math.max(0.12, dur * 0.9) + 0.12;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 3;
+    lp.frequency.setValueAtTime(hz * 8, t); lp.frequency.exponentialRampToValueAtTime(hz * 2.5, t + 0.2);
+    g.gain.setValueAtTime(EPS, t); g.gain.linearRampToValueAtTime(peak, t + 0.008);
+    g.gain.setValueAtTime(peak * 0.7, end - 0.12); g.gain.exponentialRampToValueAtTime(EPS, end);
+    const o1 = osc('sawtooth', hz, t, end, -7), o2 = osc('sawtooth', hz, t, end, 7), o3 = osc('square', hz / 2, t, end), g3 = makeGain(ctx, 0.25);
+    o1.connect(lp); o2.connect(lp); o3.connect(g3); g3.connect(lp); lp.connect(g); outTo(g);
+    st.pluck++;
+  }
+  // bowed string (đàn nhị-like): saw through a soft lowpass, slow swell, wide vibrato
+  function strings(t, hz, vel, dur) {
+    const g = ctx.createGain(), peak = 0.06 * vel * (cfg.leadVol || 1), hold = Math.max(0.3, dur * 0.95), end = t + hold + 0.35;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = Math.min(3200, hz * 4); lp.Q.value = 0.8;
+    g.gain.setValueAtTime(EPS, t); g.gain.linearRampToValueAtTime(peak, t + 0.16);
+    g.gain.setValueAtTime(peak, t + hold); g.gain.exponentialRampToValueAtTime(EPS, end - 0.02);
+    const o1 = osc('sawtooth', hz, t, end), o2 = osc('triangle', hz, t, end, 5);
+    // slide into the note from a little below, like a đàn nhị
+    o1.frequency.setValueAtTime(hz * 0.97, t); o1.frequency.exponentialRampToValueAtTime(hz, t + 0.09);
+    const l = vibrato(o1, t, 22, 5.6, 0.3); l.stop(end); const l2 = vibrato(o2, t, 22, 5.6, 0.3); l2.stop(end);
+    o1.connect(lp); o2.connect(lp); lp.connect(g); outTo(g);
+    st.pluck++;
+  }
+  // nylon guitar for the arpeggios
+  function guitar(t, hz, vel) {
+    const g = ctx.createGain(), peak = 0.07 * vel * (cfg.arpVol || 1), end = t + 1.1;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.6;
+    lp.frequency.setValueAtTime(2600, t); lp.frequency.exponentialRampToValueAtTime(900, t + 0.4);
+    g.gain.setValueAtTime(EPS, t); g.gain.linearRampToValueAtTime(peak, t + 0.003);
+    g.gain.exponentialRampToValueAtTime(peak * 0.3, t + 0.25); g.gain.exponentialRampToValueAtTime(EPS, end);
+    const o1 = osc('triangle', hz, t, end), o2 = osc('sawtooth', hz, t, end, 3), g2 = makeGain(ctx, 0.25);
+    o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g); outTo(g);
+  }
+  const keyHz = (hz) => hz * Math.pow(2, (cfg.key || 0) / 12);
+  function lead(t, hz, vel, dur) {
+    const k = cfg.lead;
+    if (k === 'epiano') epiano(t, hz, vel, dur);
+    else if (k === 'flute') flute(t, hz, vel, dur);
+    else if (k === 'synth') synth(t, hz, vel, dur);
+    else if (k === 'strings') strings(t, hz, vel, dur);
+    else pluck(t, hz, vel, clamp(dur * 1.5, 0.55, 1.5), 25, 0.05);
+  }
+
   // ───────── melody material ─────────
   function snapPc(d, pcs) {
     const offs = [0, 1, -1, 2, -2];
@@ -424,8 +530,17 @@ export function createBgm(k, opts) {
     return { bars: m.bars, span: m.span, notes };
   }
 
+  let phrase = null;
   function startCycle() {
     cycle++;
+    if (cfg.melody) {                                   // composed song: A (prog 0) then B (prog 1), repeat
+      const ab = (cycle - 1) % 2;
+      const p = cfg.progs[ab % cfg.progs.length];
+      chords = [CHORDS[p[0]], CHORDS[p[1]], CHORDS[p[2]], CHORDS[p[3]]];
+      phrase = ab === 0 ? cfg.melody.A : cfg.melody.B;
+      for (let b = 0; b < 4; b++) rest[b] = false;
+      return;
+    }
     const pool = cfg.progs;
     let p = pool[Math.floor(rng() * pool.length)];
     if (pool.length > 1) { let g = 0; while (p === lastProg && g++ < 8) p = pool[Math.floor(rng() * pool.length)]; }
@@ -481,6 +596,26 @@ export function createBgm(k, opts) {
         const open = s === 14 && rng() < 0.3;
         hat(t, open ? 0.7 : vel, open);
       }
+    }
+
+    // composed song: fixed melody on its lead instrument, plus an optional 8th-note arpeggio
+    if (cfg.melody) {
+      if (layers.pluck && phrase) {
+        const ns = phrase[bar];
+        for (let i = 0; i < ns.length; i++) {
+          const n = ns[i];
+          if (n[0] !== s) continue;
+          const vel = (s === 0 ? 1 : 0.88) * (0.92 + rng() * 0.08);
+          lead(t, keyHz(pentHz(n[1])), vel, n[2] * stepDur);
+        }
+      }
+      if (c.arp && layers.pluck && (s & 1) === 0) {
+        const tones = chords[bar].tones, tone = tones[(s >> 1) % tones.length] + (c.key || 0) - (c.arp === 'guitar' ? 12 : 0);
+        const vel = (s & 3) === 0 ? 0.9 : 0.6;
+        if (c.arp === 'guitar') guitar(t, mtof(tone), vel);
+        else synth(t, mtof(tone + 12), vel, stepDur * 1.2, 0.035 * (c.arpVol || 1));
+      }
+      return;
     }
 
     // melody

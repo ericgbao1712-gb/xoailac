@@ -18,7 +18,7 @@ import {
 } from './util.js';
 import { makeGain, makeDeferred } from './kit.js';
 import { createSfx, SFX_NAMES } from './sfx.js';
-import { createBgm } from './bgm.js';
+import { createBgm } from './bgm.js?v=a21';   // v2.6.21: versioned so an old cached copy can't drop the new songs
 import { createAmbience, boilingCount, boilLevel, rainLevel } from './ambience.js';
 import { wireEvents } from './events.js';
 import { SONGS } from '../config.js';

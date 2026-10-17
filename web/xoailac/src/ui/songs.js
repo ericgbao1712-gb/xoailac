@@ -3,7 +3,7 @@
 import { h, div, span, ico } from './dom.js';
 import { ctx, act, S, sfx } from './ctx.js';
 import * as C from '../config.js';
-import { pickVariant, SONG_NAMES } from '../audio/index.js';
+import { pickVariant, SONG_NAMES } from '../audio/index.js?v=a21';
 
 export function songPicker({ compact = false } = {}) {
   const wrap = div('song-pick' + (compact ? ' compact' : ''));

@@ -214,12 +214,14 @@ export function createExtras(game) {
 
   // v2.6.20 quạt quanh chỗ khách ngồi (upgrade 'cooling'): code-drawn so the blades spin and the head turns.
   //   Lv1-2 quạt đứng · Lv3 quạt phun sương (mist puffs) · Lv4 quạt hơi nước (tall cooler tower) + phun sương
-  // Spots sit in the gaps between the side tables, a little behind them, so seated guests stay in front.
-  const FAN_SPOTS = [{ x: 4, y: 101 }, { x: 196, y: 101, flip: true }, { x: 47, y: 88 }, { x: 153, y: 88, flip: true }];
+  // v2.6.21: every spot is BEHIND the row of side tables (y 84, by the railing) and clear of all 4 stools of each
+  // table (stools sit at table x ±16 / y+3 and x / y−8 & y+13), so a fan never overlaps a seat or a seated guest.
+  // Edge pair from level 1, the pair between the tables from level 3 (phun sương).
+  const FAN_SPOTS = [{ x: 11, y: 84 }, { x: 189, y: 84, flip: true }, { x: 47, y: 84 }, { x: 153, y: 84, flip: true }];
   function fanSpots(lv, nSide) {
     if (!(lv > 0)) return [];
     const out = [FAN_SPOTS[0], FAN_SPOTS[1]];
-    if (lv >= 3 && nSide >= 3) out.push(FAN_SPOTS[2], FAN_SPOTS[3]);   // phun sương: a second pair between the tables
+    if (lv >= 3 && nSide >= 3) out.push(FAN_SPOTS[2], FAN_SPOTS[3]);
     return out.map((f, i) => ({ ...f, i, kind: lv >= 4 && i < 2 ? 'tower' : lv >= 3 ? 'mist' : 'stand', fan: true }));
   }
   function drawFanHead(ctx, hx, hy, r, t, i, turn) {

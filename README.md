@@ -1,4 +1,4 @@
-# Xoài Lắc Ơi! — mã nguồn bản thử v2.6.21
+# Xoài Lắc Ơi! — mã nguồn bản thử v2.6.22
 
 Đây là toàn bộ mã nguồn của bản chơi thử mới nhất (17/10/2026), đúng như bản đang chạy trên link chơi thử.
 Chi tiết từng bản v2 → v2.6 ở `CHANGELOG.md` (mới nhất: **thanh lý hàng cũ** ở Kho ▸ Thanh lý).
@@ -13,7 +13,7 @@ Chi tiết từng bản v2 → v2.6 ở `CHANGELOG.md` (mới nhất: **thanh l�
 | `tools/xoailac/sim.mjs` | Mô phỏng cân bằng: bot chơi N ngày rồi in lãi, khách, cấp quán |
 | `tools/xoailac/fixtures/` | Mã sao lưu do chính các bản cũ tạo ra, để kiểm tra mã cũ vẫn dùng được |
 | `tools/art/` | Script Python vẽ icon pixel (vật tư, món ăn kèm, thiết bị, linh vật, đèn lồng) và ghép vào `assets/icons.png` |
-| `CHANGELOG.md` | Nhật ký thay đổi từ v2 đến v2.6.21 |
+| `CHANGELOG.md` | Nhật ký thay đổi từ v2 đến v2.6.22 |
 
 ## Chạy thử trên máy
 

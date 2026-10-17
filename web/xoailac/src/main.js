@@ -55,7 +55,7 @@ async function boot() {
 
   let audio = noopAudio;
   try {
-    const mod = await import('./audio/index.js');
+    const mod = await import('./audio/index.js?v=a21');
     audio = Object.assign({}, noopAudio, mod.createAudio(game));
   } catch (e) { console.warn('[boot] audio unavailable, continuing without it:', e && e.message); }
 

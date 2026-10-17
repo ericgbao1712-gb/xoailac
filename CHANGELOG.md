@@ -1,7 +1,33 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 32, nhãn v2.6.21, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 33, nhãn v2.6.22, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.22 (18/10): bài nhạc mới nghe ra khác hẳn, quạt không đè lên ghế
+Commit ef5e725.
+- **Người dùng báo:** chọn bài mới mà không nghe thấy nhạc mới.
+- **Nguyên nhân:**
+  - Bộ phát có đổi bài thật (đã kiểm tra trong Chromium: chọn "Nhạc sàn vui" thì bộ phát chuyển sang bài đó và có nốt nhạc phát ra).
+  - Nhưng 4 bài của v2.6.20 chỉ là các biến tấu cùng bộ âm, cùng tiếng đàn tranh và giai điệu ngẫu nhiên như nhạc cũ, chỉ khác nhịp trống. Tai người gần như không nhận ra là bài khác.
+  - Ngoài ra trang không đánh số phiên bản file JS âm thanh. Trình duyệt giữ bản `bgm.js` cũ (chưa có bài mới) thì chọn bài sẽ không có tác dụng.
+- **Sửa:**
+  - Mỗi bài mới giờ là một bài soạn sẵn: giai điệu cố định 8 ô nhịp (câu A rồi câu B), vòng hợp âm cố định, giọng và nhạc cụ riêng:
+
+    | Bài | Mở ở | Nhạc cụ chính | Nhịp |
+    |---|---|---|---|
+    | Phố chiều | Loa cấp 1 | piano điện | bossa 104 BPM, giọng Rê |
+    | Quê nhà | Loa cấp 1 | sáo trúc (có hơi thổi, rung) + guitar rải | dân ca chậm 80 BPM |
+    | Nhạc sàn vui | Loa cấp 2 | synth sáng + arpeggio móc đơn | 4 phách đều 120 BPM, giọng Mi giáng |
+    | Bolero đêm | Loa cấp 2 | đàn dây vuốt nốt kiểu đàn nhị + guitar rải | bolero 66 BPM, La thứ |
+
+  - Nhạc Trưa phố / Đêm hẻm / nhạc nhẹ buổi sáng giữ nguyên.
+  - File âm thanh được nạp kèm số phiên bản (`audio/index.js?v=a21`, `bgm.js?v=a21`), nên bản cũ trong bộ nhớ đệm trình duyệt không chặn bài mới được nữa.
+  - Đã kết xuất thử từng bài 10–24 giây bằng OfflineAudioContext. Không lỗi, âm lượng các bài gần nhau (đỉnh khoảng −6 dB, trung bình khoảng −21 đến −23 dB).
+- **Quạt:**
+  - Trước đây quạt nằm giữa các bàn, chồng lên ghế đẩu.
+  - Giờ dời ra sau hàng bàn, sát lan can (y 84): hai quạt ở hai đầu (x 11 / 189) và, từ cấp 3, hai quạt ở khe giữa các bàn (x 47 / 153).
+  - Đã kiểm tra bằng script là khung quạt không chạm khung bàn, 4 ghế của mỗi bàn và người ngồi trên ghế. Đã chụp lại ở cấp 1, 3, 4.
+- **Kiểm thử:** `test_core.mjs` 320 kiểm tra đều đạt.
 
 ## v2.6.21 (18/10): chọn bài nhạc nền
 Commit 57a0c13.
