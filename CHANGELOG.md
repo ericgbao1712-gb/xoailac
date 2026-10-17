@@ -1,7 +1,19 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 25, nhãn v2.6.14, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 26, nhãn v2.6.15, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.15 (17/10): lời nhắn của Má và băng "Giờ cao điểm" không còn bị che
+Commit e1ac16a.
+- **Lỗi:**
+  - Lời nhắn của Má và băng đỏ "GIỜ CAO ĐIỂM! KHÁCH ĐÔNG!" cùng nằm sát mép trên khung cảnh, nên băng đè lên chữ của Má.
+  - Cả hai còn bị viền mái bạt răng cưa của thanh trên cùng (thò xuống khoảng 21px) che mất một phần.
+- **Sửa:**
+  - Lời nhắn của Má và băng giờ bắt đầu dưới mái bạt.
+  - Khi đang có lời nhắn của Má, băng tự xuống ngay dưới lời nhắn. Các thông báo nhỏ ở góc phải xuống dưới cả hai (`relayout` trong `ui/toast.js`, đo theo vị trí đã ổn định, không tính hiệu ứng trượt vào).
+  - Má hết nhắn thì băng và thông báo trở lại chỗ cũ.
+  - Chữ "ĐÔNG" cạnh đồng hồ trước nằm cao hơn ô đồng hồ 12px nên bị mép trên màn hình điện thoại cắt mất; giờ nằm sát trên ô và hiện trọn.
+- **Kiểm tra:** chụp ở 390×844 và 360×700. Lời nhắn, băng và thông báo xếp từ trên xuống, không ô nào chồng lên ô nào. `test_core.mjs` 251 kiểm tra đều đạt.
 
 ## v2.6.14 (17/10): EXP nhiệm vụ giảm thêm một nửa, thông báo gọn ở góc, chọn ly / hộp lúc bán
 Commit 968a634.

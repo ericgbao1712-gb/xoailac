@@ -1638,7 +1638,7 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 
 /* v2.6.14: notifications are small chips in the top-right corner (over the sky / the edge of the sign),
    never in the middle of the scene where the queue and the counter are */
-#toast-root { top: calc(var(--hud-h) + 84px); bottom: auto; left: auto; right: 6px; width: min(62%, 230px);   /* below Má's note and the rush banner */
+#toast-root { top: calc(var(--hud-h) + max(30px, var(--toast-push, 0px))); bottom: auto; left: auto; right: 6px; width: min(62%, 230px);   /* v2.6.15: pushed below Má's note and the banner by toast.js */
   align-items: flex-end; gap: 3px; }
 .toast { max-width: 100%; padding: 2px 8px 3px 4px; gap: 4px; font: 700 10.5px/1.2 var(--f-body); border-radius: 10px;
   box-shadow: 0 0 0 1px var(--rl, var(--rim)), 0 4px 8px -6px rgba(40, 30, 15, .5); }
@@ -1656,3 +1656,10 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 .tray .pk-i .ico { width: 16px; height: 16px; }
 .tray .pk-stamp { position: absolute; right: -3px; bottom: -2px; width: 10px; height: 10px; border-radius: 50%; image-rendering: auto; }
 .tray .thead { padding-right: 78px; }
+
+/* v2.6.15: Má's note and the rush banner start below the HUD's scalloped awning (it hangs ~21px into the scene) */
+.mom-wrap { top: 24px; }
+.banner { top: 26px; }
+@media (max-height: 760px) { .mom-wrap { top: 18px; } .banner { top: 20px; } }
+/* v2.6.15: the "ĐÔNG" tag sat 12px above the clock chip and was cut off by the top of the phone screen */
+.hchip .rush { top: -5px; right: 2px; font-size: 9px; padding: 2px 5px 1px; z-index: 2; }

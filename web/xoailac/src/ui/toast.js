@@ -63,9 +63,10 @@ export function mountToasts({ toastRoot, sceneUi }) {
         div('av', ico(m.tip ? 'ui_info' : 'ui_mom', 32)),
         div('bd', div('who', m.who || (m.tip ? 'Mẹo nhỏ' : 'Má nhắn'), m.tip ? null : h('i', null, 'vừa xong')), h('p', null, rich(m.text))));
       momWrap.appendChild(el);
+      relayout();
       if (m.tip) sfx('pop');                  // real Má messages are voiced by the audio module (mom event)
       let closed = false;
-      const close = () => { if (closed) return; closed = true; clearTimeout(t); el.classList.add('out'); setTimeout(() => { el.remove(); momShown--; setTimeout(pump, 200); }, 300); };
+      const close = () => { if (closed) return; closed = true; clearTimeout(t); el.classList.add('out'); setTimeout(() => { el.remove(); momShown--; relayout(); setTimeout(pump, 200); }, 300); };
       const t = setTimeout(close, Math.max(5000, m.text.length * 55));
       el.addEventListener('pointerdown', close);
     }
@@ -93,8 +94,26 @@ export function mountToasts({ toastRoot, sceneUi }) {
     if (banEl) { banEl.remove(); clearTimeout(banT); }
     const el = div('banner' + (kind === 'gold' ? ' gold' : ''), text);
     sceneUi.appendChild(el); banEl = el;
-    banT = setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); if (banEl === el) banEl = null; }, ms);
+    relayout();
+    banT = setTimeout(() => { el.classList.add('out'); setTimeout(() => { el.remove(); relayout(); }, 300); if (banEl === el) banEl = null; }, ms);
   };
+
+  // v2.6.15: Má's note, the banner and the toast chips never sit on top of each other: the banner goes right under
+  // Má's note (when there is one), the toast chips under both. Positions are in px inside the scene.
+  function relayout() {
+    try {
+      // offset* ignore the slide-in transforms, so the numbers are the settled layout
+      const mom = momWrap.querySelector('.mom:not(.out)');
+      let y = mom ? momWrap.offsetTop + mom.offsetTop + mom.offsetHeight + 6 : 0;
+      if (banEl && banEl.isConnected) {
+        banEl.style.top = y ? Math.round(y + 2) + 'px' : '';
+        y = banEl.offsetTop + banEl.offsetHeight + 8;
+      }
+      const wrap = sceneUi.offsetParent === toastRoot.offsetParent ? 0 : (sceneUi.parentElement?.offsetTop || 0);
+      toastRoot.style.top = Math.round(wrap + Math.max(30, y)) + 'px';
+    } catch (e) { /* layout only */ }
+  }
+
 
   // ---------------------------------------------------------------- game events
   const g = ctx.game;
