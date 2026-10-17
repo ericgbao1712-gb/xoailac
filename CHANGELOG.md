@@ -1,7 +1,25 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 14, nhãn v2.6.5, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 15, nhãn v2.6.6, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.6 (17/10): cài được như ứng dụng, có logo riêng
+- **Vì sao Android báo "Không thể cài đặt ứng dụng này":** trang game không có web app manifest (`manifest.json`), không có service worker và không có icon ứng dụng. Chrome chỉ cho cài khi đủ ba thứ đó, nên nó chỉ đề nghị "Tạo lối tắt" với chữ M xám của tên miền. iOS cũng tự vẽ chữ X vì không có `apple-touch-icon`.
+- **Đã thêm:**
+
+  | Thành phần | Nội dung |
+  |---|---|
+  | `manifest.json` | Tên "Xoài Lắc Ơi!", tên ngắn "Xoài Lắc", mở toàn màn hình (standalone), màn dọc, màu chủ đạo xanh lá |
+  | Icon ứng dụng (`assets/app/`) | 192 và 512px loại thường, bản maskable cho icon tròn/bo góc của Android, `apple-touch-icon` 180px cho iOS, favicon 32px |
+  | `sw.js` | Service worker: luôn lấy file mới từ máy chủ, chỉ dùng bản đã lưu khi mất mạng (nên mở game được cả lúc offline). Không động tới save. |
+  | `index.html` | Link manifest, apple-touch-icon và các thẻ meta cho iOS |
+
+- **Logo:** ly xoài lắc pixel và trái xoài xanh lấy từ chính bộ icon của game, nền vàng cam, viền mái bạt xanh trắng như HUD. Vẽ lại được bằng `tools/art/make_app_icon.py`.
+- **Kiểm tra bằng Chromium (DevTools `Page.getInstallabilityErrors`):** không còn lỗi cài đặt. Service worker hoạt động; đã tắt mạng rồi tải lại trang, game vẫn mở được.
+- **Cần làm để thấy trên điện thoại:**
+  - Chép thư mục `web/xoailac/` mới lên máy chủ meegame.shop.
+  - iOS: xóa lối tắt cũ rồi "Thêm vào MH chính" lại thì mới nhận logo mới.
+  - Không cài được từ link chơi thử trên claude.ai, vì trang đó chạy trong khung của claude.ai.
 
 ## v2.6.5 (17/10): mưa không rơi lên quầy, bạt tự kéo từ Chợ đêm bờ kè
 - **Quầy khô ráo:** mưa chỉ rơi tới mép trên của quầy (`drawWeather` có thêm tham số `maxY` = `counter.top`), ở mọi cấp quán.

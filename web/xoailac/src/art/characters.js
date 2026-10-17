@@ -182,7 +182,7 @@ const custRecs = [];
 function buildCustVariant(shift) {
   const c = document.createElement('canvas');
   c.width = rec.img.width; c.height = rec.img.height;
-  const g = c.getContext('2d');
+  const g = c.getContext('2d', { willReadFrequently: true });
   g.drawImage(rec.img, 0, 0);
   for (const key of Object.keys(FR)) {
     const sheet = key.slice(0, key.indexOf('/'));

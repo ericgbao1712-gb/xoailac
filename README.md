@@ -1,4 +1,4 @@
-# Xoài Lắc Ơi! — mã nguồn bản thử v2.6.5
+# Xoài Lắc Ơi! — mã nguồn bản thử v2.6.6
 
 Đây là toàn bộ mã nguồn của bản chơi thử mới nhất (17/10/2026), đúng như bản đang chạy trên link chơi thử.
 Chi tiết từng bản v2 → v2.6 ở `CHANGELOG.md` (mới nhất: **thanh lý hàng cũ** ở Kho ▸ Thanh lý).
@@ -13,7 +13,7 @@ Chi tiết từng bản v2 → v2.6 ở `CHANGELOG.md` (mới nhất: **thanh l�
 | `tools/xoailac/sim.mjs` | Mô phỏng cân bằng: bot chơi N ngày rồi in lãi, khách, cấp quán |
 | `tools/xoailac/fixtures/` | Mã sao lưu do chính các bản cũ tạo ra, để kiểm tra mã cũ vẫn dùng được |
 | `tools/art/` | Script Python vẽ icon pixel (vật tư, món ăn kèm) và ghép vào `assets/icons.png` |
-| `CHANGELOG.md` | Nhật ký thay đổi từ v2 đến v2.6.5 |
+| `CHANGELOG.md` | Nhật ký thay đổi từ v2 đến v2.6.6 |
 
 ## Chạy thử trên máy
 
@@ -45,6 +45,8 @@ SUMMARY=1 node sim.mjs 20 1   # 20 ngày, seed 1
 - Mục 16 trong `test_core.mjs` kiểm tra lại việc này mỗi lần chạy.
 
 ## Đưa lên MeeGame
+
+- Game cài được như ứng dụng (Android "Cài đặt", iOS "Thêm vào MH chính") nhờ `manifest.json`, `sw.js` và icon trong `assets/app/`. Trang phải chạy qua HTTPS (hoặc localhost) thì mới cài được.
 
 - Chép thư mục `web/xoailac/` vào chỗ của game trên server.
 - Khi đổi file ảnh trong `assets/`, tăng `ASSET_VER` trong `src/art/assets.js`.

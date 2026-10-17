@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "Xoài Lắc Ơi!",
+  "short_name": "Xoài Lắc",
+  "description": "Game quản lý xe xoài lắc pixel dễ thương.",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff3dc",
+  "theme_color": "#2f5012",
+  "categories": ["games"],
+  "icons": [
+    { "src": "assets/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/app/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/app/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
