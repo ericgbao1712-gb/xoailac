@@ -1,7 +1,17 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 31, nhãn v2.6.20, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 32, nhãn v2.6.21, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.21 (18/10): chọn bài nhạc nền
+Commit 57a0c13.
+- **Trước đây:** v2.6.20 thêm bài theo cấp loa nhưng chỉ tự đổi bài, người chơi không chọn được.
+- **Giờ có chỗ chọn bài** ở 2 nơi: thẻ **Bài nhạc nền** trong Cài đặt, và ngay dưới thẻ **Loa nhạc** trong tab Nâng cấp.
+  - Nút **Tự đổi bài** (mặc định): đổi giữa các bài đã mở trong lúc bán như v2.6.20.
+  - Hoặc bấm một bài: Trưa phố, Đêm hẻm (có sẵn), Phố chiều, Quê nhà (Loa cấp 1), Nhạc sàn vui, Bolero đêm (Loa cấp 2). Bài đã chọn phát từ buổi sáng tới lúc tổng kết ngày; chọn là chuyển bài ngay.
+  - Bài chưa mở hiện mờ với ổ khóa và chữ "Loa cấp n"; bấm vào thì nhắc cần nâng Loa nhạc.
+- Lựa chọn lưu trong save (`settings.song`); id lạ thì về "Tự đổi bài". Danh sách bài nằm ở `C.SONGS` trong config.js.
+- **Kiểm tra:** chụp Cài đặt ở 390×844, bấm "Quê nhà" (loa cấp 1) thì chọn được, bấm "Nhạc sàn vui" (cần cấp 2) thì không đổi. `test_core.mjs` 320 kiểm tra đều đạt.
 
 ## v2.6.20 (18/10): thanh menu sát đáy, nguồn hàng, linh vật, nhạc loa, quạt, đèn lồng tre
 Commit 24b1323.

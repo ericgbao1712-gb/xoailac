@@ -8,6 +8,7 @@ import { frame } from '../modals.js';
 import { showPopover } from '../popover.js';
 import { openLogin } from './rewards.js';
 import { openBackup, openRestore } from '../backup.js';
+import { songPicker } from '../songs.js';
 import { countUp, confettiFor, unlockIcon, unlocksAtLevel, UNLOCK_LABEL, vibrate } from './kit.js';
 
 /** self-updating switch (the shared `toggle` needs a rebuild to flip) */
@@ -166,6 +167,9 @@ export function openSettings() {
           slider('Âm thanh', 'ui_sound', 'sfx', (v) => ctx.audio?.setSfx?.(v)),
           div('set-row', ico('ui_phone', 32), div('grow', span('sl-l', 'Rung khi bấm'), span('muted sm', 'Chỉ có trên điện thoại')), hap),
           div('set-row', ico('fr_xoai', 32), div('grow', span('sl-l', 'Lắc điện thoại thật'), span('muted sm', 'Lắc máy để lắc ly xoài (cần cảm biến)')), shk)),
+        div('card set-card',                                       // v2.6.21 chọn bài nhạc nền
+          div('set-row', ico('eq_speaker', 32), div('grow', span('sl-l', 'Bài nhạc nền'), span('muted sm', 'Nâng Loa nhạc để mở thêm bài'))),
+          songPicker()),
         dayLenCard(),
         closeEarlyCard(m),
         div('card set-card',

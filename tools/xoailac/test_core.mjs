@@ -627,4 +627,20 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   ok(s0.size === 2 && s1.size >= s0.size + 2 && s2.size >= s1.size + 2, `speaker adds 2 songs per level (${s0.size} → ${s1.size} → ${s2.size})`);
   st.phase = 'prep'; ok(A.pickVariant(st) === 'calm', 'calm music before opening');
 }
+// ── 29. v2.6.21 chọn bài nhạc nền
+{
+  const A = await import('../../web/xoailac/src/audio/index.js');
+  const g = fresh(291); g.state.tutorial = { step: 99, done: true };
+  ok(g.state.settings.song === 'auto', 'default: Tự đổi bài');
+  ok(g.act.setSetting('song', 'san').ok === false && g.state.settings.song === 'auto', 'a locked song cannot be picked');
+  ok(g.act.setSetting('song', 'xyz').ok === false, 'unknown song refused');
+  g.state.upgrades.speaker = 2;
+  ok(g.act.setSetting('song', 'san').ok && g.state.settings.song === 'san', 'pick an unlocked song');
+  g.state.phase = 'prep'; ok(A.pickVariant(g.state) === 'san', 'the picked song plays in the morning too');
+  g.state.phase = 'open'; g.state.clock = 20 * 60; ok(A.pickVariant(g.state) === 'san', '…and at night');
+  g.state.phase = 'report'; ok(A.pickVariant(g.state) === 'calm', 'calm on the day report');
+  ok(g.act.setSetting('song', 'auto').ok, 'back to auto');
+  const sv = JSON.parse(JSON.stringify(g.serialize())); sv.settings.song = 'bad';
+  ok(createGame(sv, { headless: true, seed: 1, now: 1.8e12 }).state.settings.song === 'auto', 'a bad song id in a save goes back to auto');
+}
 console.log('OK', n, 'checks');

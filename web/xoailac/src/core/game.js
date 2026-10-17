@@ -417,7 +417,12 @@ export function createGame(save, opts = {}) {
     resume: wrap((reason = 'ui') => { world.pauses.delete(reason); return { ok: true }; }),
     setSetting: wrap((key, value) => {
       if (!(key in state.settings)) return fail('unknown', 'Không có cài đặt này.');
-      if (key === 'dayMin') {
+      if (key === 'song') {                                   // v2.6.21 chọn bài nhạc nền
+        value = String(value);
+        const sg = C.SONGS.find((x) => x.id === value);
+        if (value !== 'auto' && !sg) return fail('unknown', 'Không có bài này.');
+        if (sg && ((state.upgrades.speaker | 0) < sg.lv)) return fail('locked', `Nâng Loa nhạc lên cấp ${sg.lv} để mở bài "${sg.name}" nha.`);
+      } else if (key === 'dayMin') {
         value = Math.round(Number(value));
         if (!C.TIME.dayMinOptions.includes(value)) return fail('range', 'Độ dài ngày này không có nha.');
       } else if (typeof state.settings[key] === 'number') value = clamp(Number(value) || 0, 0, 1);

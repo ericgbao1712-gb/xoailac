@@ -77,7 +77,7 @@ export function defaultState(now = Date.now()) {
     report: null,
     branches,
     ended: false,
-    settings: { music: 0.6, sfx: 0.8, haptics: true, dayMin: C.TIME.defaultDayMin },
+    settings: { music: 0.6, sfx: 0.8, haptics: true, dayMin: C.TIME.defaultDayMin, song: 'auto' },   // v2.6.21 song: 'auto' or a C.SONGS id
   };
 }
 
@@ -115,6 +115,7 @@ export function migrate(save, now) {
   if (decoRefund > 0) { s.money = (s.money || 0) + decoRefund; s.flags.ui.decoRefund = decoRefund; }
   if (s.homeCity != null && !(C.BRANCHES.some((b) => b.id === s.homeCity) && (s.branches || {})[s.homeCity] > 0)) s.homeCity = null;
   if (s.packPref != null && !(C.CONTAINER_IDS || []).includes(s.packPref)) s.packPref = null;
+  if (s.settings && s.settings.song !== 'auto' && !C.SONG_IDS.includes(s.settings.song)) s.settings.song = 'auto';   // v2.6.21
   s.brand = sanitizeBrand(s.brand); s.uniform = sanitizeUniform(s.uniform); s.facade = sanitizeFacade(s.facade);
   // the side-table row holds 4 sets (2 + 2 upgrades); an early v2 build sold up to 6
   const sideMax = C.UPGRADES.find((u) => u.id === 'sidetable').costs.length;

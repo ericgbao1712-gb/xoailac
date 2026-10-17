@@ -1681,3 +1681,14 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
   box-shadow: 0 0 0 2px #fff, 0 3px 0 2px var(--red-2), 0 8px 14px -8px rgba(0, 0, 0, .4); }
 .banner.gold { box-shadow: 0 0 0 2px #fff, 0 3px 0 2px var(--gold-2), 0 8px 14px -8px rgba(0, 0, 0, .4); }
 .set-close .grow { min-width: 0; }
+
+/* v2.6.21 chọn bài nhạc nền (Cài đặt + thẻ Loa nhạc) */
+.song-pick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.song-b { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 4px 11px 4px 8px; border-radius: 999px;
+  background: var(--paper-2); color: var(--ink-2); font: 800 12.5px/1.1 var(--f-body); box-shadow: inset 0 0 0 1.5px rgba(138, 85, 48, .25); }
+.song-b.on { background: var(--leaf); color: #fff; box-shadow: 0 0 0 1.5px var(--leaf-2), inset 0 -3px 0 0 var(--leaf-2); text-shadow: 0 1.5px 0 rgba(40, 80, 10, .4); }
+.song-b.locked { opacity: .55; }
+.song-b .song-lv { font-weight: 600; font-size: 10.5px; opacity: .85; }
+.song-now { flex-basis: 100%; }
+.song-pick.compact { margin-top: 6px; padding-top: 8px; border-top: 1.5px dashed rgba(138, 85, 48, .2); }
+.song-pick.compact .song-b { min-height: 32px; font-size: 12px; }

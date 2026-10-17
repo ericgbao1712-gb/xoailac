@@ -21,6 +21,7 @@ import { createSfx, SFX_NAMES } from './sfx.js';
 import { createBgm } from './bgm.js';
 import { createAmbience, boilingCount, boilLevel, rainLevel } from './ambience.js';
 import { wireEvents } from './events.js';
+import { SONGS } from '../config.js';
 
 export { boilingCount, boilLevel, rainLevel, SFX_NAMES };
 
@@ -33,21 +34,19 @@ const VARIANT_HOLD = 4;         // min seconds between BGM variant switches (no 
 
 // v2.6.20: each Loa nhạc level adds songs; while the shop is open the radio rotates through what's unlocked
 // every SONG_MIN game minutes (day and night have their own playlists).
-export const SPEAKER_SONGS = [
-  { day: [], night: [] },
-  { day: ['pho', 'que'], night: ['pho'] },          // Lv1: Phố chiều, Quê nhà
-  { day: ['san'], night: ['bolero'] },               // Lv2: Nhạc sàn vui, Bolero đêm
-];
-export const SONG_NAMES = { day: 'Trưa phố', night: 'Đêm hẻm', pho: 'Phố chiều', que: 'Quê nhà', san: 'Nhạc sàn vui', bolero: 'Bolero đêm' };
+// v2.6.21: settings.song picks one song (any unlocked one); it plays from the morning until the day report.
+export const SONG_NAMES = Object.fromEntries(SONGS.map((x) => [x.id, x.name]));
 const SONG_MIN = 75;
+const speakerLv = (state) => Math.max(0, (state && state.upgrades && state.upgrades.speaker) | 0);
+export function songUnlocked(state, id) { const sg = SONGS.find((x) => x.id === id); return !!sg && speakerLv(state) >= sg.lv; }
 export function playlistOf(state, night) {
-  const lv = Math.max(0, Math.min(SPEAKER_SONGS.length - 1, (state && state.upgrades && state.upgrades.speaker) | 0));
-  const out = [night ? 'night' : 'day'];
-  for (let i = 1; i <= lv; i++) for (const v of SPEAKER_SONGS[i][night ? 'night' : 'day']) out.push(v);
-  return out;
+  const lv = speakerLv(state);
+  return SONGS.filter((x) => x.lv <= lv && (x.time === 'both' || x.time === (night ? 'night' : 'day'))).map((x) => x.id);
 }
 export function pickVariant(state) {
   const ph = state && state.phase;
+  const pick = state && state.settings && state.settings.song;
+  if (pick && pick !== 'auto' && ph !== 'report' && songUnlocked(state, pick)) return pick;
   if (ph === 'open' || ph === 'closing') {
     const night = state.clock >= NIGHT_FROM;
     const list = playlistOf(state, night);
@@ -128,6 +127,7 @@ export function _createEngine(ctx, game, opts) {
   let seenSfx = null;
   let hidden = false;
   let variantHold = 0;
+  let seenSong = null;
   let slow = 1;
   let lastCount = 0;
   const ambOpts = { rain: false, storm: false, bike: false };
@@ -179,8 +179,10 @@ export function _createEngine(ctx, game, opts) {
       }
     }
 
-    // BGM variant
+    // BGM variant (a song picked in Settings switches right away)
     variantHold -= dt;
+    const songSet = set && set.song;
+    if (songSet !== seenSong) { seenSong = songSet; variantHold = 0; }
     const want = pickVariant(state);
     const have = bgm.current();
     if (want !== have && (have === null || variantHold <= 0)) {

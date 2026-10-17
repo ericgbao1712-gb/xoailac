@@ -94,6 +94,17 @@ export const INGREDIENTS = [
   { id: 'ak_khoga',          name: 'Khô gà lá chanh',    short: 'Khô gà',    icon: 'ak_khoga',          cost: 14, side: 35, unlockLv: 1,  quest: 'q25', shelf: 6, kinds: { vanphong: 3, chutu: 3, doandulich: 2 } },
 ];
 // chance a group adds a side (only unlocked ones in stock); a second one for groups of 3+
+// v2.6.20–21 nhạc nền: base songs + songs unlocked by the Loa nhạc upgrade (speaker level `lv`).
+// `time`: when the "Tự đổi bài" playlist plays it ('day' before 18:30, 'night' after, 'both').
+export const SONGS = [
+  { id: 'day',    name: 'Trưa phố',     lv: 0, time: 'day' },
+  { id: 'night',  name: 'Đêm hẻm',      lv: 0, time: 'night' },
+  { id: 'pho',    name: 'Phố chiều',    lv: 1, time: 'both' },
+  { id: 'que',    name: 'Quê nhà',      lv: 1, time: 'day' },
+  { id: 'san',    name: 'Nhạc sàn vui', lv: 2, time: 'day' },
+  { id: 'bolero', name: 'Bolero đêm',   lv: 2, time: 'night' },
+];
+export const SONG_IDS = SONGS.map((x) => x.id);
 export const SIDE_CHANCE = { first: 0.40, second: 0.30 };   // v2.6.20 (was 0.32 / 0.25): guests order a side a bit more often
 // v2.6.20: every side dish keeps one day longer (shelf +1)
 // v2.5.2 quản kho during service: checks every few minutes; ≤ lowAt portions left → buys max(minBuy, today's use × usageShare)
@@ -360,7 +371,7 @@ export const UPGRADES = [
     desc: 'Ngày nắng nóng không mất khách.' },
   { id: 'speaker', cat: 'thietbi', name: 'Loa nhạc', icon: 'eq_speaker', costs: [400, 4000], minTier: [1, 2], amb: 2, patiencePer: 0.10,
     levels: ['Không có', 'Loa thùng · +2 bài: Phố chiều, Quê nhà', 'Loa kéo · +2 bài: Nhạc sàn vui, Bolero đêm'],
-    desc: 'Nhạc hay thì khách chờ cũng không thấy lâu. Mỗi cấp loa thêm bài nhạc nền mới, tự đổi bài trong ca.' },
+    desc: 'Nhạc hay thì khách chờ cũng không thấy lâu. Mỗi cấp loa thêm 2 bài nhạc nền; chọn bài ngay dưới đây hoặc trong Cài đặt.' },
   { id: 'pos', cat: 'thietbi', name: 'Máy tính tiền', icon: 'ui_coin', costs: [3000, 25000], minTier: [2, 3], minLv: [1, 23], tipMult: [1, 1.2, 1.32],
     levels: ['Chưa có', 'Máy tính tiền', 'Máy tính tiền + mã QR'], patienceQr: 0.05,
     desc: 'Thu tiền nhanh gọn, khách vui tip thêm. Từ Lv 23 thêm mã QR chuyển khoản.' },

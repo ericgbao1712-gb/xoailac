@@ -6,6 +6,7 @@ import * as C from '../../config.js';
 import { fmtShort } from '../../core/format.js';
 import { celebrate, floatAt, costBtn, pips, noteBox } from './common.js';
 import { pricesView } from './prices.js';
+import { songPicker } from '../songs.js';
 
 const CAT_ICON = { banghe: 'eq_table', bep: 'eq_stove', thietbi: 'eq_fridge', quangba: 'ui_megaphone' };
 const info = (id) => G().get?.upgradeInfo?.(id) || { level: 0, max: 0, cost: null, canBuy: false, lockedReason: null, levelName: '', nextLevelName: null };
@@ -36,6 +37,7 @@ function upCard(up, api) {
     }));
   }
   card.appendChild(bot);
+  if (up.id === 'speaker') card.appendChild(songPicker({ compact: true }));   // v2.6.21 chọn bài ngay trên thẻ Loa nhạc
   return card;
 }
 
