@@ -4,7 +4,7 @@ Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (gi
 Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 20, nhãn v2.6.11, có nút "Thử nhanh: quán Lv 32").
 
 ## v2.6.11 (17/10): nhiệm vụ thưởng nhiều EXP hơn
-- **Trước đây:** mục tiêu chính không cho EXP (chỉ cho tiền). Rương nhiệm vụ ngày cho cố định 20/40/80 EXP, Sổ tay cho 20–600 EXP. Từ Lv 20 trở đi, các con số này gần như không đáng kể so với thanh EXP (Lv 30 cần khoảng 95.000).
+- **Trước đây:** mục tiêu chính không cho EXP (chỉ cho tiền). Rương nhiệm vụ ngày cho cố định 20/40/80 EXP, Sổ tay cho 20–600 EXP. Từ Lv 20 trở đi, các con số này gần như không đáng kể so với thanh EXP (Lv 30 cần 93.494).
 - **Giờ thưởng theo % thanh EXP của cấp đang chơi** (`QUEST_XP`). Mức cố định cũ là mức tối thiểu.
 
   | Phần thưởng | EXP |
@@ -14,7 +14,7 @@ Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (gi
   | Rương gỗ / bạc (nhiệm vụ ngày) | 4% / 7% |
   | Rương vàng (xong hết nhiệm vụ ngày, rương thành thạo) | 12% |
 
-  Ví dụ ở Lv 30: một mục tiêu chính cho khoảng 14.300 EXP. Làm hết nhiệm vụ ngày được khoảng 1/4 đến 1/3 cấp mỗi ngày.
+  Ví dụ ở Lv 30: một mục tiêu chính cho khoảng 14.000 EXP. Làm hết nhiệm vụ ngày được khoảng 1/4 đến 1/3 cấp mỗi ngày.
 - **Hiển thị:** tab Nhiệm vụ hiện đúng số EXP sẽ nhận (thẻ mục tiêu, Sổ tay, dòng rương nhiệm vụ ngày).
 - **Mô phỏng:**
   - 20 ngày: Lv 17 thay vì Lv 15–16.
