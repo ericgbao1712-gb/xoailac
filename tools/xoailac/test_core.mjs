@@ -545,7 +545,8 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const g = fresh(251); g.state.level = 30; g.state.xp = 0;
   const need = C.LEVEL.xpToNext(30);
   ok(Q.questXp(g._G, 'main', 0) === Math.round(need * C.QUEST_XP.main) && Q.questXp(g._G, 'gold', 80) === Math.round(need * C.QUEST_XP.gold), 'main / gold chest pay their share of the bar');
-  ok(C.QUEST_XP.main === 0.0375 && C.QUEST_XP.gold === 0.03, 'v2.6.14: shares halved again');
+  ok(C.QUEST_XP.main === 0.03 && C.QUEST_XP.gold === 0.02, 'v2.6.18: quest shares trimmed');
+  ok(C.LEVEL.serveXpMult(5) === 1 && C.LEVEL.serveXpMult(20) === 0.85 && C.LEVEL.serveXpMult(40) === 0.85 && C.LEVEL.serveXpMult(15) < 1, 'v2.6.18: serving XP full until Lv 9, 85 % from Lv 20');
   g.state.level = 2;
   ok(Q.questXp(g._G, 'gold', 80) >= 80 && Q.questXp(g._G, 'v2', 20) >= 20, 'never below the old fixed amount');
   // a claimed main quest really adds that XP

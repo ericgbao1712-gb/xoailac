@@ -660,7 +660,7 @@ function finishGroup(G, g) {
   pushRating(G, stars, g.special ? K[g.kind].reviewWeight || 1 : 1);
   s.today.stars += stars; s.today.rated++;
   if (stars >= 5) { s.stats.fiveStars++; s.today.fiveStars++; }
-  addXp(G, C.LEVEL.xpForGroup(potPrice(G, g.pot), g.size, stars, s.tier), x, y - 10);
+  addXp(G, Math.round(C.LEVEL.xpForGroup(potPrice(G, g.pot), g.size, stars, s.tier) * C.LEVEL.serveXpMult(s.level)), x, y - 10);   // v2.6.18
   // review
   const wantsReview = g.special || stars <= 1 || rng.chance(C.RATING.reviewChance);
   let review = null;

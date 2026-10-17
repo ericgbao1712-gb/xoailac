@@ -511,6 +511,9 @@ export const LEVEL = {
   // XP for a finished table: price/8 + 3/person + 6 if 5★, × tierXp
   xpForGroup: (potPrice, size, stars, tier) => Math.round((potPrice / 8 + 3 * size + (stars >= 5 ? 6 : 0)) * [1, 1.3, 1.7, 2.2, 2.6][tier - 1]),
   thankXp: 2,
+  // v2.6.18: serving XP stays full while the player learns (Lv 1–9), then eases to 85 % by Lv 20 so the mid game
+  // is not rushed; quest XP (QUEST_XP) was trimmed too. Target: Lv 10 ≈ day 10, Lv 20 ≈ day 35, Lv 30 ≈ day 90.
+  serveXpMult: (lv) => (lv < 10 ? 1 : lv >= 20 ? 0.85 : 1 - 0.015 * (lv - 10)),
 };
 // Feature flags unlocked by level (dishes/ingredients/drinks unlock by their own unlockLv).
 export const FEATURES = {
@@ -672,7 +675,7 @@ export const CHESTS = {
 export const DAILY_ALL_BONUS = 'gold';
 // v2.6.11: quests pay XP as a share of the EXP bar of the current level (so they still matter at Lv 30+);
 // the fixed `xp` of a reward / chest is the minimum. main = mục tiêu chính, v2 = Sổ tay quán mới.
-export const QUEST_XP = { main: 0.0375, v2: 0.02, wood: 0.01, silver: 0.0175, gold: 0.03 };   // v2.6.14: halved again (v2.6.11 ×¼)
+export const QUEST_XP = { main: 0.03, v2: 0.015, wood: 0.005, silver: 0.01, gold: 0.02 };   // v2.6.18 (v2.6.14: 0.0375 / 0.02 / 0.01 / 0.0175 / 0.03)
 // v2.6.14: the two containers a portion can go in; the player can switch on the tray (both carry the shop's logo)
 export const CONTAINER_IDS = ['ly_lac', 'hop_giay'];
 

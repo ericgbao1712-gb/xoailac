@@ -1,7 +1,38 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 28, nhãn v2.6.17, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 29, nhãn v2.6.18, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.18 (17/10): cân lại EXP cho vừa sức
+Commit d67c1f0.
+- **Đo trước khi chỉnh** (công cụ mới `tools/xoailac/xp_pace.mjs`: bot chơi như người thật, nhận hết mục tiêu, Sổ tay, rương nhiệm vụ ngày). Ở v2.6.17:
+  - Khoảng 70% EXP đến từ phục vụ khách, 29% từ rương nhiệm vụ ngày.
+  - Lv 10 vào khoảng ngày 10–11, Lv 20 ngày 30, Lv 30 ngày 74–75.
+- **Chỉnh:**
+  - **Nhiệm vụ** (`QUEST_XP`):
+
+    | Phần thưởng | Mức mới |
+    |---|---|
+    | Mục tiêu chính | 3% thanh EXP |
+    | Sổ tay quán mới | 1,5% |
+    | Rương gỗ / bạc / vàng | 0,5% / 1% / 2% |
+
+    Mức cố định cũ vẫn là mức tối thiểu, nên đầu game nhiệm vụ vẫn đáng làm.
+  - **Phục vụ khách** (`LEVEL.serveXpMult`): giữ 100% từ Lv 1 tới Lv 9 cho người mới lên cấp nhanh. Từ Lv 10 giảm dần, còn 85% từ Lv 20.
+- **Kết quả** (3 seed, 100 ngày):
+
+  | Mốc | Ngày đạt (sau) | Trước |
+  |---|---|---|
+  | Lv 10 | 10–12 | 10–11 |
+  | Lv 20 | 29–34 | 30–31 |
+  | Lv 25 | 54–59 | 50–52 |
+  | Lv 30 | 80–88 | 74–75 |
+
+  - Đầu game gần như không đổi. Từ Lv 20 chậm hơn khoảng 10%.
+  - Nhịp lên cấp: khoảng 1 cấp/ngày tới Lv 10, khoảng 2 ngày/cấp tới Lv 20, khoảng 5 ngày/cấp ở Lv 25–30 (mỗi ngày khoảng 6 phút thật).
+- Lãi 20 ngày đầu không đổi rõ: trung bình 3 seed ≈ 107k (trước ≈ 100k, chênh lệch nằm trong dao động ngẫu nhiên).
+- **Kiểm thử:** `test_core.mjs` 252 kiểm tra đều đạt.
+- **Ghi chú:** bot mô phỏng chỉ nhận được 12 mục tiêu chính rồi kẹt ở một mục tiêu nó không biết làm, nên phần EXP từ mục tiêu chính trong số đo thấp hơn người chơi thật một chút.
 
 ## v2.6.17 (17/10): Đóng cửa sớm trong hộp Tạm dừng
 Commit 35f67a1.
