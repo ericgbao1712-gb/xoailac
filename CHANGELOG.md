@@ -1,7 +1,30 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 30, nhãn v2.6.19, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 31, nhãn v2.6.20, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.20 (18/10): thanh menu sát đáy, nguồn hàng, linh vật, nhạc loa, quạt, đèn lồng tre
+Commit 24b1323.
+- **Thanh menu (Kho, Thực đơn…) sát đáy:** dải trống màu kem dưới các tab là khoảng "an toàn" của điện thoại (`safe-area-inset-bottom`), có máy báo rất lớn. Giờ chỉ chừa tối đa 12px (`--sabn`), thanh menu thấp lại, khung cảnh rộng thêm. Thử với khoảng an toàn 100px: thanh menu vẫn nằm sát đáy.
+- **Đồ ăn kèm:**
+  - Cả 8 món để lâu thêm 1 ngày: bánh tráng trộn, cá viên 3 ngày; phô mai que, bánh tráng nướng, bò bía, trứng cút 2 ngày; xoài sấy, khô gà 6 ngày.
+  - Khách gọi món kèm nhiều hơn (`SIDE_CHANCE`): 40% nhóm gọi một món (trước 32%), nhóm từ 3 người 30% gọi thêm món thứ hai (trước 25%).
+- **Bỏ nâng cấp "Mối vựa trái cây":** save đã mua được hoàn 2.000k một lần, kèm lời Má báo. Tự nhập hàng mỗi sáng giờ chỉ còn qua Quản kho; save đang bật tự nhập mà không có Quản kho thì tự tắt.
+- **Kiểm tra nguồn hàng** (script chạy thật từng nhà cung cấp, đặt lúc chuẩn bị, giữa ca và sau khi đóng cửa):
+  - App, Vựa sỉ, HTX, Nhà vườn đều giao đủ hàng vào kho, đúng phút đã hẹn theo đồng hồ trong game (trễ tối đa 0,2 phút do bước mô phỏng). Chợ Cô Ba lấy liền khi chuẩn bị, đang bán hoặc đã đóng cửa thì từ chối như thiết kế.
+  - **Lỗi tìm thấy và đã sửa:** đặt sau khi đóng cửa thì hàng tới trễ hơn đặt lúc 10:00 sáng hôm sau (App 10:40, HTX 11:00, Nhà vườn 12:00). Giờ đặt tối cũng tới cùng mốc như đặt buổi sáng: App 10:05, HTX 10:08, Nhà vườn 10:10, Vựa sỉ 10:00.
+- **Linh vật mới cho tem logo:** 8 hình pixel tự vẽ (bé xoài, mèo mướp, cún, gà con, heo hồng, thỏ trắng, trâu con, ngôi sao cười), vẽ bằng `tools/art/draw_mascots.py`. Tổng cộng 17 linh vật.
+- **Loa nhạc thêm bài:** mỗi cấp loa thêm 2 bài nhạc nền, nhạc tự đổi bài khoảng mỗi 75 phút trong game:
+  - Cấp 1 (Loa thùng): "Phố chiều", "Quê nhà".
+  - Cấp 2 (Loa kéo): "Nhạc sàn vui", "Bolero đêm" (bài đêm).
+  - Tên bài hiện trong thẻ Nâng cấp.
+- **Quạt quanh chỗ khách ngồi** (theo cấp Quạt & dù che, vẽ bằng code nên cánh quạt quay, đầu quạt xoay):
+  - Cấp 1–2: quạt đứng ở hai đầu dãy bàn.
+  - Cấp 3: quạt phun sương, thêm một cặp giữa các bàn, có hơi sương bay về phía khách.
+  - Cấp 4: hai quạt hơi nước dạng tháp ở hai đầu.
+- **Đèn chùm pha lê → Đèn lồng tre đan:** đèn lồng tre tròn và đèn ống tre, đung đưa nhẹ, tối thì sáng ấm. Giữ nguyên mã món (`den_chum`), giá và độ sang, nên ai đã mua thì tự đổi sang đèn mới.
+- `ASSET_VER` lên xl7, `CSS_VER` lên xl5-v10.
+- **Kiểm thử:** `test_core.mjs` 311 kiểm tra đều đạt. Phần mới: từng nhà cung cấp × 3 thời điểm, hoàn tiền Mối vựa (chỉ một lần), hạn dùng đồ ăn kèm, nhạc loa. Đã chụp trình duyệt: quạt cấp 2–4, đèn lồng ban đêm, cửa sổ thiết kế tem với linh vật mới. Mô phỏng 20 ngày chạy bình thường.
 
 ## v2.6.19 (17/10): nút Ly / Hộp luôn hiện, chọn cho cả đơn nhân viên làm
 Commit 24acc63.

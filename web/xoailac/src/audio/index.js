@@ -31,9 +31,30 @@ const MUSIC_TRIM = 1.4;         // overall BGM level at slider = 1 (tuned with t
 const MASTER = 0.9;
 const VARIANT_HOLD = 4;         // min seconds between BGM variant switches (no flip-flopping)
 
+// v2.6.20: each Loa nhạc level adds songs; while the shop is open the radio rotates through what's unlocked
+// every SONG_MIN game minutes (day and night have their own playlists).
+export const SPEAKER_SONGS = [
+  { day: [], night: [] },
+  { day: ['pho', 'que'], night: ['pho'] },          // Lv1: Phố chiều, Quê nhà
+  { day: ['san'], night: ['bolero'] },               // Lv2: Nhạc sàn vui, Bolero đêm
+];
+export const SONG_NAMES = { day: 'Trưa phố', night: 'Đêm hẻm', pho: 'Phố chiều', que: 'Quê nhà', san: 'Nhạc sàn vui', bolero: 'Bolero đêm' };
+const SONG_MIN = 75;
+export function playlistOf(state, night) {
+  const lv = Math.max(0, Math.min(SPEAKER_SONGS.length - 1, (state && state.upgrades && state.upgrades.speaker) | 0));
+  const out = [night ? 'night' : 'day'];
+  for (let i = 1; i <= lv; i++) for (const v of SPEAKER_SONGS[i][night ? 'night' : 'day']) out.push(v);
+  return out;
+}
 export function pickVariant(state) {
   const ph = state && state.phase;
-  if (ph === 'open' || ph === 'closing') return state.clock >= NIGHT_FROM ? 'night' : 'day';
+  if (ph === 'open' || ph === 'closing') {
+    const night = state.clock >= NIGHT_FROM;
+    const list = playlistOf(state, night);
+    if (list.length === 1) return list[0];
+    const slot = Math.floor(Math.max(0, state.clock - (night ? NIGHT_FROM : 0)) / SONG_MIN) + ((state.day | 0) * 3);
+    return list[slot % list.length];
+  }
   return 'calm';
 }
 

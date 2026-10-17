@@ -497,11 +497,13 @@ export function createCounterRenderer(canvas, game) {
     for (const g of w.groups) for (const a of g.members) drawList.push(a);
     for (const sd of w.side || []) drawList.push(sd);
     for (const hp of extras.helpers) drawList.push(hp);
+    for (const f of extras.fanSpots((s.upgrades && s.upgrades.cooling) | 0, (w.side || []).filter((x) => !x.bar).length)) drawList.push(f);   // v2.6.20 quạt
     drawList.sort((a, b) => a.y - b.y);
     const tStyle = (s.upgrades && s.upgrades.tablestyle) || 0;
     const groupOf = new Map();
     for (const g of w.groups) groupOf.set(g.id, g);
     for (const a of drawList) {
+      if (a.fan) { extras.drawFan(bctx, a, time, s.phase !== 'report'); continue; }
       if (a.home) { extras.drawHelper(bctx, a); continue; }   // staff in the shop's uniform
       if (a.bar) { extras.drawBar(bctx, a, tStyle, time); continue; }   // v2.5.2 bàn dài sát lan can
       if (a.seats) {                                   // side table (bàn ghế hai bên quán)
@@ -543,6 +545,7 @@ export function createCounterRenderer(canvas, game) {
     drawLighting(bctx, view, env);
     drawGlow(night);
     if (looksNow.facade) extras.glowLanterns(bctx, view, LY, looksNow.facade.bunting, night);
+    extras.glowLamps(bctx, view, LY, s.deco && s.deco.equipped && s.deco.equipped.den, night);
     drawBubbles(w, trayTable);
     fx.drawParticles(bctx, drawParticle);
 

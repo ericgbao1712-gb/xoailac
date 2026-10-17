@@ -128,6 +128,10 @@ export function migrate(save, now) {
     s.upgrades.sidetable = sideMax;
     if (refund > 0) s.flags.ui.sideRefund = refund;
   }
+  // v2.6.20: the "Mối vựa trái cây" upgrade is gone: give its price back once (the quản kho still restocks)
+  if ((s.upgrades.supplier || 0) > 0) { s.money = (s.money || 0) + 2000; s.flags.ui.supplierRefund = 2000; }
+  delete s.upgrades.supplier;
+  if (s.autoRestock && !(s.staff || []).some((m) => m.role === 'quankho')) s.autoRestock = false;
   if (!(s.quests.v2 >= 0)) s.quests.v2 = 0;
   // prices: drop anything that is not a positive number for a known dish
   if (!s.prices || typeof s.prices !== 'object' || Array.isArray(s.prices)) s.prices = {};

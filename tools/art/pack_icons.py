@@ -6,11 +6,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 from draw_supplies import build as build_supplies
 from draw_sides import build as build_sides
 from draw_equip import build as build_equip
+from draw_mascots import build as build_mascots
 
 def build():
     out = build_supplies()
     out.update(build_sides())      # v2.5 món ăn kèm
     out.update(build_equip())      # v2.6.9 thiết bị mới + sinh tố
+    out.update(build_mascots())    # v2.6.20 linh vật cho logo
     return out
 
 game = sys.argv[1] if len(sys.argv) > 1 else 'xoailac'

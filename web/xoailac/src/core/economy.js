@@ -468,7 +468,7 @@ export function buyIngredient(G, ing, qty) {
 /** Morning auto-restock (supplier upgrade or quản kho). fee = 0 for quản kho. */
 export function autoRestock(G, byManager) {
   const s = G.state;
-  const fee = byManager ? 0 : UP.supplier.fee;
+  const fee = 0;                                   // v2.6.20: only the quản kho restocks now, free of charge
   const { cap } = khoInfo(G);
   let used = khoInfo(G).used;
   // ingredients used by enabled pots
@@ -644,7 +644,9 @@ export function arrivalOf(G, sup) {
   const s = G.state;
   if (s.phase === 'report') {                 // after closing: the morning, as before
     if (sup.delay === 'morning') return { at: (s.day + 1) * 1440 + C.TIME.dayStart, label: 'sáng mai' };
-    const d = sup.delay || 0;
+    // v2.6.20: same wait as an order placed in the morning prep (it used to be the long night `delay`,
+    // so ordering the night before arrived LATER than ordering at 10:00 the next day).
+    const d = openDelayOf(sup);
     return { at: (s.day + 1) * 1440 + C.TIME.dayStart + d, label: `sáng mai ${Math.floor((C.TIME.dayStart + d) / 60)}:${String((C.TIME.dayStart + d) % 60).padStart(2, '0')}` };
   }
   const d = openDelayOf(sup);

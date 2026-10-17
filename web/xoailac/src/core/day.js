@@ -105,8 +105,7 @@ export function openShop(G) {
   if (!s.started) return fail('notStarted', 'Chưa bắt đầu game nha.');
   if (s.phase !== 'prep') return fail('phase', 'Quán đang mở cửa rồi.');
   deliverOrders(G);
-  if (mods(G).hasQuankho) autoRestock(G, true);
-  else if (s.autoRestock && s.upgrades.supplier > 0) autoRestock(G, false);
+  if (mods(G).hasQuankho) autoRestock(G, true);   // v2.6.20: only the quản kho restocks (Mối vựa trái cây removed)
   s.phase = 'open';
   s.clock = C.TIME.dayStart;
   w.tMin = 0; w.rushOn = false; w.closingFor = 0;

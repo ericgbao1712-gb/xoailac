@@ -221,15 +221,8 @@ export const khoSheet = {
     if (s.event === 'haisan') body.appendChild(noteBox('ui_megaphone', 'Xoài vào mùa! **Xoài keo, xoài cát, trái cây Nhà Mình rẻ hơn 35%** hôm nay.', 'jade'));
 
     // ---- auto restock
-    const hasMgr = D.hasStaff('quankho'), hasSup = (s.upgrades?.supplier || 0) > 0;
+    const hasMgr = D.hasStaff('quankho');
     if (hasMgr) body.appendChild(noteBox('role_quankho', 'Quản kho lo nhập trái cây, topping, món ăn kèm và ly hộp mỗi sáng, **không mất phí giao**. Đang bán mà món nào sắp hết (còn 2 phần) thì **tự chạy ra chợ mua về liền**.', 'jade'));
-    else if (hasSup) {
-      const on = !!s.autoRestock;
-      body.appendChild(div('card row auto' + (on ? ' jade' : ''),
-        ico('eq_truck', 32),
-        div('grow', h('b', null, 'Tự nhập hàng mỗi sáng'), span('muted', 'Mối chợ giao đủ theo hôm qua (cả ly hộp), phí ' + Math.round((C.UPGRADES.find((u) => u.id === 'supplier').fee) * 100) + '%')),
-        toggle(on, (v) => { const r = act('setAutoRestock', v); if (r.ok !== false) api.rerender(); }, 'Tự nhập hàng')));
-    }
 
     // ---- lists
     const list = (title, sub, ids, isSupply) => {

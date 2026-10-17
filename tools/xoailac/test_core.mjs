@@ -585,4 +585,46 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const sv = JSON.parse(JSON.stringify(g.serialize())); sv.packPref = 'xyz';
   ok(createGame(sv, { headless: true, seed: 1, now: 1.8e12 }).state.packPref === null, 'a bad value in a save is dropped');
 }
+// ── 28. v2.6.20 nguồn hàng giao đúng giờ game · bỏ Mối vựa trái cây · đồ ăn kèm · loa thêm bài
+{
+  const A = await import('../../web/xoailac/src/audio/index.js');
+  const ING_BY_ID = Object.fromEntries(C.INGREDIENTS.map((x) => [x.id, x]));
+  const mk = (seed) => { const g = fresh(seed); g.state.level = 35; g.state.tutorial = { step: 99, done: true }; g.state.money = 1e6; return g; };
+  for (const sup of C.SUPPLIERS.filter((x) => !x.prepOnly)) {
+    const qty = sup.sells === 'fresh' ? { tc_xoai: 6 } : sup.minOrder ? { tc_xoai: 20, ly_lac: 30 } : { tc_xoai: 6, ly_lac: 10 };
+    for (const when of ['prep', 'open', 'report']) {
+      const g = mk(280); const s = g.state;
+      if (when !== 'prep') { g.act.openShop(); for (let i = 0; i < 120; i++) g.update(0.25); }
+      if (when === 'report') g.act.debug.endDay();
+      const placed = s.day * 1440 + s.clock;
+      let got = null; g.on('orderArrived', ({ order }) => { got = { at: s.day * 1440 + s.clock, items: order.items }; });
+      const r = g.act.orderSupplies(sup.id, qty);
+      ok(r.ok && !r.delivered, `${sup.id}/${when}: order accepted`);
+      const want = when === 'report' ? (s.day + 1) * 1440 + C.TIME.dayStart + (sup.delay === 'morning' ? 0 : Math.min(C.DELIVERY_MAX, sup.openDelay)) : placed + Math.min(C.DELIVERY_MAX, sup.openDelay);
+      ok(Math.abs(r.order.at - want) < 1e-6, `${sup.id}/${when}: due at the promised game time`);
+      let guard = 0;
+      while (!got && guard++ < 20000) { if (s.phase === 'report') g.act.startNextDay(); else if (s.phase === 'prep') g.act.openShop(); else g.update(0.25); }
+      ok(got && got.at - r.order.at < 1.5 && got.at >= r.order.at - 1e-6, `${sup.id}/${when}: arrives on time (${got && (got.at - r.order.at).toFixed(2)} min late)`);
+      ok(got && Object.keys(qty).every((k) => got.items[k] === qty[k]), `${sup.id}/${when}: every item delivered`);
+    }
+  }
+  // Mối vựa trái cây: gone, refunded once, auto-restock only with a quản kho
+  ok(!C.UPGRADES.some((u) => u.id === 'supplier'), 'no Mối vựa trái cây upgrade');
+  const g = mk(281); const sv = JSON.parse(JSON.stringify(g.serialize())); const m0 = sv.money;
+  sv.upgrades.supplier = 1; sv.autoRestock = true;
+  const h = createGame(sv, { headless: true, seed: 1, now: 1.8e12 });
+  ok(h.state.money === m0 + 2000 && !('supplier' in h.state.upgrades) && h.state.autoRestock === false, 'old save: refunded 2000, auto-restock off without a quản kho');
+  const h2 = createGame(JSON.parse(JSON.stringify(h.serialize())), { headless: true, seed: 1, now: 1.8e12 });
+  ok(h2.state.money === h.state.money, 'refund only once');
+  // side dishes keep one more day, and are ordered a bit more often
+  const shelf = { ak_banhtrangtron: 3, ak_cavien: 3, ak_phomaique: 2, ak_banhtrangnuong: 2, ak_bobia: 2, ak_xoaisay: 6, ak_trungcut: 2, ak_khoga: 6 };
+  ok(Object.keys(shelf).every((id) => ING_BY_ID[id] && ING_BY_ID[id].shelf === shelf[id]), 'side dishes: hạn dùng +1 ngày');
+  ok(C.SIDE_CHANCE.first >= 0.4 && C.SIDE_CHANCE.second >= 0.3, 'side dishes ordered more often');
+  // Loa nhạc: each level adds songs to the playlist
+  const st = { phase: 'open', clock: 12 * 60, day: 1, upgrades: { speaker: 0 } };
+  const songs = (lv) => { st.upgrades.speaker = lv; const out = new Set(); for (let d = 1; d < 4; d++) for (let c = 600; c < 1380; c += 10) { st.day = d; st.clock = c; out.add(A.pickVariant(st)); } return out; };
+  const s0 = songs(0), s1 = songs(1), s2 = songs(2);
+  ok(s0.size === 2 && s1.size >= s0.size + 2 && s2.size >= s1.size + 2, `speaker adds 2 songs per level (${s0.size} → ${s1.size} → ${s2.size})`);
+  st.phase = 'prep'; ok(A.pickVariant(st) === 'calm', 'calm music before opening');
+}
 console.log('OK', n, 'checks');

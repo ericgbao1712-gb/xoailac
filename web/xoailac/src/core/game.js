@@ -81,6 +81,10 @@ export function createGame(save, opts = {}) {
     pending.push(['mom', { key: 'decoRefund', text: `Mấy món tranh treo tường với đồ Đặc biệt đặt trong quán khách ngoài đường đâu có thấy, Má bán lại được ${fmtMoney(state.flags.ui.decoRefund)} bỏ vô két rồi. Giờ con trang trí mặt tiền (cờ, chậu hoa, bảng hiệu) cho khách nhìn thấy nha!` }]);
     delete state.flags.ui.decoRefund;
   }
+  if (state.flags.ui.supplierRefund) {
+    pending.push(['mom', { key: 'supplierRefund', text: `Mối vựa trái cây nghỉ giao rồi con, Má lấy lại ${fmtMoney(state.flags.ui.supplierRefund)} tiền cọc bỏ vô két. Muốn tự nhập hàng mỗi sáng thì thuê Quản kho nha.` }]);
+    delete state.flags.ui.supplierRefund;
+  }
   if (state.flags.ui.sideRefund) {
     pending.push(['mom', { key: 'sideRefund', text: `Vỉa hè chỉ kê vừa 4 bộ bàn thôi con, mấy bộ dư Má bán lại được ${fmtMoney(state.flags.ui.sideRefund)} rồi bỏ vô két cho con đó.` }]);
     delete state.flags.ui.sideRefund;
@@ -265,7 +269,7 @@ export function createGame(save, opts = {}) {
     talkStaff: wrap((id) => staff.talkStaff(G, id)),
     bonusStaff: wrap((id) => staff.bonusStaff(G, id)),
     setAutoRestock: wrap((on) => {
-      if (on && !(state.upgrades.supplier > 0 || mods(G).hasQuankho)) return fail('locked', 'Cần mua Mối chợ đầu mối hoặc thuê Quản kho trước nha.');
+      if (on && !mods(G).hasQuankho) return fail('locked', 'Thuê Quản kho trước nha, Quản kho sẽ tự nhập hàng mỗi sáng.');
       state.autoRestock = !!on;
       return { ok: true };
     }),

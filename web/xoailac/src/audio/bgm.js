@@ -1,5 +1,5 @@
 // Generative lo-fi BGM in the Vietnamese pentatonic (C D F G A).
-// Three variants (day / night / calm), each with its own bus gain so they crossfade cleanly. Only the active
+// Variants (day / night / calm + the speaker-upgrade songs pho / que / san / bolero), each with its own bus gain so they crossfade cleanly. Only the active
 // variant schedules notes (lookahead scheduler); the old one simply rings out while its bus fades.
 //
 // Layers: soft kick / hat / rim-snare, đàn-tranh-like pluck melody (a 1-2 bar motif that repeats with small
@@ -70,6 +70,67 @@ const VARIANTS = {
     delaySend: 0.34, fb: 0.4, delayLp: 1800, revSend: 0.45, revPad: 0.35,
     progs: [['C', 'F', 'C', 'G'], ['C', 'Am', 'F', 'G'], ['F', 'C', 'G', 'C'], ['Am', 'F', 'C', 'G']],
   },
+  // ── v2.6.20: songs unlocked by the speaker upgrade (Loa nhạc). Same pentatonic palette, different grooves. ──
+  // Lv1 "Phố chiều" — easy bossa-ish shuffle, rim on the off-beats.
+  pho: {
+    bpm: 100, swing: 0.05, drums: 0.8,
+    padLp: 2100, padAtk: 0.45, padVol: 0.011,
+    pluckLp: 3800, pluckVol: 0.95,
+    bassVol: 0.062, bassLp: 650,
+    kickVol: 0.09, hatVol: 0.022, snareVol: 0.04,
+    kickPat: P([1, 0, 0, 0.3, 0, 0, 0, 0, 1, 0, 0, 0.3, 0, 0, 0, 0]),
+    snarePat: P([0, 0, 0, 0.7, 0, 0, 0.6, 0, 0, 0, 0.7, 0, 0, 0.5, 0, 0]),
+    hatPat: P([0.7, 0, 0.6, 0, 0.7, 0, 0.6, 0, 0.7, 0, 0.6, 0, 0.7, 0, 0.6, 0.2]),
+    bassPat: [[0, 1, 0, 3, 1], [3, 0.7, 7, 3, 0.75], [8, 0.9, 7, 3, 0.85], [11, 0.6, 0, 4, 0.7]],
+    motifNotes: 5, keep: 0.9, maxPerBar: 4, restBar: 0.22,
+    delaySend: 0.24, fb: 0.32, delayLp: 2600, revSend: 0.24, revPad: 0.2,
+    progs: [['F', 'G', 'C', 'Am'], ['Dm', 'G', 'C', 'C'], ['F', 'Am', 'Dm', 'G'], ['C', 'Dm', 'F', 'G']],
+  },
+  // Lv1 "Quê nhà" — folk lilt, sparse drums, more melody.
+  que: {
+    bpm: 86, swing: 0.13, drums: 0.45,
+    padLp: 1600, padAtk: 0.9, padVol: 0.012,
+    pluckLp: 3000, pluckVol: 1.05,
+    bassVol: 0.055, bassLp: 520,
+    kickVol: 0.09, hatVol: 0.02, snareVol: 0.035,
+    kickPat: P([1, 0, 0, 0, 0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0]),
+    snarePat: P([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.8, 0, 0, 0]),
+    hatPat: P([0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0]),
+    bassPat: [[0, 1, 0, 8, 0.9], [8, 0.7, 7, 8, 0.8]],
+    motifNotes: 6, keep: 0.95, maxPerBar: 5, restBar: 0.12,
+    delaySend: 0.3, fb: 0.36, delayLp: 2200, revSend: 0.3, revPad: 0.22,
+    progs: [['C', 'F', 'C', 'G'], ['Am', 'C', 'F', 'C'], ['C', 'G', 'F', 'C'], ['F', 'G', 'Am', 'C']],
+  },
+  // Lv2 "Nhạc sàn vui" — four-on-the-floor, bright and quick.
+  san: {
+    bpm: 112, swing: 0.02, drums: 1,
+    padLp: 2600, padAtk: 0.3, padVol: 0.011,
+    pluckLp: 4200, pluckVol: 0.95,
+    bassVol: 0.065, bassLp: 700,
+    kickVol: 0.12, hatVol: 0.032, snareVol: 0.06,
+    kickPat: P([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2]),
+    snarePat: P([0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.3]),
+    hatPat: P([0, 0, 0.95, 0, 0, 0, 0.95, 0, 0, 0, 0.95, 0, 0, 0, 0.95, 0.4]),
+    bassPat: [[2, 0.95, 0, 2, 0.9], [6, 0.95, 12, 2, 0.8], [10, 0.95, 0, 2, 0.9], [14, 0.95, 12, 2, 0.8]],
+    motifNotes: 5, keep: 0.94, maxPerBar: 4, restBar: 0.15,
+    delaySend: 0.18, fb: 0.26, delayLp: 2800, revSend: 0.16, revPad: 0.14,
+    progs: [['Am', 'F', 'C', 'G'], ['C', 'G', 'Am', 'F'], ['F', 'G', 'Am', 'Am'], ['Dm', 'F', 'G', 'C']],
+  },
+  // Lv2 "Bolero đêm" — slow, swung, brushed — a night-time song.
+  bolero: {
+    bpm: 68, swing: 0.18, drums: 0.6,
+    padLp: 1250, padAtk: 1.0, padVol: 0.014,
+    pluckLp: 2400, pluckVol: 1.0,
+    bassVol: 0.058, bassLp: 480,
+    kickVol: 0.085, hatVol: 0.018, snareVol: 0.04,
+    kickPat: P([1, 0, 0, 0, 0, 0, 0.5, 0, 1, 0, 0, 0, 0, 0, 0.4, 0]),
+    snarePat: P([0, 0, 0, 0, 0.9, 0, 0, 0, 0, 0, 0, 0, 0.9, 0, 0.3, 0]),
+    hatPat: P([0.5, 0, 0.4, 0.2, 0.5, 0, 0.4, 0.2, 0.5, 0, 0.4, 0.2, 0.5, 0, 0.4, 0.2]),
+    bassPat: [[0, 1, 0, 6, 1], [6, 0.8, 7, 2, 0.7], [8, 1, 7, 6, 0.9], [14, 0.6, 0, 2, 0.6]],
+    motifNotes: 4, keep: 0.9, maxPerBar: 3, restBar: 0.25,
+    delaySend: 0.38, fb: 0.44, delayLp: 1600, revSend: 0.44, revPad: 0.32,
+    progs: [['Am', 'Dm', 'G', 'C'], ['Am', 'F', 'G', 'Am'], ['Dm', 'Am', 'G', 'Am'], ['F', 'G', 'Am', 'Am']],
+  },
 };
 export const VARIANT_NAMES = Object.keys(VARIANTS);
 
@@ -86,7 +147,8 @@ export function createBgm(k, opts) {
   const rng = k.rng;
   const manual = !!(opts && opts.manual);
   const buses = {};
-  const stats = { day: newStats(), night: newStats(), calm: newStats() };
+  const stats = {};
+  for (const n of Object.keys(VARIANTS)) stats[n] = newStats();
   const layers = { pad: true, bass: true, drums: true, pluck: true }; // dev switches (stem renders in tests)
 
   let cur = null;

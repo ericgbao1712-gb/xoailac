@@ -112,10 +112,11 @@ export function createExtras(game) {
   function drawLamps(ctx, view, ly, id, t) {
     const kinds = LAMP_KIND[id];
     if (!kinds) return;
-    const step = id === 'den_chum' ? 100 : 50, x0 = Math.floor(view.x0 / step) * step + step / 2;
+    // v2.6.20: den_chum is now "Đèn lồng tre đan" (bamboo lanterns, round + drum), a bit denser than the old chandelier
+    const step = id === 'den_chum' ? 70 : 50, x0 = Math.floor(view.x0 / step) * step + step / 2;
     let i = 0;
     for (let x = x0; x < view.x1 + step; x += step) {
-      const sway = id === 'den_chum' ? 0 : Math.round(Math.sin(t * 1.6 + x) * 1) / 2;
+      const sway = Math.round(Math.sin(t * (id === 'den_chum' ? 1.1 : 1.6) + x) * 1) / 2;
       ctx.fillStyle = '#3b2f22'; ctx.fillRect(x - 0.25, ly + 3, 0.5, 3);
       putTop(ctx, kinds[i++ % kinds.length], x + sway, ly + 5);
     }
@@ -211,7 +212,84 @@ export function createExtras(game) {
     }
   }
 
+  // v2.6.20 quạt quanh chỗ khách ngồi (upgrade 'cooling'): code-drawn so the blades spin and the head turns.
+  //   Lv1-2 quạt đứng · Lv3 quạt phun sương (mist puffs) · Lv4 quạt hơi nước (tall cooler tower) + phun sương
+  // Spots sit in the gaps between the side tables, a little behind them, so seated guests stay in front.
+  const FAN_SPOTS = [{ x: 4, y: 101 }, { x: 196, y: 101, flip: true }, { x: 47, y: 88 }, { x: 153, y: 88, flip: true }];
+  function fanSpots(lv, nSide) {
+    if (!(lv > 0)) return [];
+    const out = [FAN_SPOTS[0], FAN_SPOTS[1]];
+    if (lv >= 3 && nSide >= 3) out.push(FAN_SPOTS[2], FAN_SPOTS[3]);   // phun sương: a second pair between the tables
+    return out.map((f, i) => ({ ...f, i, kind: lv >= 4 && i < 2 ? 'tower' : lv >= 3 ? 'mist' : 'stand', fan: true }));
+  }
+  function drawFanHead(ctx, hx, hy, r, t, i, turn) {
+    // cage
+    ctx.fillStyle = 'rgba(70,80,96,0.9)';
+    ctx.beginPath(); ctx.ellipse(hx, hy, r * turn, r, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(200,225,240,0.55)';
+    ctx.beginPath(); ctx.ellipse(hx, hy, (r - 0.6) * turn, r - 0.6, 0, 0, Math.PI * 2); ctx.fill();
+    // three spinning blades
+    ctx.fillStyle = 'rgba(80,150,200,0.85)';
+    const a0 = t * 14 + i;
+    for (let k = 0; k < 3; k++) {
+      const a = a0 + k * 2.094;
+      ctx.beginPath(); ctx.moveTo(hx, hy);
+      ctx.lineTo(hx + Math.cos(a) * (r - 0.8) * turn, hy + Math.sin(a) * (r - 0.8));
+      ctx.lineTo(hx + Math.cos(a + 0.7) * (r - 1) * turn, hy + Math.sin(a + 0.7) * (r - 1));
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.fillStyle = '#e8edf2'; ctx.fillRect(hx - 0.75, hy - 0.75, 1.5, 1.5);
+    // cage ribs
+    ctx.fillStyle = 'rgba(60,70,84,0.55)'; ctx.fillRect(hx - 0.2, hy - r, 0.4, r * 2); ctx.fillRect(hx - r * turn, hy - 0.2, r * 2 * turn, 0.4);
+  }
+  function drawFan(ctx, f, t, on) {
+    ctx.save(); ctx.translate(f.x, f.y); ctx.scale(1.35, 1.35);
+    drawFan0(ctx, f, t, on);
+    ctx.restore();
+  }
+  function drawFan0(ctx, f, t, on) {
+    const x = 0, y = 0, spin = on ? t : 0;
+    const turn = 0.62 + 0.3 * Math.cos(t * 0.7 + f.i * 1.7);          // oscillating head (seen from the front)
+    ctx.fillStyle = 'rgba(40,28,18,0.2)'; ctx.fillRect(x - 4, y + 0.5, 8, 1.2);
+    if (f.kind === 'tower') {                                         // quạt hơi nước: tall box, vents, water tank
+      ctx.fillStyle = '#d9dee6'; ctx.fillRect(x - 3.5, y - 17, 7, 17.5);
+      ctx.fillStyle = '#b8c0cc'; ctx.fillRect(x + 2, y - 17, 1.5, 17.5);
+      ctx.fillStyle = '#5b6b7e'; for (let r = 0; r < 5; r++) ctx.fillRect(x - 2.5, y - 15.5 + r * 1.6, 4.5, 0.6);
+      ctx.fillStyle = '#7ec4e6'; ctx.fillRect(x - 2.5, y - 6.5, 4.5, 3);
+      ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fillRect(x - 2.5, y - 6.5, 4.5, 0.6);
+      ctx.fillStyle = '#3d4654'; ctx.fillRect(x - 3, y, 1.5, 0.8); ctx.fillRect(x + 1.5, y, 1.5, 0.8);
+      ctx.fillStyle = on ? '#6fe08a' : '#888'; ctx.fillRect(x - 2.5, y - 2, 1, 1);
+    } else {
+      const tall = f.kind === 'mist' ? 15 : 13;
+      ctx.fillStyle = '#4a5260'; ctx.fillRect(x - 3, y - 1, 6, 1.2);                 // base
+      ctx.fillStyle = '#8e97a6'; ctx.fillRect(x - 0.5, y - tall + 4, 1, tall - 4);    // pole
+      if (f.kind === 'mist') { ctx.fillStyle = '#7ec4e6'; ctx.fillRect(x - 1.5, y - 5, 3, 4); ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fillRect(x - 1.5, y - 5, 3, 0.6); }
+      drawFanHead(ctx, x, y - tall + 1, 4, spin, f.i, turn);
+    }
+    if (on && f.kind !== 'stand') {                                   // mist puffs blowing toward the tables
+      const dir = f.flip ? -1 : 1, hy = f.kind === 'tower' ? y - 11 : y - 14;
+      for (let k = 0; k < 5; k++) {
+        const u = ((t * 0.55 + k / 5 + f.i * 0.13) % 1);
+        const px = x + dir * (3 + u * 16), py = hy + Math.sin(u * 6 + k) * 1.5 + u * 2;
+        ctx.fillStyle = `rgba(235,248,255,${(0.8 * (1 - u)).toFixed(3)})`;
+        const r = 0.8 + u * 2.2; ctx.fillRect(px - r, py - r * 0.6, r * 2, r * 1.2);
+      }
+    }
+  }
+
   // night glow of the mini lanterns (same positions as drawBunting)
+  // v2.6.20: warm glow of the bamboo lanterns (deco den_chum) at night — same spots as drawLamps
+  function glowLamps(ctx, view, ly, id, night) {
+    if (id !== 'den_chum' || night < 0.03) return;
+    const step = 70, x0 = Math.floor(view.x0 / step) * step + step / 2;
+    ctx.globalCompositeOperation = 'lighter';
+    for (let x = x0; x < view.x1 + step; x += step) {
+      const y = ly + 17, g = ctx.createRadialGradient(x, y, 0, x, y, 22);
+      g.addColorStop(0, `rgba(255,190,100,${(0.5 * night).toFixed(3)})`); g.addColorStop(1, 'rgba(255,190,100,0)');
+      ctx.fillStyle = g; ctx.fillRect(x - 22, y - 22, 44, 44);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
   function glowLanterns(ctx, view, ly, id, night) {
     if (id !== 'longmini' || night < 0.03) return;
     const span = 50, x0 = Math.floor((view.x0 - 10) / span) * span, sag = 7, y0 = ly + 3;
@@ -275,5 +353,5 @@ export function createExtras(game) {
     ctx.restore();
   }
 
-  return { update, helpers, drawHelper, drawBar, glowLanterns, drawBalloons, drawBunting, drawLamps, drawPlants, drawFlowers, clearCups, addCup, drawStamps, drawSignStamp };
+  return { update, helpers, drawHelper, drawBar, drawFan, fanSpots, glowLanterns, glowLamps, drawBalloons, drawBunting, drawLamps, drawPlants, drawFlowers, clearCups, addCup, drawStamps, drawSignStamp };
 }

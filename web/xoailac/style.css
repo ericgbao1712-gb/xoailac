@@ -38,8 +38,11 @@
 
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
+  /* v2.6.20: the nav keeps at most 12px for the phone's gesture bar, so the tabs sit at the very bottom and the
+     scene gets the rest (a full inset left a tall empty strip under the tab labels on some phones) */
+  --sabn: min(var(--sab), 12px);
   --hud-h: 100px;
-  --nav-h: calc(62px + var(--sab));
+  --nav-h: calc(62px + var(--sabn));
   --toast-bottom: 140px;
 }
 
@@ -297,7 +300,7 @@ button.hchip:active { transform: translateY(2px); }
    NAV  — wooden bar with 5 cream tiles
    ========================================================================== */
 #nav {
-  display: flex; gap: 6px; padding: 9px 8px calc(var(--sab) + 7px);
+  display: flex; gap: 6px; padding: 9px 8px calc(var(--sabn) + 7px);
   background: linear-gradient(180deg, #ecb678 0%, #d99a5a 100%);
   border-radius: 20px 20px 0 0; box-shadow: 0 -2px 0 0 var(--line), inset 0 4px 0 0 #f7d3a2;
 }
@@ -1420,7 +1423,7 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 .hbtn small { font-size: 12px; right: 2px; bottom: 2px; }
 #hud::after { bottom: -15px; height: 15px; background-size: 48px 9px, 48px 9px, 100% 6px; background-position: 0 6px, 0 6px, 0 0; }
 
-#nav { padding-top: 5px; padding-bottom: calc(var(--sab) + 4px); }
+#nav { padding-top: 5px; padding-bottom: calc(var(--sabn) + 2px); }
 .tab { height: 40px; font-size: 10px; }
 .tab .ico { width: 24px; height: 24px; }
 .tab.active { transform: translateY(-4px); }

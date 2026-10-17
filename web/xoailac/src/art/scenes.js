@@ -193,7 +193,7 @@ function denItems(L, env) {
     const kinds = DEN_KIND[id];
     if (!kinds) continue;
     const n = Math.max(1, Math.floor(s.w / (DEN_STEP[id] || 26))), sp = s.w / n;
-    for (let i = 0; i < n; i++) list.push({ k: kinds[i % kinds.length], x: Math.round(s.x + sp * (i + 0.5)), y, sway: id !== 'den_bong' && id !== 'den_chum', ph: i * 1.3 });
+    for (let i = 0; i < n; i++) list.push({ k: kinds[i % kinds.length], x: Math.round(s.x + sp * (i + 0.5)), y, sway: id !== 'den_bong', ph: i * 1.3 });
   }
   denCache.key = key; denCache.list = list; denCache.layout = L;
   return list;

@@ -84,17 +84,18 @@ export const INGREDIENTS = [
   { id: 'tc_mix',     name: 'Trái cây Nhà Mình', short: 'Nhà Mình', icon: 'fr_mix',  cost: 6,  extraPrice: 40, unlockLv: 18, broth: 'thapcam', shelf: 2 },
   // v2.5 món ăn kèm: stocked in the kho like everything else (bought, expire, auto-restock), never in the topping grid.
   // side = price the guest pays on top ("thu thêm"); quest = main-quest id that must be claimed first; kinds = who likes it.
-  { id: 'ak_banhtrangtron',  name: 'Bánh tráng trộn',    short: 'BT trộn',   icon: 'ak_banhtrangtron',  cost: 8,  side: 20, unlockLv: 4,  shelf: 2, kinds: { sinhvien: 3, hoiban: 2 } },
-  { id: 'ak_cavien',         name: 'Cá viên chiên',      short: 'Cá viên',   icon: 'ak_cavien',         cost: 6,  side: 15, unlockLv: 6,  shelf: 2, kinds: { sinhvien: 3, giadinh: 2 } },
-  { id: 'ak_phomaique',      name: 'Phô mai que',        short: 'Phô mai',   icon: 'ak_phomaique',      cost: 7,  side: 18, unlockLv: 9,  shelf: 1, kinds: { giadinh: 3, capdoi: 2, sinhvien: 2 } },
-  { id: 'ak_banhtrangnuong', name: 'Bánh tráng nướng',   short: 'BT nướng',  icon: 'ak_banhtrangnuong', cost: 8,  side: 22, unlockLv: 1,  quest: 'q12', shelf: 1, kinds: { khachtay: 3, hoiban: 2, capdoi: 2 } },
-  { id: 'ak_bobia',          name: 'Bò bía',             short: 'Bò bía',    icon: 'ak_bobia',          cost: 6,  side: 15, unlockLv: 12, shelf: 1, kinds: { vanphong: 2, giadinh: 2 } },
-  { id: 'ak_xoaisay',        name: 'Xoài sấy dẻo',       short: 'Xoài sấy',  icon: 'ak_xoaisay',        cost: 10, side: 25, unlockLv: 14, shelf: 5, kinds: { vanphong: 2, khachtay: 3, doandulich: 3 } },
-  { id: 'ak_trungcut',       name: 'Trứng cút xào me',   short: 'Trứng cút', icon: 'ak_trungcut',       cost: 11, side: 28, unlockLv: 1,  quest: 'q19', shelf: 1, kinds: { hoiban: 3, sinhvien: 2 } },
-  { id: 'ak_khoga',          name: 'Khô gà lá chanh',    short: 'Khô gà',    icon: 'ak_khoga',          cost: 14, side: 35, unlockLv: 1,  quest: 'q25', shelf: 5, kinds: { vanphong: 3, chutu: 3, doandulich: 2 } },
+  { id: 'ak_banhtrangtron',  name: 'Bánh tráng trộn',    short: 'BT trộn',   icon: 'ak_banhtrangtron',  cost: 8,  side: 20, unlockLv: 4,  shelf: 3, kinds: { sinhvien: 3, hoiban: 2 } },
+  { id: 'ak_cavien',         name: 'Cá viên chiên',      short: 'Cá viên',   icon: 'ak_cavien',         cost: 6,  side: 15, unlockLv: 6,  shelf: 3, kinds: { sinhvien: 3, giadinh: 2 } },
+  { id: 'ak_phomaique',      name: 'Phô mai que',        short: 'Phô mai',   icon: 'ak_phomaique',      cost: 7,  side: 18, unlockLv: 9,  shelf: 2, kinds: { giadinh: 3, capdoi: 2, sinhvien: 2 } },
+  { id: 'ak_banhtrangnuong', name: 'Bánh tráng nướng',   short: 'BT nướng',  icon: 'ak_banhtrangnuong', cost: 8,  side: 22, unlockLv: 1,  quest: 'q12', shelf: 2, kinds: { khachtay: 3, hoiban: 2, capdoi: 2 } },
+  { id: 'ak_bobia',          name: 'Bò bía',             short: 'Bò bía',    icon: 'ak_bobia',          cost: 6,  side: 15, unlockLv: 12, shelf: 2, kinds: { vanphong: 2, giadinh: 2 } },
+  { id: 'ak_xoaisay',        name: 'Xoài sấy dẻo',       short: 'Xoài sấy',  icon: 'ak_xoaisay',        cost: 10, side: 25, unlockLv: 14, shelf: 6, kinds: { vanphong: 2, khachtay: 3, doandulich: 3 } },
+  { id: 'ak_trungcut',       name: 'Trứng cút xào me',   short: 'Trứng cút', icon: 'ak_trungcut',       cost: 11, side: 28, unlockLv: 1,  quest: 'q19', shelf: 2, kinds: { hoiban: 3, sinhvien: 2 } },
+  { id: 'ak_khoga',          name: 'Khô gà lá chanh',    short: 'Khô gà',    icon: 'ak_khoga',          cost: 14, side: 35, unlockLv: 1,  quest: 'q25', shelf: 6, kinds: { vanphong: 3, chutu: 3, doandulich: 2 } },
 ];
 // chance a group adds a side (only unlocked ones in stock); a second one for groups of 3+
-export const SIDE_CHANCE = { first: 0.32, second: 0.25 };
+export const SIDE_CHANCE = { first: 0.40, second: 0.30 };   // v2.6.20 (was 0.32 / 0.25): guests order a side a bit more often
+// v2.6.20: every side dish keeps one day longer (shelf +1)
 // v2.5.2 quản kho during service: checks every few minutes; ≤ lowAt portions left → buys max(minBuy, today's use × usageShare)
 // at the market price (no fee), back after `minutes`. Keeps keepMoney in the till. sideMin = morning stock of each side.
 // v2.6 thanh lý hàng cũ: Cô Ba buys stock back in the morning (prep only), oldest lots first, at a share of what each
@@ -358,12 +359,12 @@ export const UPGRADES = [
     levels: ['Không có', 'Quạt đứng', 'Dù sọc che nắng', 'Quạt phun sương', 'Quạt hơi nước + rèm tre'], amb: 3,
     desc: 'Ngày nắng nóng không mất khách.' },
   { id: 'speaker', cat: 'thietbi', name: 'Loa nhạc', icon: 'eq_speaker', costs: [400, 4000], minTier: [1, 2], amb: 2, patiencePer: 0.10,
-    desc: 'Nhạc hay thì khách chờ cũng không thấy lâu.' },
+    levels: ['Không có', 'Loa thùng · +2 bài: Phố chiều, Quê nhà', 'Loa kéo · +2 bài: Nhạc sàn vui, Bolero đêm'],
+    desc: 'Nhạc hay thì khách chờ cũng không thấy lâu. Mỗi cấp loa thêm bài nhạc nền mới, tự đổi bài trong ca.' },
   { id: 'pos', cat: 'thietbi', name: 'Máy tính tiền', icon: 'ui_coin', costs: [3000, 25000], minTier: [2, 3], minLv: [1, 23], tipMult: [1, 1.2, 1.32],
     levels: ['Chưa có', 'Máy tính tiền', 'Máy tính tiền + mã QR'], patienceQr: 0.05,
     desc: 'Thu tiền nhanh gọn, khách vui tip thêm. Từ Lv 23 thêm mã QR chuyển khoản.' },
-  { id: 'supplier', cat: 'thietbi', name: 'Mối vựa trái cây', icon: 'ui_kho', costs: [2000], minTier: [2], fee: 0.08,
-    desc: 'Mỗi sáng vựa trái cây tự giao hàng tới quán (phí 8%). Bật/tắt trong Kho.' },
+  // v2.6.20: 'supplier' (Mối vựa trái cây, 2000k, morning auto-delivery +8 %) removed; old saves are refunded (state.js)
   { id: 'sign', cat: 'quangba', name: 'Biển hiệu', icon: 'eq_sign', costs: [200, 1500, 7500, 26000, 80000], minTier: [1, 2, 3, 4, 4], minLv: [1, 1, 1, 1, 26], amb: 2, demandPer: 0.12,
     levels: ['Không có', 'Bảng giấy', 'Bảng gỗ sơn', 'Hộp đèn', 'Đèn neon', 'Đèn LED nháy chữ'],
     desc: 'Người đi đường dễ thấy quán hơn.' },
@@ -392,7 +393,7 @@ export const DECO = [
   { id: 'den_bong',     cat: 'den', name: 'Bóng đèn tròn',     price: 0,     amb: 0,  default: true },
   { id: 'den_long_do',  cat: 'den', name: 'Đèn lồng đỏ',       price: 900,   amb: 8 },
   { id: 'den_hoian',    cat: 'den', name: 'Đèn lồng Hội An',   price: 5000,  amb: 14, minTier: 2 },
-  { id: 'den_chum',     cat: 'den', name: 'Đèn chùm pha lê',   price: 25000, amb: 22, minTier: 3 },
+  { id: 'den_chum',     cat: 'den', name: 'Đèn lồng tre đan',  price: 25000, amb: 22, minTier: 3 },   // v2.6.20: was 'Đèn chùm pha lê' (same id for saves)
 
   { id: 'cay_none',     cat: 'cay', name: 'Chưa có cây',       price: 0,     amb: 0,  default: true },
   { id: 'cay_luoiho',   cat: 'cay', name: 'Chậu lưỡi hổ',      price: 200,   amb: 3 },
@@ -421,7 +422,8 @@ export const BRAND = {
     { id: 'nau', bg: '#a8714a', ink: '#fff3d6' },   { id: 'den', bg: '#3a2d36', ink: '#ffcf3d' },
     { id: 'vang', bg: '#ffe08a', ink: '#8a4b1c' },  { id: 'tim', bg: '#e2d4f5', ink: '#6b3fa0' },
   ],
-  mascots: ['fr_xoai', 'pot_xoailac', 'fr_coc', 'fr_oi', 'fr_thom', 'emo_love', 'ui_heart', 'ui_star', 'emo_yum'],
+  mascots: ['fr_xoai', 'pot_xoailac', 'fr_coc', 'fr_oi', 'fr_thom', 'emo_love', 'ui_heart', 'ui_star', 'emo_yum',
+    'mas_xoai', 'mas_meo', 'mas_cun', 'mas_ga', 'mas_heo', 'mas_tho', 'mas_trau', 'mas_sao'],   // v2.6.20 linh vật mới
   slogans: ['Chua cay mặn ngọt', 'Lắc là ghiền', 'Xoài tươi mỗi ngày', 'Ăn là mê', 'Ngon từ miếng đầu'],
   sloganMax: 22,
   def: { on: true, frame: 'tron', text: 'thang', color: 'kem', mascot: 'fr_xoai', slogan: '' },

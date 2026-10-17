@@ -117,7 +117,6 @@ export function createGetters(G) {
     const used = new Set();
     for (const p of C.HOTPOTS) if (s.menu[p.id] && isPotUnlocked(G, p.id)) for (const i of p.recipe) used.add(i);
     for (const i of used) if (isIngUnlocked(G, i) && (s.inventory[i] || 0) < 5 && s.money >= baseBuyPrice(G, i) && khoInfo(G).used < khoInfo(G).cap) { kho = true; break; }
-    if (!kho && s.upgrades.supplier > 0 && !s.autoRestock) kho = true;
     // menu: recipe upgrade affordable or a new pot not yet looked at
     let menu = false;
     for (const p of C.HOTPOTS) {
