@@ -1,7 +1,27 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 26, nhãn v2.6.15, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 27, nhãn v2.6.16, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.16 (17/10): nút Ly/Hộp to hơn, Đóng cửa sớm trong Cài đặt, lời nhắn gọn ở giữa
+Commit 66cdf21.
+- **Chọn ly / hộp:**
+  - 2 nút nhỏ trên khay được chuyển xuống cuối lưới topping, to bằng nút topping (khoảng 44–58px), dễ bấm trên điện thoại.
+  - Mỗi nút có hình ly hoặc hộp, tem logo quán (từ Lv 24), số còn trong kho và chữ "Ly" / "Hộp". Loại đang chọn có viền vàng và dấu ✓.
+  - 2 nút chỉ hiện khi đang soạn một phần (không hiện với phiếu gọi thêm).
+- **Đóng cửa sớm trong Cài đặt:**
+  - Thẻ mới "Đóng cửa sớm" có nút "Đóng cửa", hỏi lại trước khi đóng.
+  - Không nhận thêm khách mới. Khách đang ở quầy vẫn được phục vụ xong rồi mới tổng kết ngày (dùng `closeEarly` sẵn có).
+  - Chỉ bấm được khi quán đang mở bán.
+- **Lời nhắn của Má và băng "Giờ cao điểm"** nhỏ lại và canh giữa:
+  - Lời nhắn rộng tối đa 300px, chữ 11px, ảnh Má 28px.
+  - Băng chữ 11px, viền mỏng hơn.
+  - Vẫn tự xếp không đè nhau như v2.6.15.
+- **Kiểm tra:**
+  - Chụp ở 390×844: Ly/Hộp nằm cuối lưới.
+  - Bấm "Hộp" thì phiếu đổi sang hộp.
+  - Mở Cài đặt, bấm Đóng cửa, xác nhận: quán chuyển sang dọn hàng (`closing`).
+  - `test_core.mjs` 251 kiểm tra đều đạt.
 
 ## v2.6.15 (17/10): lời nhắn của Má và băng "Giờ cao điểm" không còn bị che
 Commit e1ac16a.

@@ -134,34 +134,35 @@ export function mountDock(root, sceneUi) {
   const trayBox = div('tray');
   const trayHead = span('thead', '');
   const traySlots = div('tslots');
-  // v2.6.14 chọn ly / hộp for the order on the tray; both show the shop's logo stamp once it is designed (Lv 24)
+  // v2.6.16 chọn ly / hộp: two key-sized buttons at the end of the topping grid (easy to tap), each with the
+  // container, its stock and the shop's logo stamp once it is designed (Lv 24)
   const PACKS = [{ id: 'ly_lac', icon: 'sup_lylac', label: 'Ly' }, { id: 'hop_giay', icon: 'sup_hop', label: 'Hộp' }];
-  const packRow = div('tpack');
   const packBtns = PACKS.map((p) => {
-    const st = h('img', { class: 'pk-stamp', alt: '', width: 10, height: 10 }); st.hidden = true;
-    const b = h('button', { class: 'pk', type: 'button', 'aria-label': 'Đựng bằng ' + p.label.toLowerCase(), title: p.label }, span('pk-i', ico(p.icon, 16), st), span('pk-l', p.label));
-    b.addEventListener('click', (e) => {
-      e.stopPropagation();
+    const st = h('img', { class: 'pk-stamp', alt: '', width: 14, height: 14 }); st.hidden = true;
+    const cnt = span('kc', '0');
+    const b = h('button', { class: 'key pack', type: 'button', 'aria-label': 'Đựng bằng ' + p.label.toLowerCase(), title: 'Đựng bằng ' + p.label.toLowerCase() },
+      span('pk-i', ico(p.icon, 32, 'kico'), st), span('pk-l', p.label), cnt);
+    onPress(b, () => {
       const r = act('setPack', p.id);
-      if (r && r.ok === false) return;
-      sfx('click'); tickNow();
+      if (r && r.ok === false) { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); return; }
+      sfx('click'); vibrate(8); tickNow();
     });
-    b._st = st; b._id = p.id;
-    packRow.appendChild(b);
+    b._st = st; b._id = p.id; b._cnt = cnt;
+    b.hidden = true;
     return b;
   });
-  packRow.hidden = true;
-  trayBox.append(trayHead, traySlots, packRow);
+  trayBox.append(trayHead, traySlots);
   function updatePack(info) {
     const t = info?.ticket;
     const show = !!t && !t.extra && !!info.box;
-    packRow.hidden = !show;
+    packBtns.forEach((b) => { b.hidden = !show; });
     if (!show) return;
     const br = activeLooks(S()).brand, bk = br ? JSON.stringify(br) + S().shopName : '';
     packBtns.forEach((b) => {
       setClass(b, 'on', info.box === b._id);
+      setText(b._cnt, String(Math.floor(S().supplies?.[b._id] || 0)));
       setClass(b, 'zero', (S().supplies?.[b._id] || 0) < 1 && info.box !== b._id);
-      if (b._st._k !== bk) { b._st._k = bk; if (br) { const u = stampURL(br, 10); if (u) b._st.src = u; else b._st._k = ''; } }
+      if (b._st._k !== bk) { b._st._k = bk; if (br) { const u = stampURL(br, 14); if (u) b._st.src = u; else b._st._k = ''; } }
       b._st.hidden = !br;
     });
   }
@@ -342,6 +343,7 @@ export function mountDock(root, sceneUi) {
     keys.appendChild(el);
     keyRefs[ing.id] = { el, icn, nm, cnt, lock, ck };
   });
+  packBtns.forEach((b) => keys.appendChild(b));          // v2.6.16 ly / hộp at the end of the grid
   function onKey(id, el, icn) {
     if (!ingUnlocked(id)) { ctx.toast(`${ING[id].name} mở ở Lv ${ING[id].unlockLv} nha.`, 'info', 'ui_lock'); sfx('error'); return; }
     if (stock(id) < 1) { ctx.toast(`Hết ${ING[id].name.toLowerCase()} rồi — mở Kho nhập thêm nha!`, 'bad', ING[id].icon); sfx('error'); return; }

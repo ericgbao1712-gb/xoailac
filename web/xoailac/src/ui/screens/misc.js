@@ -116,6 +116,25 @@ async function resetEverything() {
   setTimeout(() => { try { localStorage.removeItem('xoai-lac/save/v1'); } catch (e) { /* ignore */ } try { location.reload(); } catch (e) { /* ignore */ } }, 700);
 }
 
+/** v2.6.16 Settings → "Đóng cửa sớm": end today's selling now (only while the shop is open). Guests already at the
+ *  counter are still served, nobody new comes in, then the day report shows as usual. */
+function closeEarlyCard(m) {
+  const open = S().phase === 'open';
+  const btn = h('button', { class: 'btn warn sm', disabled: !open }, 'Đóng cửa');
+  btn.addEventListener('click', () => {
+    if (S().phase !== 'open') return;
+    sfx('click');
+    ctx.confirm({
+      title: 'Đóng cửa sớm hôm nay?', icon: 'ui_home', yes: 'Đóng cửa', no: 'Bán tiếp',
+      text: 'Không nhận thêm khách mới. Khách đang ở quầy vẫn được phục vụ xong rồi mới tổng kết ngày.',
+      onYes: () => { const r = act('closeEarly'); if (r.ok === false) return; sfx('door'); m.close('closed'); },
+    });
+  });
+  return div('card set-card set-close',
+    div('set-row', ico('ui_clock', 32), div('grow', span('sl-l', 'Đóng cửa sớm'),
+      span('muted sm', open ? 'Nghỉ bán sớm hôm nay, qua tổng kết ngày luôn.' : S().phase === 'closing' ? 'Quán đang dọn hàng, sắp đóng rồi.' : 'Chỉ dùng được khi quán đang mở bán.')), btn));
+}
+
 export function openSettings() {
   return ctx.modal({
     id: 'settings', cls: 'settings', queue: false, priority: 20, sound: 'whoosh',
@@ -148,6 +167,7 @@ export function openSettings() {
           div('set-row', ico('ui_phone', 32), div('grow', span('sl-l', 'Rung khi bấm'), span('muted sm', 'Chỉ có trên điện thoại')), hap),
           div('set-row', ico('fr_xoai', 32), div('grow', span('sl-l', 'Lắc điện thoại thật'), span('muted sm', 'Lắc máy để lắc ly xoài (cần cảm biến)')), shk)),
         dayLenCard(),
+        closeEarlyCard(m),
         div('card set-card',
           span('sl-l', 'Tên quán'),
           div('set-name', name, saveName)),

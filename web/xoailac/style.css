@@ -1646,16 +1646,6 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 .toast.big { padding: 3px 9px 4px 5px; font-size: 11px; box-shadow: 0 0 0 1.5px var(--gold-2), 0 4px 8px -6px rgba(40, 30, 15, .5); }
 .toast.big .ico { width: 18px; height: 18px; }
 
-/* v2.6.14 chọn ly / hộp on the tray (top-right), each with the shop's logo stamp */
-.tray .tpack { position: absolute; top: 3px; right: 4px; display: flex; gap: 3px; z-index: 2; }
-.tray .pk { display: flex; align-items: center; gap: 2px; padding: 1px 5px 1px 2px; border-radius: 8px; background: var(--paper-2);
-  box-shadow: 0 0 0 1px var(--rim); font: 800 9.5px/1 var(--f-body); color: var(--ink-3); }
-.tray .pk.on { background: var(--gold); color: var(--ink); box-shadow: 0 0 0 1.5px var(--gold-2); }
-.tray .pk.zero { opacity: .45; }
-.tray .pk-i { position: relative; display: inline-flex; }
-.tray .pk-i .ico { width: 16px; height: 16px; }
-.tray .pk-stamp { position: absolute; right: -3px; bottom: -2px; width: 10px; height: 10px; border-radius: 50%; image-rendering: auto; }
-.tray .thead { padding-right: 78px; }
 
 /* v2.6.15: Má's note and the rush banner start below the HUD's scalloped awning (it hangs ~21px into the scene) */
 .mom-wrap { top: 24px; }
@@ -1663,3 +1653,28 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 @media (max-height: 760px) { .mom-wrap { top: 18px; } .banner { top: 20px; } }
 /* v2.6.15: the "ĐÔNG" tag sat 12px above the clock chip and was cut off by the top of the phone screen */
 .hchip .rush { top: -5px; right: 2px; font-size: 9px; padding: 2px 5px 1px; z-index: 2; }
+
+/* v2.6.16 chọn ly / hộp: key-sized buttons at the end of the topping grid */
+.key.pack { --rl: var(--rim); }
+.key.pack .kico { margin-top: 4px; }
+.key.pack .pk-i { position: relative; display: inline-flex; }
+.key.pack .pk-stamp { position: absolute; right: -5px; bottom: -3px; width: 14px; height: 14px; border-radius: 50%; image-rendering: auto; box-shadow: 0 0 0 1px #fff; }
+.key.pack .pk-l { font: 800 10px/1 var(--f-body); color: var(--ink-2); margin-top: 1px; }
+.key.pack .kc { background: var(--stone-3, #8a7a66); }
+.key.pack.on { background: #fff4c6; --depth: var(--gold-2); box-shadow: 0 0 0 2.5px var(--gold-2), 0 3px 0 2px var(--gold-3), var(--soft); }
+.key.pack.on .pk-l { color: var(--ink); }
+.key.pack.on::after { content: '✓'; position: absolute; left: -5px; top: -5px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--jade, #2f9a8a); color: #fff; font: 800 11px/1 var(--f-body); box-shadow: 0 0 0 2px #fff; }
+
+/* v2.6.16 Má's note and the rush banner: smaller, centred, never full width */
+.mom-wrap { left: 50%; right: auto; transform: translateX(-50%); width: min(300px, calc(100% - 24px)); align-items: center; }
+.mom { padding: 5px 9px 6px 6px; gap: 7px; border-radius: 12px; margin: 2px; align-items: center; }
+.mom .av { width: 28px; height: 28px; }
+.mom .av .ico { width: 22px; height: 22px; }
+.mom .who { font-size: 9.5px; margin-bottom: 1px; }
+.mom .who i { font-size: 12px; }
+.mom p { font: 600 11px/1.25 var(--f-body); }
+.banner { padding: 4px 12px 5px; font-size: 11px; letter-spacing: .03em; border-radius: 999px;
+  box-shadow: 0 0 0 2px #fff, 0 3px 0 2px var(--red-2), 0 8px 14px -8px rgba(0, 0, 0, .4); }
+.banner.gold { box-shadow: 0 0 0 2px #fff, 0 3px 0 2px var(--gold-2), 0 8px 14px -8px rgba(0, 0, 0, .4); }
+.set-close .grow { min-width: 0; }
