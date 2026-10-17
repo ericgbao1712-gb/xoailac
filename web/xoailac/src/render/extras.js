@@ -164,19 +164,41 @@ export function createExtras(game) {
     }
   }
 
-  // v2.5.2 bàn dài sát lan can: a wooden ledge on two posts and a stool per seat; cups on the ledge while eating
+  // v2.6.4 bàn bar giữa lan can: two-tone wood top on a black steel frame with a footrest, round bar stools on
+  // chrome stems (cushion colour follows the furniture upgrade), a succulent and a napkin box on the ends
   const STOOL = [['#c0392b', '#8e2a20'], ['#d98a3a', '#9a5a22'], ['#7a5a3a', '#4e3622'], ['#3f6a8a', '#2a4a62'], ['#2f2f3a', '#1d1d26']];
+  const TOP = [['#e8b878', '#b97c45'], ['#e2b27a', '#a8703f'], ['#c99a6a', '#8a5a34'], ['#d8c3a5', '#9c8366'], ['#efe6da', '#b8a48a']];
   function drawBar(ctx, sd, style, t) {
-    const x0 = BAR.x0, x1 = BAR.x1, ly = BAR.ledgeY;
-    ctx.fillStyle = 'rgba(40,28,18,0.22)'; ctx.fillRect(x0 + 1, ly + 5.5, x1 - x0 - 2, 1.5);      // shadow on the pavement
-    ctx.fillStyle = '#5e3a20'; ctx.fillRect(x0 + 2, ly - 4, 2, 10); ctx.fillRect(x1 - 4, ly - 4, 2, 10);   // posts
-    ctx.fillStyle = '#e8b878'; ctx.fillRect(x0, ly - 7, x1 - x0, 2);                               // ledge top
-    ctx.fillStyle = '#b97c45'; ctx.fillRect(x0, ly - 5, x1 - x0, 1.5);                              // ledge front
-    ctx.fillStyle = '#fff2d6'; ctx.fillRect(x0, ly - 7, x1 - x0, 0.5);
-    const sc = STOOL[Math.max(0, Math.min(4, style | 0))];
-    for (const st of sd.seats) {
-      ctx.fillStyle = sc[1]; ctx.fillRect(st.x - 2.5, st.y - 1, 1, 3); ctx.fillRect(st.x + 1.5, st.y - 1, 1, 3);
-      ctx.fillStyle = sc[0]; ctx.fillRect(st.x - 3.5, st.y - 3, 7, 2);
+    const x0 = BAR.x0, x1 = BAR.x1, ly = BAR.ledgeY, w = x1 - x0, st = Math.max(0, Math.min(4, style | 0));
+    ctx.fillStyle = 'rgba(40,28,18,0.2)'; ctx.fillRect(x0 + 2, ly + 6, w - 4, 1.5);               // soft shadow on the pavement
+    // steel frame: two slim A-legs, a cross bar and a footrest
+    ctx.fillStyle = '#26262c';
+    for (const lx of [x0 + 4, x1 - 6]) { ctx.fillRect(lx, ly - 4, 1.5, 10.5); ctx.fillRect(lx - 1.5, ly + 6, 4.5, 1); }
+    ctx.fillRect(x0 + 4, ly - 4, w - 8.5, 0.75);
+    ctx.fillStyle = '#3a3a44'; ctx.fillRect(x0 + 4, ly + 2.5, w - 8.5, 1);
+    ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.fillRect(x0 + 4, ly + 2.5, w - 8.5, 0.35);
+    // top: light face, darker edge, a pale highlight and a thin black trim (modern slab)
+    const tp = TOP[st];
+    ctx.fillStyle = tp[0]; ctx.fillRect(x0, ly - 7.5, w, 2.25);
+    ctx.fillStyle = tp[1]; ctx.fillRect(x0, ly - 5.25, w, 1.25);
+    ctx.fillStyle = '#1d1d22'; ctx.fillRect(x0, ly - 4, w, 0.5);
+    ctx.fillStyle = 'rgba(255,248,230,0.7)'; ctx.fillRect(x0 + 1, ly - 7.5, w - 2, 0.4);
+    ctx.fillStyle = 'rgba(0,0,0,0.08)'; for (let gx = x0 + 6; gx < x1 - 3; gx += 9) ctx.fillRect(gx, ly - 7, 3, 0.35);   // wood grain
+    // ends of the ledge: a succulent in a white pot (left) and a napkin box (right)
+    ctx.fillStyle = '#f4f1ea'; ctx.fillRect(x0 + 1.5, ly - 10, 3, 2.5); ctx.fillStyle = '#d6d0c4'; ctx.fillRect(x0 + 1.5, ly - 8, 3, 0.5);
+    ctx.fillStyle = '#5c9a52'; ctx.fillRect(x0 + 2, ly - 11.5, 2, 1.5); ctx.fillStyle = '#7fbf6a'; ctx.fillRect(x0 + 1.5, ly - 11, 1, 1); ctx.fillRect(x0 + 3.5, ly - 11, 1, 1);
+    ctx.fillStyle = '#2a2a30'; ctx.fillRect(x1 - 5, ly - 9.5, 3.5, 2); ctx.fillStyle = '#ffffff'; ctx.fillRect(x1 - 4.5, ly - 10.5, 2.5, 1);
+    // stools: round cushion with a rim, chrome stem, foot ring and a round base
+    const sc = STOOL[st];
+    for (const s of sd.seats) {
+      const sx = s.x, sy = s.y;
+      ctx.fillStyle = 'rgba(40,28,18,0.18)'; ctx.fillRect(sx - 3, sy + 3, 6, 1);
+      ctx.fillStyle = '#9aa0aa'; ctx.fillRect(sx - 0.5, sy - 1.5, 1, 4.5);
+      ctx.fillStyle = '#d8dde4'; ctx.fillRect(sx - 0.5, sy - 1.5, 0.4, 4.5);
+      ctx.fillStyle = '#7d828c'; ctx.fillRect(sx - 2, sy + 0.5, 4, 0.6); ctx.fillRect(sx - 2.5, sy + 2.8, 5, 0.8);
+      ctx.fillStyle = sc[1]; ctx.fillRect(sx - 3.5, sy - 2.25, 7, 1);
+      ctx.fillStyle = sc[0]; ctx.fillRect(sx - 3, sy - 3.25, 6, 1.25);
+      ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.fillRect(sx - 2, sy - 3.25, 3, 0.4);
     }
     if (sd.pot) {
       const n = Math.max(1, Math.min(4, sd.groupId ? sd.seats.length : 0));

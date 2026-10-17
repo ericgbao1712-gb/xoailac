@@ -1,7 +1,35 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 12, nhãn v2.6.3, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 13, nhãn v2.6.4, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.4 (17/10): bàn bar giữa lan can, nhóm khách gọn và không trùng mặt
+- **Bàn bar dời vào giữa lan can** (`BAR` trong `art/layouts.js`). Hàng chờ xếp bên phải trước (5 chỗ), rồi bên trái (3 chỗ), không đè lên bàn.
+- **Thiết kế mới cho bàn bar:**
+  - Mặt gỗ hai tông, có viền đen mảnh và vân gỗ; màu gỗ đổi theo cấp Bàn ghế.
+  - Khung thép đen chân chữ A, có thanh gác chân.
+  - 4 ghế bar tròn, chân inox, có vòng gác chân và đế tròn; màu nệm theo cấp Bàn ghế.
+  - Hai đầu bàn có một chậu sen đá và một hộp khăn giấy.
+- **Nhóm khách tối đa 3 người:**
+
+  | Loại khách | Số người |
+  |---|---|
+  | Học trò, dân văn phòng, khách Tây | 1–2 |
+  | Cặp đôi, hội bạn, đoàn du lịch | 2 |
+  | Gia đình (bố, mẹ, bé) | 3 |
+  | TikToker | 1 |
+
+- **Hết cảnh hai người giống hệt nhau:**
+  - Người trong nhóm lấy lần lượt các mẫu nhân vật, nên nhóm 2 người luôn là 1 nam 1 nữ (hoặc 2 kiểu khác nhau).
+  - Khách giờ có 4 màu áo. Chỉ đổi màu quần áo dưới cổ, không đổi da, tóc hay màu trắng/đen.
+  - Hội bạn mặc áo cùng màu (áo nhóm).
+  - Giữ nguyên màu đặc trưng của: khách Tây nữ, TikToker, reviewer, chú Tư, cô vé số, shipper, trưởng đoàn.
+- **Đánh đổi:** nhóm nhỏ hơn nên mỗi lượt bán ít ly hơn. Mô phỏng 20 ngày (seed 1–2):
+  - Lãi tuần đầu giảm khoảng 10–35%.
+  - Lãi ngày 8–20 gần như không đổi.
+  - Khách bỏ về ít đi.
+- **Kiểm thử:** `test_core.mjs` 211 kiểm tra đều đạt, có kiểm tra mới: nhóm ≤ 3 người, 2 người trong nhóm không bao giờ trùng hình và màu áo, bàn bar nằm giữa.
+- **Mã sao lưu:** save không đổi định dạng, mã cũ vẫn dùng được.
 
 ## v2.6.3 (17/10): quản kho về liền, giao hàng tối đa 10 phút
 - **Quản kho:** khi hàng sắp hết thì mua về ngay (`QUANKHO.minutes` = 0), không còn chờ 25 phút.

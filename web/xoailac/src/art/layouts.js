@@ -161,7 +161,8 @@ const OFF = { x: 100, y: 176 };
 export const SIDE_SPOTS = [[24, 95], [176, 95], [70, 95], [130, 95]];
 // v2.5.2: a long bar along the railing at the back-left (the queue keeps the back-right), four stools facing the
 // view; it is the 5th side "table" (bought last). Ledge from x 10 to 86 at y 73, guests sit with their backs to us.
-export const BAR = { x: 48, y: 79, ledgeY: 73, x0: 10, x1: 86, seatsX: [19, 38, 58, 77] };   // behind the camera: owner / staff / stoves (not drawn)
+// v2.6.4: centred on the railing, in the gap between the two inner side tables; 4 modern bar stools
+export const BAR = { x: 100, y: 78, ledgeY: 72, x0: 75, x1: 125, seatsX: [82, 94, 106, 118] };   // behind the camera: owner / staff / stoves (not drawn)
 function counterLayout(scene, nSlots, nStoves) {
   const C0 = COUNTER;
   const tables = [];
@@ -173,7 +174,9 @@ function counterLayout(scene, nSlots, nStoves) {
   const waitSpots = [];
   // v2: the queue stands further back (pavement behind the side tables)
   // the queue starts at the walkway behind the side tables and runs right/back along the shop front
-  for (let i = 0; i < 8; i++) waitSpots.push({ x: Math.round(100 + i * 13), y: Math.round(C0.qY - 9 - i * 0.5), facing: 'left' });
+  // v2.6.4: the bar now takes the middle of the railing, so the line forms to its right (5 places), then its left
+  for (let i = 0; i < 5; i++) waitSpots.push({ x: 140 + i * 13, y: Math.round(C0.qY - 9 - i * 0.5), facing: 'left' });
+  for (let i = 0; i < 3; i++) waitSpots.push({ x: 60 - i * 13, y: Math.round(C0.qY - 9 - i * 0.5), facing: 'right' });
   // side tables on the pavement, either side of the counter (build order: left, right, left, right, back-left, back-right)
   const side = SIDE_SPOTS.map(([x, y], i) => ({ idx: i, x, y, seats: SEAT.map((q) => ({ x: x + q.dx, y: y + q.dy, facing: q.facing })) }));
   side.push({ idx: side.length, x: BAR.x, y: BAR.y, bar: true, seats: BAR.seatsX.map((sx) => ({ x: sx, y: BAR.y + 1, facing: 'up' })) });   // seats sort just in front of the ledge

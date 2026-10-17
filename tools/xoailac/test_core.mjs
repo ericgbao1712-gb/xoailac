@@ -293,7 +293,7 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   let g = fresh(81); g.state.level = 3; stockSides(g, 20); runDay(g);
   ok((g.state.today.sidesSold || 0) === 0 && sides.every((x) => g.state.inventory[x.id] === 20 || x.shelf < 2), 'no sides before they unlock');
   // unlocked by level: ordered, consumed from the kho, paid on top
-  g = fresh(82); g.state.level = 12; stockSides(g, 30); runDay(g);
+  g = fresh(83); g.state.level = 12; stockSides(g, 30); runDay(g);   // v2.6.4: seed 83 (groups are smaller now, seed 82's day happened to sell none)
   const sold = g.state.today.sidesSold || 0;
   ok(sold > 0, 'guests order sides once unlocked (' + sold + ')');
   const lvlSides = sides.filter((x) => !x.quest && x.unlockLv <= 12).map((x) => x.id);
@@ -332,8 +332,9 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   ok(L.tables.length === 5 && L.tables[0].x >= 15 && L.tables[4].x <= 185, '5 counter spots fit inside the core');
   ok(C.TIERS[3].maxTables === 5 && C.TIERS[4].maxTables === 5, 'tiers 4–5 open a 5th spot');
   const bar = L.side.find((x) => x.bar);
-  ok(bar && bar.seats.length === 4 && bar.seats.every((q) => q.facing === 'up' && q.x > 5 && q.x < 95), 'bar with 4 stools at the back-left');
-  ok(L.waitSpots.every((w) => w.x >= 100), 'the queue stays clear of the bar (right side)');
+  ok(bar && bar.seats.length === 4 && bar.seats.every((q) => q.facing === 'up' && q.x > 75 && q.x < 125) && Math.abs((bar.seats[0].x + bar.seats[3].x) / 2 - 100) <= 1, 'bar with 4 stools centred on the railing');
+  ok(L.waitSpots.every((w) => w.x > 132 || w.x < 68), 'the queue stays clear of the bar and its stools');
+  ok(new Set(L.waitSpots.map((w) => w.x + ',' + w.y)).size === L.waitSpots.length, 'queue places do not overlap');
   // a group sits at the bar once the four tables are taken
   let g = fresh(91); g.state.tier = 4; g.state.level = 20; g.state.upgrades.sidetable = 3; g.act.debug.tier(4); g.state.upgrades.sidetable = 3;
   const { syncLayout } = await import(ROOT + '/core/world.js'); syncLayout(g._G, true);
@@ -427,5 +428,19 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   ok(re.state.level === 11 && re.state.xp === save.xp - C.LEVEL.xpToNext(10), 'old save over the new need levels up on load, keeps the rest');
   const save2 = g.serialize(); save2.level = 10; save2.xp = 5;
   ok(createGame(save2, { headless: true, seed: 1, now: 1.8e12 }).state.level === 10, 'no free level when the XP is not there');
+}
+// ── 19. v2.6.4 small, readable groups: 1–3 people, pairs are one of each, every member looks different
+{
+  ok(Object.values(C.CUSTOMERS).every((k) => k.group[1] <= 3 && k.group[0] >= 1), 'no group has more than 3 people');
+  ok(C.CUSTOMERS.capdoi.group.join() === '2,2' && C.CUSTOMERS.giadinh.group.join() === '3,3', 'couple = 2, family = 3');
+  const { makeLook } = await import(ROOT + '/art/characters.js');
+  let same = 0, pairs = 0;
+  for (let seed = 1; seed <= 300; seed++) for (const kind of ['sinhvien', 'vanphong', 'capdoi', 'hoiban', 'khachtay', 'giadinh', 'doandulich']) {
+    const a = makeLook(kind, seed, 0), b = makeLook(kind, seed, 1); pairs++;
+    if (a.sheet === b.sheet && (a.variant | 0) === (b.variant | 0)) same++;
+  }
+  ok(same === 0, 'two members of a group never look identical (' + same + '/' + pairs + ')');
+  const f = makeLook('giadinh', 7, 0), m = makeLook('giadinh', 7, 1), k = makeLook('giadinh', 7, 2);
+  ok(new Set([f.sheet, m.sheet, k.sheet]).size === 3, 'family = dad + mom + kid');
 }
 console.log('OK', n, 'checks');

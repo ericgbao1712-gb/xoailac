@@ -64,14 +64,17 @@ export function makeLook(kind, seed = 1, memberIdx = 0) {
   kind = KIND_SHEETS[kind] ? kind : 'pedestrian';
   seed = (seed | 0) || 1; memberIdx = memberIdx | 0;
   const list = KIND_SHEETS[kind];
-  const h = hash(seed * 31 + 7 + (kind === 'hoiban' || kind === 'giadinh' ? 0 : memberIdx * 13));
+  // v2.6.4: one hash per GROUP (seed), members walk through the kind's sheets in turn, so a pair is always
+  // one of each (nam + nữ, hội bạn a + b) instead of two random picks that often matched
+  const h = hash(seed * 31 + 7);
   let pick;
   if (kind === 'giadinh') pick = Math.min(Math.max(memberIdx, 0), 2);
   else if (kind === 'capdoi') pick = memberIdx & 1;
   else if (kind === 'doandulich') pick = memberIdx === 0 ? 0 : 1;
-  else if (kind === 'hoiban') pick = (h + memberIdx) & 1;
-  else pick = h % list.length;
+  else pick = (h + memberIdx) % list.length;
   const look = { kind, sheet: firstExisting(list, pick), seed, memberIdx };
+  // clothes colour: one of CUST_VARIANTS per person (0 = as painted), different for each member of a group
+  if (!KEEP_COLOURS.has(look.sheet)) look.variant = (hash(seed * 13 + 5) + (kind === 'hoiban' ? 0 : memberIdx)) % CUST_VARIANTS.length;   // hội bạn: same club tee colour
   if (kind === 'giadinh' && memberIdx >= 2) look.kid = true;
   return look;
 }
@@ -169,6 +172,48 @@ export function setUniform(u) {
   try { uniRec = key ? buildUniform(col, style) : null; } catch (e) { uniRec = null; }
 }
 const recFor = (sheet) => (uniRec && sheet.indexOf('staff_') === 0 ? uniRec : rec);
+
+// ───────────────────────── customer clothes colours (v2.6.4) ─────────────────────────
+// Each customer sheet exists in 4 colourings: the clothes below the neck are hue-shifted; skin, hair (dark browns
+// and auburns), whites, greys and blacks stay as painted. Characters with a signature look keep their colours.
+const CUST_VARIANTS = [0, 0.33, 0.58, 0.82];
+const KEEP_COLOURS = new Set(['cust_khachtay_f', 'cust_tiktoker', 'cust_reviewer', 'cust_chutu', 'cust_veso', 'cust_shipper', 'cust_doandulich_leader']);
+const custRecs = [];
+function buildCustVariant(shift) {
+  const c = document.createElement('canvas');
+  c.width = rec.img.width; c.height = rec.img.height;
+  const g = c.getContext('2d');
+  g.drawImage(rec.img, 0, 0);
+  for (const key of Object.keys(FR)) {
+    const sheet = key.slice(0, key.indexOf('/'));
+    if (sheet.indexOf('cust_') !== 0 || KEEP_COLOURS.has(sheet)) continue;
+    const [fx, fy, fw, fh] = FR[key];
+    const id = g.getImageData(fx, fy, fw, fh), p = id.data;
+    let t0 = -1, b1 = -1;
+    for (let j = 0; j < fh; j++) for (let i = 0; i < fw; i++) if (p[(j * fw + i) * 4 + 3]) { if (t0 < 0) t0 = j; b1 = j; }
+    if (t0 < 0) continue;
+    const cut = t0 + Math.round(0.5 * (b1 - t0));          // the neck, for adults and kids alike
+    for (let j = cut; j <= b1; j++) for (let i = 0; i < fw; i++) {
+      const o = (j * fw + i) * 4;
+      if (!p[o + 3]) continue;
+      const r = p[o] / 255, gg = p[o + 1] / 255, b = p[o + 2] / 255;
+      const [H, S, L] = rgb2hsl(r, gg, b), hd = H * 360, ch = Math.max(r, gg, b) - Math.min(r, gg, b);
+      const skin = hd >= 8 && hd <= 42 && L > 0.5 && S > 0.3 && ch < 0.45;
+      const hair = hd >= 5 && hd <= 45 && L < 0.45;
+      if (S < 0.28 || ch < 0.16 || L < 0.14 || L > 0.9 || skin || hair) continue;
+      const out = hsl2rgb((H + shift) % 1, S, L);
+      p[o] = out[0] * 255; p[o + 1] = out[1] * 255; p[o + 2] = out[2] * 255;
+    }
+    g.putImageData(id, fx, fy);
+  }
+  return { img: c, flipped: null, file: 'chars:cust' + shift };
+}
+function recForLook(sheet, look) {
+  const v = look && look.variant | 0;
+  if (!v || sheet.indexOf('cust_') !== 0 || KEEP_COLOURS.has(sheet)) return recFor(sheet);
+  if (!custRecs[v] && rec.img && typeof document !== 'undefined') { try { custRecs[v] = buildCustVariant(CUST_VARIANTS[v]); } catch (e) { custRecs[v] = rec; } }
+  return custRecs[v] || rec;
+}
 
 // ───────────────────────── drawing ─────────────────────────
 const SHADOW = 'rgba(42,27,45,0.24)';
@@ -281,7 +326,7 @@ function draw(ctx, look, x, y, o) {
     const c = tinted(f, flip, sheet + '/' + (spr[name] ? name : 'idle_d'));
     if (c) { drawTinted(ctx, c, f, bx, by, flip); drawn = true; }
   }
-  if (!drawn) blit(ctx, recFor(sheet), f, bx, by, flip, 1);
+  if (!drawn) blit(ctx, recForLook(sheet, look), f, bx, by, flip, 1);
   if (it && facing !== 'up') blit(ctx, rec, it, ix, iy, false, 1);
   if (alpha !== 1) ctx.globalAlpha = 1;
 }
