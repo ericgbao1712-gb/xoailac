@@ -1,7 +1,31 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 23, nhãn v2.6.13, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 25, nhãn v2.6.14, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.14 (17/10): EXP nhiệm vụ giảm thêm một nửa, thông báo gọn ở góc, chọn ly / hộp lúc bán
+Commit 968a634.
+- **EXP nhiệm vụ** giảm thêm một nửa (`QUEST_XP`):
+
+  | Phần thưởng | % thanh EXP |
+  |---|---|
+  | Mục tiêu chính | 3,75% |
+  | Sổ tay quán mới | 2% |
+  | Rương gỗ / bạc | 1% / 1,75% |
+  | Rương vàng | 3% |
+
+  Ví dụ ở Lv 30: mục tiêu chính khoảng 3.500 EXP. Mô phỏng 60 ngày: Lv 26 (v2.6.12: 27; trước khi tính theo %: 24).
+- **Thông báo** (xong nhiệm vụ, đơn giao, mưa…):
+  - Thành chip nhỏ, cỡ chữ khoảng 10,5px, một dòng.
+  - Nằm sát góc phải, dưới lời nhắn của Má và băng "Giờ cao điểm". Nằm trên vùng trời/cảnh xa, không che khách xếp hàng hay khách ở quầy.
+  - Câu thông báo xong nhiệm vụ được rút ngắn, ví dụ "Xong mục tiêu! Bấm để nhận".
+- **Chọn ly / hộp lúc bán:**
+  - Trên khay soạn phần có 2 nút nhỏ "Ly" và "Hộp" ở góc phải. Món mặc định đựng theo loại của nó (lắc thì ly, xoài cát/thơm/thập cẩm thì hộp); bấm để đổi.
+  - Mỗi nút có tem logo quán (khi đã thiết kế logo, Lv 24).
+  - Loại nào hết thì nút mờ đi và không chọn được.
+  - **Đổi luật:** trước đây hết loại đựng của món thì khách không gọi món đó được. Giờ hết hộp thì đựng bằng ly (và ngược lại), chỉ khi hết cả hai mới không bán được. Đơn giao hàng cũng vậy.
+  - Lúc giao món, game trừ đúng loại đã chọn trong kho.
+- **Kiểm thử:** `test_core.mjs` 251 kiểm tra đều đạt. Kiểm tra mới: hết hộp thì đơn dùng ly, không đổi được sang loại đã hết, đổi sang hộp thì kho trừ hộp. Đã chụp trên màn điện thoại 390px.
 
 ## v2.6.13 (17/10): hết dải xanh dưới thanh menu trên điện thoại
 - **Lỗi:** trên điện thoại, dưới thanh menu (Kho, Thực đơn…) lộ ra một dải màu xanh lá. Đó là nền trang (dải màu trời xanh dùng làm viền khung trên máy tính) lộ ra khi khung game ngắn hơn màn hình thật. Chuyện này xảy ra khi thanh địa chỉ trình duyệt ẩn/hiện, hoặc khi game cài như ứng dụng chạy tràn viền.
