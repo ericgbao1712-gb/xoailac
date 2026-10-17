@@ -142,8 +142,8 @@ export function deliveryTick(G, dtMin) {
     if (!pots.length) { s.today.deliveryMissed = (s.today.deliveryMissed || 0) + 1; continue; }
     const p = G.rng.pick(pots);
     for (const i of p.recipe) consumeIngredient(G, i, 1);
-    const pk = C.DISH_PACK[p.id];
-    if (pk) { useSupply(G, pk.box, 1); s.stats.packsUsed = (s.stats.packsUsed || 0) + 1; }
+    const box = boxFor(G, p.id, reserved);
+    if (box) { useSupply(G, box, 1); s.stats.packsUsed = (s.stats.packsUsed || 0) + 1; }
     useSupply(G, 'tui', 1);
     const base = round2(sellPrice(G, p.id) * (1 - D.appFee));
     addMoney(G, base, 'delivery');
@@ -425,7 +425,8 @@ function reservedStock(G) {
     // supplies are used when the portion is handed over, so every live order holds its container / cups
     if (!t.extra) {
       const pk = C.DISH_PACK[t.pot];
-      if (pk) r['$' + pk.box] = (r['$' + pk.box] || 0) + 1;
+      const box = t.box || (pk && pk.box);                  // v2.6.14: the container chosen for this order
+      if (box) r['$' + box] = (r['$' + box] || 0) + 1;
       if (t.drinks.length) r.$ly_nuoc = (r.$ly_nuoc || 0) + t.drinks.length;
     }
     if (t.status === 'ready' || t.status === 'carrying') continue;
@@ -435,11 +436,17 @@ function reservedStock(G) {
   return r;
 }
 const supplyLeft = (G, id, reserved) => (G.state.supplies[id] || 0) - (reserved['$' + id] || 0);
+/** v2.6.14: the dish's own container if there is one left, otherwise the other kind (a cup instead of a box…). */
+export function boxFor(G, potId, reserved) {
+  const pk = C.DISH_PACK[potId];
+  if (!pk) return null;
+  if (supplyLeft(G, pk.box, reserved) >= 1) return pk.box;
+  return C.CONTAINER_IDS.find((id) => id !== pk.box && supplyLeft(G, id, reserved) >= 1) || false;
+}
 function canMake(G, potId, reserved) {
   if (!POT[potId]) return false;
   for (const i of POT[potId].recipe) if ((G.state.inventory[i] || 0) - (reserved[i] || 0) < 1) return false;
-  const pk = C.DISH_PACK[potId];
-  if (pk && supplyLeft(G, pk.box, reserved) < 1) return false;     // no cup / box → this dish cannot be sold
+  if (boxFor(G, potId, reserved) === false) return false;           // no cup and no box → this dish cannot be sold
   return true;
 }
 /** Chance this group walks away from `potId` at its current selling price (C.PRICING). */
@@ -520,6 +527,7 @@ function placeOrder(G, g) {
     if (!G.world.supplyWarned || !G.world.supplyWarned['ly_nuoc:out']) { G.world.supplyWarned = G.world.supplyWarned || {}; G.world.supplyWarned['ly_nuoc:out'] = true; G.emit('supplyOut', { id: 'ly_nuoc' }); }
   }
   g.price = sellPrice(G, g.pot);   // the price on the board when they ordered is the price they pay
+  g.box = boxFor(G, g.pot, reserved) || null;                      // v2.6.14: cup or box (the player can switch it)
   g.ticket = createTicket(G, g);
   g.state = 'ordered';
   g.deadline = s.phase === 'closing' ? 45 : 0;
@@ -576,7 +584,7 @@ export function onTicketServed(G, t, carrier) {
   const pk = C.DISH_PACK[g.pot];
   g.supplyMiss = 0;
   if (pk) {
-    if (useSupply(G, pk.box, 1) < 1) g.supplyMiss++;
+    if (useSupply(G, t.box || pk.box, 1) < 1) g.supplyMiss++;
     else s.stats.packsUsed = (s.stats.packsUsed || 0) + 1;
     if (pk.tool && useSupply(G, pk.tool, 1) < 1) g.supplyMiss++;
   }

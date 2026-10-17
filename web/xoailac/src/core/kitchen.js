@@ -25,6 +25,7 @@ export function createTicket(G, group, extra = null) {
     status: 'new', added: {}, drinksAdded: false, sidesAdded: false, createdAt: w.tMin,
     patience: extra ? 40 * C.PATIENCE_MULT : patienceFor(G, group.kind, group.tutorial), waited: 0,
     claimedBy: 0, maker: null, readyAt: 0, takeaway: !!group.takeaway,
+    box: extra ? null : (group.box || (C.DISH_PACK[group.pot] && C.DISH_PACK[group.pot].box) || null),   // v2.6.14 ly / hộp
   };
   w.tickets.push(t);
   return t;
@@ -112,6 +113,21 @@ export function addDrinksAct(G) {
   return { ok: true };
 }
 
+/** v2.6.14: pick the container (ly lắc / hộp giấy) for the order on the tray. */
+export function setPackAct(G, box) {
+  const t = trayTicket(G);
+  if (!t || t.extra) return fail('noTicket', 'Chọn phiếu trước nha!');
+  if (!C.CONTAINER_IDS.includes(box)) return fail('unknown', 'Không có loại này.');
+  if (t.box === box) return { ok: true, box };
+  // what is left once every other live order keeps its own container
+  let held = 0;
+  for (const x of G.world.tickets) if (x !== t && !x.extra && x.status !== 'done' && x.status !== 'dead' && x.box === box) held++;
+  if ((G.state.supplies[box] || 0) - held < 1) return fail('noStock', `Hết ${box === 'ly_lac' ? 'ly lắc' : 'hộp giấy'} rồi! Nhập thêm ở Kho nha.`);
+  t.box = box;
+  G.emit('packChanged', { ticketId: t.id, box });
+  return { ok: true, box };
+}
+
 /** Put the ordered side dishes on the tray (takes them out of the kho). */
 export function addSidesAct(G) {
   const t = trayTicket(G);
@@ -147,6 +163,7 @@ export function trayStatus(G) {
     sides: { need: (t.sides || []).length, done: t.sidesAdded ? (t.sides || []).length : 0, ids: (t.sides || []).slice() },
     broth: { need: false, ready: true, readyStoveIdx: -1 },   // broth is one of the `need` items now
     canServe: miss.length === 0 && !needsDrinks(t) && !needsSides(t),
+    box: t.extra ? null : t.box || null,
     zone: shakeZone(G, t),
   };
 }

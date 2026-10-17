@@ -1635,3 +1635,24 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 @media (max-width: 459px) {
   html, body { background: var(--cream); }
 }
+
+/* v2.6.14: notifications are small chips in the top-right corner (over the sky / the edge of the sign),
+   never in the middle of the scene where the queue and the counter are */
+#toast-root { top: calc(var(--hud-h) + 84px); bottom: auto; left: auto; right: 6px; width: min(62%, 230px);   /* below Má's note and the rush banner */
+  align-items: flex-end; gap: 3px; }
+.toast { max-width: 100%; padding: 2px 8px 3px 4px; gap: 4px; font: 700 10.5px/1.2 var(--f-body); border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--rl, var(--rim)), 0 4px 8px -6px rgba(40, 30, 15, .5); }
+.toast .ico { width: 16px; height: 16px; margin: -2px 0; }
+.toast.big { padding: 3px 9px 4px 5px; font-size: 11px; box-shadow: 0 0 0 1.5px var(--gold-2), 0 4px 8px -6px rgba(40, 30, 15, .5); }
+.toast.big .ico { width: 18px; height: 18px; }
+
+/* v2.6.14 chọn ly / hộp on the tray (top-right), each with the shop's logo stamp */
+.tray .tpack { position: absolute; top: 3px; right: 4px; display: flex; gap: 3px; z-index: 2; }
+.tray .pk { display: flex; align-items: center; gap: 2px; padding: 1px 5px 1px 2px; border-radius: 8px; background: var(--paper-2);
+  box-shadow: 0 0 0 1px var(--rim); font: 800 9.5px/1 var(--f-body); color: var(--ink-3); }
+.tray .pk.on { background: var(--gold); color: var(--ink); box-shadow: 0 0 0 1.5px var(--gold-2); }
+.tray .pk.zero { opacity: .45; }
+.tray .pk-i { position: relative; display: inline-flex; }
+.tray .pk-i .ico { width: 16px; height: 16px; }
+.tray .pk-stamp { position: absolute; right: -3px; bottom: -2px; width: 10px; height: 10px; border-radius: 50%; image-rendering: auto; }
+.tray .thead { padding-right: 78px; }

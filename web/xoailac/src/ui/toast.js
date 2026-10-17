@@ -114,7 +114,8 @@ export function mountToasts({ toastRoot, sceneUi }) {
     ctx.toast(`${p.staff?.name || 'Nhân viên'} lên cấp! ${nm} +1`, 'good', 'ui_up');
   });
   on('questReady', (p) => {
-    ctx.toast(p.kind === 'main' ? 'Mục tiêu xong rồi — bấm nhận thưởng nha!' : p.kind === 'v2' ? 'Xong một việc trong Sổ tay quán mới — qua Quán nhận thưởng nha!' : 'Nhiệm vụ ngày xong rồi — qua Quán nhận rương nha!', 'big', 'ui_gift');
+    // v2.6.14: short, so the corner chip stays one line
+    ctx.toast(p.kind === 'main' ? 'Xong mục tiêu! Bấm để nhận' : p.kind === 'v2' ? 'Xong việc Sổ tay! Nhận ở Quán' : 'Xong nhiệm vụ ngày! Nhận rương ở Quán', 'big', 'ui_gift');
     sfx('ting');
   });
   // the scene already floats "Combo xN" over the customer: the toast only marks milestones, as one updating pill

@@ -545,12 +545,31 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const g = fresh(251); g.state.level = 30; g.state.xp = 0;
   const need = C.LEVEL.xpToNext(30);
   ok(Q.questXp(g._G, 'main', 0) === Math.round(need * C.QUEST_XP.main) && Q.questXp(g._G, 'gold', 80) === Math.round(need * C.QUEST_XP.gold), 'main / gold chest pay their share of the bar');
-  ok(C.QUEST_XP.main === 0.075 && C.QUEST_XP.gold === 0.06, 'v2.6.12: shares halved');
+  ok(C.QUEST_XP.main === 0.0375 && C.QUEST_XP.gold === 0.03, 'v2.6.14: shares halved again');
   g.state.level = 2;
   ok(Q.questXp(g._G, 'gold', 80) >= 80 && Q.questXp(g._G, 'v2', 20) >= 20, 'never below the old fixed amount');
   // a claimed main quest really adds that XP
   const h = fresh(252); h.state.level = 30; h.state.xp = 0; h.state.quests.main = 1; h.state.quests.mainClaimable = true;
   const r = h.act.claimMainQuest();
   ok(r.ok && r.reward.xp === Math.round(need * C.QUEST_XP.main) && h.state.xp === r.reward.xp, 'claimMainQuest grants and reports the scaled XP (' + r.reward.xp + ')');
+}
+// ── 26. v2.6.14 chọn ly / hộp: per order, falls back to the other container, the chosen one is used
+{
+  const g = fresh(261); g.state.level = 12; g.state.tutorial = { step: 99, done: true };
+  for (const x of C.SUPPLIES) g.state.supplies[x.id] = 50;
+  g.state.supplies.hop_giay = 0;                                     // no boxes: box dishes go in a cup instead of being refused
+  g.act.openShop(); let t = null, i = 0;
+  while (!t && i++ < 4000) { g.update(0.25); t = g.world.tickets.find((x) => !x.extra && C.DISH_PACK[x.pot]); }
+  ok(t && t.box === 'ly_lac', 'an order gets a container (cup, since there are no boxes)');
+  g.act.selectTicket(t.id);
+  ok(g.act.setPack('hop_giay').ok === false && t.box === 'ly_lac', 'cannot switch to a container that ran out');
+  g.state.supplies.hop_giay = 5;
+  ok(g.act.setPack('hop_giay').ok && t.box === 'hop_giay' && g.get.trayInfo().box === 'hop_giay', 'switch to a box on the tray');
+  const cups = g.state.supplies.ly_lac, boxes = g.state.supplies.hop_giay;
+  const inf = g.get.trayInfo(); for (const q of inf.need) if (!q.done) g.act.addIngredient(q.ing);
+  if (inf.drinks.need) g.act.addDrinks(); if (inf.sides && inf.sides.need) g.act.addSides();
+  g.act.serve('good');
+  for (let k = 0; k < 400 && g.state.supplies.hop_giay === boxes; k++) g.update(0.25);
+  ok(g.state.supplies.hop_giay === boxes - 1 && g.state.supplies.ly_lac === cups, 'the box was used, not a cup');
 }
 console.log('OK', n, 'checks');

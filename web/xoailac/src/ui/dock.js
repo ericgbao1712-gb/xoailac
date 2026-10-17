@@ -134,7 +134,37 @@ export function mountDock(root, sceneUi) {
   const trayBox = div('tray');
   const trayHead = span('thead', '');
   const traySlots = div('tslots');
-  trayBox.append(trayHead, traySlots);
+  // v2.6.14 chọn ly / hộp for the order on the tray; both show the shop's logo stamp once it is designed (Lv 24)
+  const PACKS = [{ id: 'ly_lac', icon: 'sup_lylac', label: 'Ly' }, { id: 'hop_giay', icon: 'sup_hop', label: 'Hộp' }];
+  const packRow = div('tpack');
+  const packBtns = PACKS.map((p) => {
+    const st = h('img', { class: 'pk-stamp', alt: '', width: 10, height: 10 }); st.hidden = true;
+    const b = h('button', { class: 'pk', type: 'button', 'aria-label': 'Đựng bằng ' + p.label.toLowerCase(), title: p.label }, span('pk-i', ico(p.icon, 16), st), span('pk-l', p.label));
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const r = act('setPack', p.id);
+      if (r && r.ok === false) return;
+      sfx('click'); tickNow();
+    });
+    b._st = st; b._id = p.id;
+    packRow.appendChild(b);
+    return b;
+  });
+  packRow.hidden = true;
+  trayBox.append(trayHead, traySlots, packRow);
+  function updatePack(info) {
+    const t = info?.ticket;
+    const show = !!t && !t.extra && !!info.box;
+    packRow.hidden = !show;
+    if (!show) return;
+    const br = activeLooks(S()).brand, bk = br ? JSON.stringify(br) + S().shopName : '';
+    packBtns.forEach((b) => {
+      setClass(b, 'on', info.box === b._id);
+      setClass(b, 'zero', (S().supplies?.[b._id] || 0) < 1 && info.box !== b._id);
+      if (b._st._k !== bk) { b._st._k = bk; if (br) { const u = stampURL(br, 10); if (u) b._st.src = u; else b._st._k = ''; } }
+      b._st.hidden = !br;
+    });
+  }
   let traySig = '';
   const slotEls = {};
   const trayTicket = () => {
@@ -417,7 +447,7 @@ export function mountDock(root, sceneUi) {
     const canCollapse = staffCount('daubep') >= 1 && staffCount('phucvu') >= 1;
     toggle.style.display = canCollapse ? '' : 'none';
     if (!canCollapse && collapsed) { collapsed = false; applyCollapsed(); }
-    updateBroths(info); updateTray(info); updateKeys(info); updateActions(info);
+    updateBroths(info); updateTray(info); updatePack(info); updateKeys(info); updateActions(info);
   }
   function update(dt) {
     const open = S().phase === 'open' || S().phase === 'closing';

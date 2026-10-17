@@ -228,6 +228,7 @@ export function createGame(save, opts = {}) {
     addIngredient: wrap((ing) => kitchen.addIngredientAct(G, ing)),
     addDrinks: wrap(() => kitchen.addDrinksAct(G)),
     addSides: wrap(() => kitchen.addSidesAct(G)),
+    setPack: wrap((box) => kitchen.setPackAct(G, box)),   // v2.6.14 ly / hộp
     liquidate: wrap((id, n) => liquidate(G, id, n)),
     serve: wrap((grade) => kitchen.serveAct(G, grade)),
     collect: wrap((tableIdx) => customers.collectCoins(G, tableIdx, 'player')),
