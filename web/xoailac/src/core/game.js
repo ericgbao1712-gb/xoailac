@@ -127,6 +127,7 @@ export function createGame(save, opts = {}) {
     quankhoRun(G, dtMin);                   // v2.5.2: the quản kho runs to the market when something runs low
     kitchen.updateTickets(G, dtMin);
     customers.spawnTick(G, dtMin);
+    customers.deliveryTick(G, dtMin);       // v2.6.9 xe máy giao hàng
     day.tickReservations(G, dtMin);
     customers.updateGroups(G, dtMin);
     rain.rainTick(G, dtMin, customers.angryLeave);

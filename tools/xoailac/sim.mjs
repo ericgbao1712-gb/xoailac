@@ -30,6 +30,8 @@ function shop() {
     if (c && S.money > 1500) g.act.hire(role, String(c.cid));
   }
   const ups = ['tarp', 'table', 'cooling', 'sign', 'knife', 'tablestyle', 'speaker', 'cooler', 'stovetype', 'kho'];
+  // v2.6.9 thiết bị mới (NEWEQ=0 to compare without them)
+  if (process.env.NEWEQ !== '0') ups.push('shaker', 'hygiene', 'icemaker', 'blender', 'pos', 'packing', 'kiosk', 'scale', 'menuscreen', 'filter', 'delivery', 'master');
   for (const id of ups) {
     const inf = g.get.upgradeInfo(id);
     if (inf && inf.cost != null && !inf.lockedReason && S.money - inf.cost > 600) g.act.buyUpgrade(id);

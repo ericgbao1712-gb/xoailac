@@ -1,7 +1,48 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 17, nhãn v2.6.8, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 18, nhãn v2.6.9, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.9 (17/10): thiết bị mới cho các cấp trống
+- **Vấn đề:** cả 13 thiết bị cũ đều mua hết được ở quán cấp 4 (khoảng Lv 16–22). Từ Lv 23 tới Lv 40, mỗi cấp chỉ mở perk hoặc đồ trang trí; từ Lv 41 thì chỉ có rương. Tiền gần như không còn chỗ tiêu ngoài chi nhánh.
+- **11 thiết bị mới.** Thiết bị bị khóa cấp vẫn hiện trong tab Nâng cấp, kèm chip "Cần Lv …". Lên cấp thì thẻ lên cấp có mục "Thiết bị mới".
+
+  | Lv | Thiết bị | Giá | Tác dụng |
+  |---|---|---|---|
+  | 13 / 18 / 24 | Hũ lắc inox (3 cấp) | 6 / 20 / 60 tr | Vùng LẮC chuẩn rộng thêm 0,025 mỗi bên mỗi cấp; chất lượng +0,02/cấp |
+  | 17 / 22 | Đá viên: thùng đá → máy làm đá | 12 / 45 tr | Vốn nước uống −12%/cấp; khách gọi nước +2%/cấp |
+  | 19 | Máy xay sinh tố | 30 tr | Mở món nước **Sinh tố xoài** (bán 30k, vốn 12k); gọi nước +4% |
+  | 20 / 26 | Bồn rửa tay & khay inox (2 cấp) | 15 / 40 tr | Chất lượng +0,03/cấp |
+  | 25 | Máy ép miệng ly | 50 tr | Khách +4%, chất lượng +0,02 |
+  | 27 | Máy tính bảng gọi món | 90 tr | Kiên nhẫn +12% |
+  | 31 | Cân điện tử | 70 tr | Giá nhập trái cây, topping −4% |
+  | 33 | Màn hình menu điện tử | 120 tr | Ít khách chê đắt hơn (cộng 0,15 vào "đáng tiền") |
+  | 35 / 38 / 40 | Xe máy giao hàng (1–3 xe) | 100 / 220 / 400 tr | Mỗi xe 1,5 đơn mỗi giờ khi đang bán |
+  | 36 | Máy lọc nước | 150 tr | Vốn nước uống −15%; gọi nước +3% |
+  | 41–50 | Bảo trì bậc thầy (10 cấp) | 300 tr → 6,2 tỷ | Mỗi cấp: khách, tip, kiên nhẫn đều +1,5% |
+
+- **Xe máy giao hàng:**
+  - Mỗi đơn lấy nguyên liệu, ly/hộp và túi trong kho, thu giá bán trừ 20% phí app. Đơn giao không chiếm ô quầy.
+  - Hết hàng thì đơn bị lỡ. Báo cáo cuối ngày ghi "n đơn giao · lỡ m (hết hàng)".
+- **Thêm cấp cho thiết bị cũ:**
+
+  | Lv | Thiết bị | Giá | Tác dụng |
+  |---|---|---|---|
+  | 21 / 30 | Dao thớt cấp 6–7: Máy bào sợi xoài, máy bào sợi đôi | 60 / 150 tr | Thợ lắc soạn phần nhanh hơn |
+  | 23 | Máy tính tiền cấp 2: mã QR | 25 tr | Tip ×1,32 thay vì ×1,2; kiên nhẫn +5% |
+  | 26 | Biển hiệu cấp 5: Đèn LED nháy chữ | 80 tr | Khách +12% |
+  | 37 | Quạt & dù cấp 4: Quạt hơi nước + rèm tre | 180 tr | Độ sang +3 |
+
+- **Icon:** 12 icon pixel mới (11 thiết bị và ly sinh tố), vẽ bằng `tools/art/draw_equip.py`, đóng gói bằng `pack_icons.py`. `ASSET_VER` lên xl6. Các khung icon cũ không bị đụng tới (`pack_icons.py` tự kiểm tra).
+- **Save cũ:** các thiết bị mới bắt đầu ở cấp 0, không mất gì.
+- **Kiểm thử:**
+  - `test_core.mjs` 239 kiểm tra đều đạt. Kiểm tra mới: khóa theo cấp, hiệu ứng thật của từng nhóm, sinh tố cần máy xay, đơn giao chạy suốt ngày, save cũ.
+  - Mô phỏng 20 ngày không đổi (chưa tới Lv 13).
+  - Mô phỏng 60 ngày có mua thiết bị mới:
+    - Lãi ngày 8–20 tăng khoảng 6%.
+    - Khách bỏ về giảm từ 1.710 xuống 1.332.
+    - Tiền cuối kỳ ít hơn khoảng 290 tr (764 tr so với 1.054 tr), vì đã tiêu vào thiết bị. Đây đúng là mục đích: có chỗ tiêu tiền.
+  - Bot mô phỏng chưa tới được Lv 35+, nên xe giao hàng và Bảo trì bậc thầy mới chỉ được kiểm bằng kiểm thử riêng, chưa có số cân bằng dài hạn.
 
 ## v2.6.8 (17/10): nhiệm vụ "Mua bạt che mưa" không còn kẹt
 - **Lỗi:** từ quán thứ 2 trở đi (đã có tán cây/mái che), tab Nâng cấp hiện bạt là "Có tán che" và không cho mua. Nhưng nhiệm vụ chỉ đếm lần bấm mua, nên người chơi rời gánh cổng trường trước khi mua bạt sẽ kẹt ở nhiệm vụ này mãi (0/1). Các nhiệm vụ chính đi lần lượt, nên những nhiệm vụ sau cũng không tới được.

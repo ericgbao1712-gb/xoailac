@@ -221,7 +221,7 @@ export function buildReport(G) {
   const rep = {
     day: s.day, weather: s.weather, event: s.event,
     revenue: round2(t.revenue), tips: round2(t.tips), costs: Object.assign({}, t.costs), costTotal: costSum(t), profit: dayProfit(t),
-    served: t.served, angry: t.angry, lost: t.lost, fiveStars: t.fiveStars, potsSold: t.potsSold, drinksSold: t.drinksSold, sidesSold: t.sidesSold || 0,
+    served: t.served, angry: t.angry, lost: t.lost, fiveStars: t.fiveStars, potsSold: t.potsSold, drinksSold: t.drinksSold, sidesSold: t.sidesSold || 0, delivered: t.delivered || 0, deliveryMissed: t.deliveryMissed || 0,
     avgStars: t.rated ? t.stars / t.rated : 0,
     bestReview: s.reviews.find((r) => r.id === t.bestReviewId) || null,
     comboMax: t.comboMax, newKinds: t.newKinds.slice(),

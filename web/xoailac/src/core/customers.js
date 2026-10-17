@@ -6,7 +6,7 @@ import { route } from './routing.js';
 import { makeActor, removeActor, setPath, stepActor, nid } from './world.js';
 import {
   POT, ING, DRINK, MARKETING_BY_ID, UP, tierDef, eventDef, mods, ambienceOf, potPrice, addMoney, spend, addXp,
-  isPotUnlocked, isDrinkUnlocked, featureUnlocked, sellPrice, priceRatio, menuPriceDemand, useSupply, perkFx, SIDES, isSideUnlocked,
+  isPotUnlocked, isDrinkUnlocked, featureUnlocked, sellPrice, priceRatio, menuPriceDemand, useSupply, perkFx, SIDES, isSideUnlocked, consumeIngredient,
 } from './economy.js';
 import { createTicket, removeTicket, ticketRecipe } from './kitchen.js';
 import { scoreGroup, pushRating, makeReview, angryLine } from './rating.js';
@@ -126,6 +126,37 @@ const SCRIPT = [
   { at: C.TIME.dayStart + 2, kind: 'sinhvien', size: 2, pot: 'xoailac', drinks: ['trada', 'trada'] },
   { at: C.TIME.dayStart + 40, kind: 'sinhvien', size: 2, pot: 'coclac', drinks: ['trada', 'nuocngot'] },
 ];
+
+/** v2.6.9 Xe máy giao hàng: while the shop is open, app orders come in (perHour × level per game hour). Each one
+ *  takes a portion's fruit and its cup/box + bag from the kho, pays the selling price minus the app's cut, and
+ *  never uses a counter spot. No stock → the order is skipped (counted, so the report can say so). */
+export function deliveryTick(G, dtMin) {
+  const s = G.state, w = G.world, lvl = s.upgrades.delivery || 0;
+  if (!lvl || s.phase !== 'open') return;
+  const D = C.UPGRADES.find((u) => u.id === 'delivery');
+  w.deliveryAcc = (w.deliveryAcc || 0) + (dtMin / 60) * D.perHour * lvl;
+  while (w.deliveryAcc >= 1) {
+    w.deliveryAcc -= 1;
+    const reserved = reservedStock(G);
+    const pots = C.HOTPOTS.filter((p) => s.menu[p.id] && isPotUnlocked(G, p.id) && canMake(G, p.id, reserved));
+    if (!pots.length) { s.today.deliveryMissed = (s.today.deliveryMissed || 0) + 1; continue; }
+    const p = G.rng.pick(pots);
+    for (const i of p.recipe) consumeIngredient(G, i, 1);
+    const pk = C.DISH_PACK[p.id];
+    if (pk) { useSupply(G, pk.box, 1); s.stats.packsUsed = (s.stats.packsUsed || 0) + 1; }
+    useSupply(G, 'tui', 1);
+    const base = round2(sellPrice(G, p.id) * (1 - D.appFee));
+    addMoney(G, base, 'delivery');
+    s.today.revenue = round2(s.today.revenue + base);
+    s.today.potsSold++; s.stats.potsSold++;
+    s.today.potsSoldOf[p.id] = (s.today.potsSoldOf[p.id] || 0) + 1;
+    s.stats.potsSoldOf[p.id] = (s.stats.potsSoldOf[p.id] || 0) + 1;
+    s.recipes[p.id].sold++;
+    s.today.delivered = (s.today.delivered || 0) + 1;
+    s.stats.delivered = (s.stats.delivered || 0) + 1;
+    if (s.today.delivered === 1) G.toast('Có đơn giao hàng đầu tiên trong ngày! Xe máy đã chạy đi giao.', 'info', 'eq_moto');
+  }
+}
 
 export function spawnTick(G, dtMin) {
   const s = G.state, w = G.world, rng = G.rng;
@@ -419,7 +450,7 @@ export function refuseChance(G, kind, potId) {
   const ev = eventDef(G);
   const budget = k.budget * (ev && ev.budgetMult && kind === 'vanphong' ? ev.budgetMult : 1);
   const lvl = (s.recipes[potId] && s.recipes[potId].lvl) || 1;
-  const value = P.valueRating * Math.max(0, s.rating.avg - 4) + P.valueRecipe * (lvl - 1) + perkFx(G).priceValue;
+  const value = P.valueRating * Math.max(0, s.rating.avg - 4) + P.valueRecipe * (lvl - 1) + perkFx(G).priceValue + mods(G).priceValue;
   const z = P.overW * (price / ref - P.overC) + P.budW * (price / budget - P.budC) - value;
   return 1 / (1 + Math.exp(-P.k * z));
 }
@@ -457,7 +488,7 @@ function placeOrder(G, g) {
     g.drinks = [];
     if (!g.takeaway) {
       const drinks = C.DRINKS.filter((d) => isDrinkUnlocked(G, d.id));
-      const chance = C.DRINK_CHANCE + s.upgrades.cooler * UP.cooler.drinkChancePer + marketingDrinkChance(G);
+      const chance = C.DRINK_CHANCE + s.upgrades.cooler * UP.cooler.drinkChancePer + marketingDrinkChance(G) + mods(G).drinkChance;
       for (let i = 0; i < g.size; i++) {
         if (!rng.chance(chance)) continue;
         const d = rng.weighted(drinks, (x) => (k.drinks && k.drinks[x.id]) ?? 1);
@@ -552,7 +583,7 @@ export function onTicketServed(G, t, carrier) {
   if (t.drinks.length) useSupply(G, 'ly_nuoc', t.drinks.length);
   // drinks cost is paid when they reach the table
   let dcost = 0;
-  for (const d of t.drinks) dcost += DRINK[d].cost;
+  for (const d of t.drinks) dcost += DRINK[d].cost * mods(G).drinkCostMult;   // v2.6.9: đá viên, máy lọc nước
   if (dcost > 0) spend(G, 'drinks', dcost, 'drinks');
   G.emit('served', { ticketId: t.id, tableIdx: g.tableIdx, fast, x, y });
   if (g.takeaway) { finishGroup(G, g); return; }

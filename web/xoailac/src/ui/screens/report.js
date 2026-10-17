@@ -77,6 +77,7 @@ function build(m, rep) {
   if (rep.potsSold > 0) chips.push(span('chip', ico('ui_menu', 16), `${rep.potsSold} phần xoài lắc`));
   if (rep.drinksSold > 0) chips.push(span('chip', ico('drk_trada', 16), `${rep.drinksSold} nước`));
   if (rep.sidesSold > 0) chips.push(span('chip', ico('ak_cavien', 16), `${rep.sidesSold} món ăn kèm`));
+  if (rep.delivered > 0 || rep.deliveryMissed > 0) chips.push(span('chip', ico('eq_moto', 16), `${rep.delivered} đơn giao` + (rep.deliveryMissed ? ` · lỡ ${rep.deliveryMissed} (hết hàng)` : '')));   // v2.6.9
   if (rep.seated > 0) chips.push(span('chip jade', ico('eq_table', 16), `${rep.seated} nhóm ngồi bàn`));
   if (rep.priceLost > 0) chips.push(span('chip red', ico('emo_money', 16), `Chê đắt ${rep.priceLost}`));
   sec(div('rp-chips', chips));

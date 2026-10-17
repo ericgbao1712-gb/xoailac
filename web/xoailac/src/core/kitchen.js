@@ -154,7 +154,8 @@ export function trayStatus(G) {
 const GRADES = ['perfect', 'good', 'weak', 'over'];
 export function shakeZone(G, t) {
   if (G.state.tutorial && !G.state.tutorial.done) return C.SHAKE.tutorialZone;
-  return (t && C.SHAKE.zone[t.pot]) || [0.58, 0.8];
+  const z = (t && C.SHAKE.zone[t.pot]) || [0.58, 0.8], w = mods(G).shakeZone;      // v2.6.9: Hũ lắc inox widens the sweet spot
+  return w ? [Math.max(0.05, z[0] - w), Math.min(0.97, z[1] + w)] : z;
 }
 
 export function serveAct(G, grade) {

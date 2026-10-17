@@ -84,7 +84,7 @@ export function buyPrice(G, ing) {
   let m = G.state.market.mult[ing] ?? 1;
   const ev = eventDef(G);
   if (ev && ev.priceMult && ev.priceMult[ing]) m *= ev.priceMult[ing];
-  m *= G.state ? perkFx(G).buyPrice : 1;
+  m *= G.state ? perkFx(G).buyPrice * mods(G).buyMult : 1;      // v2.6.9: Cân điện tử −4 %
   return Math.max(1, Math.round(d.cost * m * 2) / 2);
 }
 export function masteryStars(G, potId) {
@@ -164,10 +164,21 @@ export function mods(G) {
   }
   const cashier = staff.some((m) => m.role === 'thungan');
   const waiter = staff.some((m) => m.role === 'phucvu');   // at the counter: hands the cups over, keeps the queue happy
+  // v2.6.9 thiết bị mới (missing levels in old saves read as 0)
+  const L = (id) => up[id] || 0;
+  const master = 1 + L('master') * UP.master.per;
+  const posTip = UP.pos.tipMult[Math.min(L('pos'), UP.pos.tipMult.length - 1)];
   G._mods = {
-    patience: (1 + up.tablestyle * UP.tablestyle.patiencePer + up.speaker * UP.speaker.patiencePer) * (cashier ? 1.2 : 1) * (waiter ? 1.15 : 1) * (has('hat') ? 1.1 : 1) * decoPatience * perkFx(G).patience,
-    tip: (up.pos > 0 ? UP.pos.tipMult : 1) * decoTip * (has('ngot') ? 1.25 : 1) * (waiter ? 1.15 : 1) * perkFx(G).tip,
-    demand: (1 + up.sign * UP.sign.demandPer) * decoDemand * Math.pow(1.05, count('tiktok')),
+    patience: (1 + up.tablestyle * UP.tablestyle.patiencePer + up.speaker * UP.speaker.patiencePer + L('kiosk') * UP.kiosk.patiencePer + (L('pos') >= 2 ? UP.pos.patienceQr : 0))
+      * (cashier ? 1.2 : 1) * (waiter ? 1.15 : 1) * (has('hat') ? 1.1 : 1) * decoPatience * perkFx(G).patience * master,
+    tip: posTip * decoTip * (has('ngot') ? 1.25 : 1) * (waiter ? 1.15 : 1) * perkFx(G).tip * master,
+    demand: (1 + up.sign * UP.sign.demandPer + L('packing') * UP.packing.demandPer) * decoDemand * Math.pow(1.05, count('tiktok')) * master,
+    eqQuality: L('shaker') * UP.shaker.qualityPer + L('hygiene') * UP.hygiene.qualityPer + L('packing') * UP.packing.qualityPer,
+    shakeZone: L('shaker') * UP.shaker.zonePer,
+    buyMult: L('scale') ? UP.scale.buyMult : 1,
+    drinkCostMult: Math.max(0.4, 1 - L('icemaker') * UP.icemaker.drinkCostPer - L('filter') * UP.filter.drinkCostPer),
+    drinkChance: L('icemaker') * UP.icemaker.drinkChancePer + L('blender') * UP.blender.drinkChancePer + L('filter') * UP.filter.drinkChancePer,
+    priceValue: L('menuscreen') ? UP.menuscreen.priceValue : 0,
     footballMult: decoFootball,
     cashier,
     hasWaiter: waiter,
@@ -204,6 +215,12 @@ export function unlocksAt(level) {
   for (const x of C.SUPPLIERS) if (x.unlockLv === level && level > 1) out.push({ type: 'supplier', id: x.id, name: x.name });
   for (const m of C.MARKETING) if (m.hours || m.drinkChance || m.kinds) if (m.unlockLv === level) out.push({ type: 'marketing', id: m.id, name: m.name });
   for (const p of C.PERKS) if (p.lv === level && !p.marketing && !p.supplier) out.push({ type: 'perk', id: p.id, name: p.name, desc: p.desc });
+  // v2.6.9: a piece of equipment (or its next level) that becomes buyable at this level
+  for (const u of C.UPGRADES) (u.minLv || []).forEach((lv, i) => {
+    if (lv !== level || level <= 1 || u.id === 'kho') return;                 // kho Lv 17 is the Kho lạnh perk card
+    const nm = u.levels ? u.levels[i + 1] : u.name + (i ? ' cấp ' + (i + 1) : '');
+    out.push({ type: 'equip', id: u.id, name: nm || u.name, desc: (i ? u.name + ' cấp ' + (i + 1) + '. ' : '') + u.desc });
+  });
   return out;
 }
 
@@ -267,7 +284,7 @@ export function questClaimed(G, id) {
 /** v2.5 món ăn kèm (stocked like ingredients, flagged side). */
 export const SIDES = C.INGREDIENTS.filter((i) => i.side);
 export const isSideUnlocked = (G, id) => !!ING[id] && !!ING[id].side && isIngUnlocked(G, id);
-export const isDrinkUnlocked = (G, id) => !!DRINK[id] && G.state.level >= DRINK[id].unlockLv;
+export const isDrinkUnlocked = (G, id) => !!DRINK[id] && G.state.level >= DRINK[id].unlockLv && (!DRINK[id].needs || (G.state.upgrades[DRINK[id].needs] || 0) > 0);   // v2.6.9: Sinh tố needs the blender
 export const featureUnlocked = (G, key) => (key in C.FEATURES ? G.state.level >= C.FEATURES[key] : true);
 
 // ───────────── shelf life ─────────────

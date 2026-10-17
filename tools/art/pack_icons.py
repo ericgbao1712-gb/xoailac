@@ -5,10 +5,12 @@ from PIL import Image
 sys.path.insert(0, os.path.dirname(__file__))
 from draw_supplies import build as build_supplies
 from draw_sides import build as build_sides
+from draw_equip import build as build_equip
 
 def build():
     out = build_supplies()
     out.update(build_sides())      # v2.5 món ăn kèm
+    out.update(build_equip())      # v2.6.9 thiết bị mới + sinh tố
     return out
 
 game = sys.argv[1] if len(sys.argv) > 1 else 'xoailac'

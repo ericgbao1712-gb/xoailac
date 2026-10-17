@@ -21,7 +21,7 @@ export function makerBonus(G, maker) {
 export function qualityOf(G, potId, maker) {
   const s = G.state, up = s.upgrades;
   const lvl = (s.recipes[potId] && s.recipes[potId].lvl) || 1;
-  return SAT.baseQuality + (lvl - 1) * C.RECIPE.qualityPerLevel + makerBonus(G, maker) + up.stovetype * SAT.stoveQualityPer + up.knife * SAT.knifeQualityPer + perkFx(G).quality;
+  return SAT.baseQuality + (lvl - 1) * C.RECIPE.qualityPerLevel + makerBonus(G, maker) + up.stovetype * SAT.stoveQualityPer + up.knife * SAT.knifeQualityPer + perkFx(G).quality + mods(G).eqQuality;   // v2.6.9: hũ lắc, bồn rửa tay, máy ép ly
 }
 
 function waitBonus(ratio) {

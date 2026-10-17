@@ -65,7 +65,7 @@ export function confettiFor(handle, opts = {}) {
 }
 
 // ---- unlock cards (level-up / roadmap) -------------------------------------------------------
-export const UNLOCK_LABEL = { pot: 'Món lắc mới', ingredient: 'Nguyên liệu mới', drink: 'Đồ uống mới', role: 'Nhân viên mới', feature: 'Tính năng mới', tier: 'Mở rộng quán', supplier: 'Nhà cung cấp mới', marketing: 'Khuyến mãi mới', side: 'Món ăn kèm mới', perk: 'Tính năng mới', mastery: 'Cấp thành thạo' };
+export const UNLOCK_LABEL = { pot: 'Món lắc mới', ingredient: 'Nguyên liệu mới', drink: 'Đồ uống mới', role: 'Nhân viên mới', feature: 'Tính năng mới', tier: 'Mở rộng quán', supplier: 'Nhà cung cấp mới', marketing: 'Khuyến mãi mới', side: 'Món ăn kèm mới', perk: 'Tính năng mới', equip: 'Thiết bị mới', mastery: 'Cấp thành thạo' };
 export const FEATURE_NAME = {
   deco: 'Trang trí quán', daily: 'Nhiệm vụ ngày', reservations: 'Khách đặt bàn', mkt_reviewer: 'Mời Food Reviewer', mkt_livestream: 'Livestream bán hàng',
   speed2: 'Tăng tốc ×2', manageMode: 'Chế độ quản lý', extras: 'Khách gọi thêm món', lottery: 'Cô bán vé số',
@@ -86,6 +86,7 @@ export function unlockIcon(u) {
     case 'supplier': return C.SUPPLIERS.find((x) => x.id === u.id)?.icon || 'eq_truck';
     case 'marketing': return C.MARKETING.find((x) => x.id === u.id)?.icon || 'ui_megaphone';
     case 'perk': return C.PERKS.find((x) => x.id === u.id)?.icon || 'ui_star';
+    case 'equip': return C.UPGRADES.find((x) => x.id === u.id)?.icon || 'eq_stove';
     case 'mastery': return 'ui_chest_gold';
     default: return 'ui_star';
   }
@@ -105,6 +106,12 @@ export function unlocksAtLevel(level) {
   for (const x of C.SUPPLIERS) if (x.unlockLv === level) out.push({ type: 'supplier', id: x.id, name: x.name });
   for (const m of C.MARKETING) if ((m.hours || m.drinkChance || m.kinds) && m.unlockLv === level) out.push({ type: 'marketing', id: m.id, name: m.name });
   for (const p of C.PERKS) if (p.lv === level && !p.marketing && !p.supplier) out.push({ type: 'perk', id: p.id, name: p.name, desc: p.desc });
+  // v2.6.9: a piece of equipment (or its next level) that becomes buyable at this level
+  for (const u of C.UPGRADES) (u.minLv || []).forEach((lv, i) => {
+    if (lv !== level || level <= 1 || u.id === 'kho') return;                 // kho Lv 17 is the Kho lạnh perk card
+    const nm = u.levels ? u.levels[i + 1] : u.name + (i ? ' cấp ' + (i + 1) : '');
+    out.push({ type: 'equip', id: u.id, name: nm || u.name, desc: (i ? u.name + ' cấp ' + (i + 1) + '. ' : '') + u.desc });
+  });
   if (level >= C.MASTERY.fromLv) out.push({ type: 'mastery', id: 'mastery' + level, name: 'Rương thành thạo' + (level % C.MASTERY.ticketEvery === 0 ? ' + vé tuyển ★3+' : ''), desc: 'Mỗi cấp từ Lv 41 nhận 1 rương vàng (mở ở sổ nhiệm vụ)' + (level % C.MASTERY.ticketEvery === 0 ? '; cấp chia hết cho 5 tặng thêm vé tuyển nhân viên.' : '.') });
   return out;
 }

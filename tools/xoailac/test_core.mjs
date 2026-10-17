@@ -488,4 +488,43 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   g = fresh(223);
   ok(mainProgress(g._G, q6) === 0, 'tier 1 without a tarp: still 0/1');
 }
+// ── 23. v2.6.9 thiết bị mới: open by level, real effects, giao hàng
+{
+  const E = await import(ROOT + '/core/economy.js');
+  const NEW = ['shaker', 'hygiene', 'scale', 'icemaker', 'blender', 'packing', 'kiosk', 'filter', 'delivery', 'master', 'menuscreen'];
+  ok(NEW.every((id) => C.UPGRADES.some((u) => u.id === id && u.minLv && u.minLv.length === u.costs.length)), 'every new item has a level gate per level');
+  let g = fresh(231); g.state.tier = 5; g.state.money = 1e8; g.state.level = 12;
+  ok(g.act.buyUpgrade('shaker').ok === false, 'Hũ lắc locked before Lv 13');
+  g.state.level = 13;
+  const z0 = (await import(ROOT + '/core/kitchen.js')).shakeZone(g._G, { pot: 'xoailac' });
+  ok(g.act.buyUpgrade('shaker').ok, 'Hũ lắc buyable at Lv 13');
+  const z1 = (await import(ROOT + '/core/kitchen.js')).shakeZone(g._G, { pot: 'xoailac' });
+  ok(z1[0] < z0[0] && z1[1] > z0[1], 'Hũ lắc widens the LẮC sweet spot');
+  ok(g.act.buyUpgrade('shaker').ok === false, 'its 2nd level waits for Lv 18');
+  ok(E.unlocksAt(13).some((u) => u.type === 'equip' && u.id === 'shaker') && E.unlocksAt(41).some((u) => u.id === 'master'), 'level-up cards show the new equipment');
+  // sinh tố needs the blender
+  g.state.level = 19; g._G.modsDirty = true;
+  ok(!E.isDrinkUnlocked(g._G, 'sinhto'), 'no Sinh tố without the blender');
+  ok(g.act.buyUpgrade('blender').ok && E.isDrinkUnlocked(g._G, 'sinhto'), 'blender opens Sinh tố xoài');
+  // QR on the till, scale, menu screen
+  g.state.level = 36; g.state.upgrades.pos = 1; g._G.modsDirty = true;
+  const tip1 = E.mods(g._G).tip, buy1 = E.buyPrice(g._G, 'tc_xoai');
+  ok(g.act.buyUpgrade('pos').ok && E.mods(g._G).tip > tip1, 'mã QR (máy tính tiền cấp 2) raises tips');
+  ok(g.act.buyUpgrade('scale').ok && E.buyPrice(g._G, 'tc_xoai') <= buy1, 'cân điện tử: fruit no dearer');
+  const { refuseChance } = await import(ROOT + '/core/customers.js');
+  g.state.prices.xoailac = 60; const r0 = refuseChance(g._G, 'sinhvien', 'xoailac');
+  ok(g.act.buyUpgrade('menuscreen').ok && refuseChance(g._G, 'sinhvien', 'xoailac') < r0, 'menu screen: fewer refusals over price');
+  // giao hàng: orders come in and use the kho, never block the counter
+  g = fresh(232); g.state.level = 40; g.state.tier = 5; g.state.money = 1e8;
+  const { syncLayout } = await import(ROOT + '/core/world.js'); syncLayout(g._G, true);
+  for (const i of C.INGREDIENTS) g.state.inventory[i.id] = 200; for (const x of C.SUPPLIES) g.state.supplies[x.id] = 500; g.state.lots = {};
+  ok(g.act.buyUpgrade('delivery').ok, 'xe giao hàng at Lv 35+');
+  runDay(g);
+  ok((g.state.today.delivered || 0) >= 8 && g.state.stats.delivered === g.state.today.delivered, 'delivery orders through the day (' + g.state.today.delivered + ')');
+  ok(g.world.tickets.length === 0 && g.state.phase !== 'open', 'the day still ends cleanly');
+  // an old save without the new keys
+  const old = JSON.parse(JSON.stringify(g.serialize())); for (const id of NEW) delete old.upgrades[id];
+  const g2 = createGame(old, { headless: true, seed: 5, now: 1.8e12 });
+  ok(NEW.every((id) => g2.state.upgrades[id] === 0), 'old saves start every new item at 0');
+}
 console.log('OK', n, 'checks');
