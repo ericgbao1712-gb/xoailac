@@ -60,6 +60,8 @@ export function mainProgress(G, q) {
     case 'noDebtStreak': return s.quests.counters.noDebtBest || 0;
     default:
       if (t.startsWith('potsSoldOf:')) return s.stats.potsSoldOf[t.slice(11)] || 0;
+      // v2.6.7: a 'hire' quest also counts the staff of that role already on the team (old saves, restores)
+      if (t.startsWith('hire:')) return Math.max(s.quests.counters[t] || 0, (s.staff || []).filter((m) => m.role === t.slice(5)).length);
       return s.quests.counters[t] || 0;
   }
 }

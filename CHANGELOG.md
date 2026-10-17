@@ -1,7 +1,29 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 15, nhãn v2.6.6, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 16, nhãn v2.6.7, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.7 (17/10): EXP từ Lv 22 giảm thêm 10%, hiện đủ phục vụ, dời quán chính tới thành phố có chi nhánh
+- **EXP:** từ Lv 22 trở lên, mỗi cấp cần ít hơn 10% so với v2.6.1 (`XP_LATE` = 0.9). Ví dụ: Lv 32 → 33 cần khoảng 103.000 thay vì 114.017. Save đang dư EXP thì được lên cấp ngay khi vào game (`settleXp`).
+- **Nhân viên phục vụ:**
+  - Trước đây ngoài quán chỉ vẽ tối đa 2 nhân viên, nên thuê 3 phục vụ mà chỉ thấy 2. Giờ phục vụ nào cũng hiện: 2 chỗ cũ cạnh bàn, chỗ thứ 3 ở lối đi giữa, rồi tới 2 đầu và 2 chỗ trước quầy (tối đa 7).
+  - Sửa luôn nhiệm vụ "Thuê nhân viên phục vụ đầu tiên" bị kẹt 0/1 dù đã có phục vụ (save cũ, khôi phục mã). Giờ nhiệm vụ đếm cả phục vụ đang có trong đội.
+- **Dời quán chính** (Quán ▸ Chi nhánh):
+  - Mở chi nhánh ở thành phố nào thì bấm "Dời quán chính tới đây" để đổi cảnh quầy sang thành phố đó. Bấm "Về TP.HCM" để quay lại.
+  - Chỉ đổi khung cảnh; tiền, khách, cấp quán và thu nhập chi nhánh giữ nguyên. Lựa chọn được lưu; nếu save không còn chi nhánh đó thì tự về TP.HCM.
+  - Cảnh từng thành phố:
+
+    | Thành phố | Cảnh |
+    |---|---|
+    | Hà Nội | cảnh Hồ Gươm có sẵn |
+    | Đà Nẵng | cảnh cầu Rồng có sẵn |
+    | Đà Lạt | đồi thông, nhà thờ Con Gà, biệt thự, hồ Xuân Hương |
+    | Vũng Tàu | biển, Núi Nhỏ với tượng Chúa, ngọn hải đăng, thuyền đánh cá |
+    | Cần Thơ | sông Hậu, cầu Cần Thơ, dừa, ghe chợ nổi treo cây bẹo |
+    | Phú Quốc | hoàng hôn trên biển, hàng dừa, đảo, thuyền buồm |
+
+  - 4 cảnh mới vẽ bằng code (`tools/art/draw_city_backdrops.py`), ghép lan can xích và nền gạch của cảnh cũ. Nét vẽ đơn giản hơn 4 cảnh gốc (vẽ tay).
+- **Kiểm thử:** `test_core.mjs` 221 kiểm tra đều đạt. Đã chụp trình duyệt cả 4 cảnh mới, thẻ Chi nhánh và 3 phục vụ ngoài quán.
 
 ## v2.6.6 (17/10): cài được như ứng dụng, có logo riêng
 - **Vì sao Android báo "Không thể cài đặt ứng dụng này":** trang game không có web app manifest (`manifest.json`), không có service worker và không có icon ứng dụng. Chrome chỉ cho cài khi đủ ba thứ đó, nên nó chỉ đề nghị "Tạo lối tắt" với chữ M xám của tên miền. iOS cũng tự vẽ chữ X vì không có `apple-touch-icon`.

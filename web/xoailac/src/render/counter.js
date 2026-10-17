@@ -11,7 +11,7 @@ import { activeLooks } from '../core/looks.js';
 import { loadAtlas, DETAIL } from '../art/assets.js';
 import { BACKDROPS, COUNTER_ART } from '../art/data/counter.js';
 import { PAL } from '../art/palette.js';
-import { TIME, RAIN, INGREDIENTS } from '../config.js';
+import { TIME, RAIN, INGREDIENTS, BRANCHES } from '../config.js';
 const ING_ICON = Object.fromEntries(INGREDIENTS.map((i) => [i.id, i.icon]));
 import { fmtShort } from '../core/format.js';
 import { createCamera } from './camera.js';
@@ -199,13 +199,20 @@ export function createCounterRenderer(canvas, game) {
 
   // ───────────── backdrop ─────────────
   const bgRecs = {};
+  /** v2.6.7: the main shop moved to a branch city → that city's backdrop (the layout itself stays the tier's) */
+  function cityScene() {
+    const id = game.state.homeCity;
+    if (!id) return null;
+    const b = BRANCHES.find((x) => x.id === id);
+    return b && b.scene && BACKDROPS[b.scene] ? b.scene : null;
+  }
   function backdrop(scene) {
     const m = BACKDROPS[scene] || BACKDROPS.vihe;
     if (!bgRecs[scene]) bgRecs[scene] = loadAtlas(m.file);
     return { m, img: bgRecs[scene].img };
   }
   function drawBackdrop(L) {
-    const { m, img } = backdrop(L.scene);
+    const { m, img } = backdrop(cityScene() || L.scene);
     const C = L.counter;
     const vw = view.x1 - view.x0;
     // world size of the image at 1:1 (DETAIL px per world px); widen when the view is wider than the art

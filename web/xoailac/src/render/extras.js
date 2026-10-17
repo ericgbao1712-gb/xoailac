@@ -23,7 +23,8 @@ export const SIGN_STYLES = {
   hong: { edge: '#c2386f', fill: '#ffd6e4', hi: '#fff0f5', text: '#c2386f', stroke: '#ffffff' },
 };
 const LAMP_KIND = { den_long_do: ['den_long_do', 'den_cam'], den_hoian: ['den_hoian1', 'den_hoian2'], den_chum: ['den_chum1', 'den_chum2'] };
-const HOME = [{ x: 47, y: 99 }, { x: 153, y: 99 }];
+// v2.6.7: every waiter on the team shows (was capped at 2); extra spots by the outer tables and the walkway
+const HOME = [{ x: 47, y: 99 }, { x: 153, y: 99 }, { x: 100, y: 104 }, { x: 6, y: 104 }, { x: 194, y: 104 }, { x: 72, y: 106 }, { x: 128, y: 106 }];
 const SPEED = 38;                     // world px / s
 
 export function createExtras(game) {
@@ -32,7 +33,10 @@ export function createExtras(game) {
   let staffKey = '';
 
   function syncHelpers(s) {
-    const list = (s.staff || []).slice().sort((a, b) => (a.role === 'phucvu' ? 0 : 1) - (b.role === 'phucvu' ? 0 : 1)).slice(0, 2);
+    // all phục vụ (they work the floor); with fewer than 2, other staff fill up to 2 as before
+    const all = (s.staff || []).slice().sort((a, b) => (a.role === 'phucvu' ? 0 : 1) - (b.role === 'phucvu' ? 0 : 1));
+    const nWait = all.filter((m) => m.role === 'phucvu').length;
+    const list = all.slice(0, Math.min(HOME.length, Math.max(2, nWait)));
     const key = list.map((m) => m.id + m.role).join(',');
     if (key === staffKey) return;
     staffKey = key;

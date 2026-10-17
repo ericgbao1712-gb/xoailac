@@ -469,11 +469,13 @@ export const TIER_MULT = [1, 3, 8, 20, 50]; // reward/price scaling helper by ti
 
 // ───────────────────────────── LEVELS ─────────────────────────────
 export const XP_EASE = 0.8;
+export const XP_LATE = 0.9;
 export const LEVEL = {
   // Lv 1–22 unchanged. From Lv 22 each level costs +8 % of the Lv 22 step (linear), so Lv 23–40 stay reachable (~4–7 days each).
   // v2.6.1: every level needs 20 % less XP than before (XP_EASE), so the ring fills up a little sooner
   xpBase: (lv) => (lv === 1 ? 60 : lv <= 22 ? 450 * Math.pow(1.295, lv - 2) : 450 * Math.pow(1.295, 20) * (1 + 0.08 * (lv - 22))),
-  xpToNext: (lv) => Math.round(LEVEL.xpBase(lv) * XP_EASE),
+  // v2.6.7: from Lv 22 on, a further 10 % less (XP_LATE)
+  xpToNext: (lv) => Math.round(LEVEL.xpBase(lv) * XP_EASE * (lv >= 22 ? XP_LATE : 1)),
   // XP for a finished table: price/8 + 3/person + 6 if 5★, × tierXp
   xpForGroup: (potPrice, size, stars, tier) => Math.round((potPrice / 8 + 3 * size + (stars >= 5 ? 6 : 0)) * [1, 1.3, 1.7, 2.2, 2.6][tier - 1]),
   thankXp: 2,
@@ -543,13 +545,15 @@ export const VIRAL = { days: 2, demand: 1.6, badDemand: 0.8 };
 // ───────────────────────────── OFFLINE & CHAIN ─────────────────────────────
 export const OFFLINE = { minAwaySec: 120, shopShare: 0.25, daySec: 240 /* offline pays as if a day took 4 min (kept when days became 9 min) */, shopCapSec: 4 * 3600, chainCapSec: 8 * 3600 };
 export const BRANCHES = [
-  { id: 'dalat',   name: 'Đà Lạt',   dish: 'Dâu tây lắc',          cost: 70000,   income: 0.9 },  // k per real second at level 1 (×240/540 when days went 4 → 9 min)
-  { id: 'vungtau', name: 'Vũng Tàu', dish: 'Xoài lắc khô mực',           cost: 140000,  income: 1.6 },
-  { id: 'cantho',  name: 'Cần Thơ',  dish: 'Cóc lắc mắm ruốc',               cost: 245000,  income: 2.6 },
-  { id: 'danang',  name: 'Đà Nẵng',  dish: 'Me lắc đường',                cost: 420000,  income: 4.1 },
-  { id: 'hanoi',   name: 'Hà Nội',   dish: 'Sấu dầm gừng',   cost: 700000,  income: 6.7 },
-  { id: 'phuquoc', name: 'Phú Quốc', dish: 'Xoài lắc nước mắm Phú Quốc', cost: 1100000, income: 9.5, minLevel: 34, bonus: true },   // v2.2: not needed for the ending
+  { id: 'dalat',   name: 'Đà Lạt',   dish: 'Dâu tây lắc',          cost: 70000,   income: 0.9, scene: 'dalat' },  // k per real second at level 1 (×240/540 when days went 4 → 9 min)
+  { id: 'vungtau', name: 'Vũng Tàu', dish: 'Xoài lắc khô mực',           cost: 140000,  income: 1.6, scene: 'vungtau' },
+  { id: 'cantho',  name: 'Cần Thơ',  dish: 'Cóc lắc mắm ruốc',               cost: 245000,  income: 2.6, scene: 'cantho' },
+  { id: 'danang',  name: 'Đà Nẵng',  dish: 'Me lắc đường',                cost: 420000,  income: 4.1, scene: 'haitang' },
+  { id: 'hanoi',   name: 'Hà Nội',   dish: 'Sấu dầm gừng',   cost: 700000,  income: 6.7, scene: 'mapho' },
+  { id: 'phuquoc', name: 'Phú Quốc', dish: 'Xoài lắc nước mắm Phú Quốc', cost: 1100000, income: 9.5, minLevel: 34, bonus: true, scene: 'phuquoc' },   // v2.2: not needed for the ending
 ];
+// v2.6.7 dời quán chính: once a branch is open, the main shop can move to that city (scene = its counter backdrop).
+// Purely the view: money, tier and customers stay the same. null = TP.HCM (the scene follows the tier as before).
 export const BRANCH = { maxLevel: 5, upgradeCost: (b, lvl) => Math.round(b.cost * 0.6 * Math.pow(2.2, lvl - 1)) };
 
 // ───────────────────────────── QUESTS ─────────────────────────────

@@ -330,6 +330,17 @@ export function createGame(save, opts = {}) {
       G.emit('looks', { what: 'facade' });
       return { ok: true, facade: state.facade };
     }),
+    // v2.6.7: move the main shop to a city with an open branch (null = back to TP.HCM). Only the scene changes.
+    setHomeCity: wrap((id) => {
+      if (id == null || id === 'hcm') { state.homeCity = null; G.emit('looks', { what: 'city' }); G.toast('Quán chính về lại TP.HCM.', 'good', 'ui_shop'); return { ok: true, city: null }; }
+      const b = C.BRANCHES.find((x) => x.id === id);
+      if (!b) return fail('unknown', 'Không có thành phố này.');
+      if (!(state.branches[id] > 0)) return fail('locked', `Khai trương chi nhánh ${b.name} trước rồi mới dời quán chính tới đó được nha.`);
+      state.homeCity = id;
+      G.emit('looks', { what: 'city' });
+      G.toast(`Dời quán chính tới ${b.name}! Khung cảnh đã đổi.`, 'good', 'ui_map');
+      return { ok: true, city: id };
+    }),
     upgradeRecipe: wrap((potId) => {
       const p = POT[potId], r = state.recipes[potId];
       if (!p || !r) return fail('unknown', 'Không có công thức này.');

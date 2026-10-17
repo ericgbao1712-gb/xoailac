@@ -52,6 +52,7 @@ export function defaultState(now = Date.now()) {
     recipes, menu,
     upgrades,
     deco: { owned: defaults.map((d) => d.id), equipped },
+    homeCity: null,   // v2.6.7: branch id the main shop moved to (scene only)
     brand: { ...C.BRAND.def }, uniform: { ...C.UNIFORM.def }, facade: { ...C.FACADE.def },   // v2.3 looks (Lv 24 / 21 / 31)
     prices: {},                                  // dishId → selling price the player set (k); missing = reference price
     supplies, supplyAvg, supplyUseYesterday: {},
@@ -111,6 +112,7 @@ export function migrate(save, now) {
     if (!C.DECO.some((d) => d.id === s.deco.equipped[cat])) s.deco.equipped[cat] = (C.DECO.find((d) => d.cat === cat && d.default) || {}).id;
   }
   if (decoRefund > 0) { s.money = (s.money || 0) + decoRefund; s.flags.ui.decoRefund = decoRefund; }
+  if (s.homeCity != null && !(C.BRANCHES.some((b) => b.id === s.homeCity) && (s.branches || {})[s.homeCity] > 0)) s.homeCity = null;
   s.brand = sanitizeBrand(s.brand); s.uniform = sanitizeUniform(s.uniform); s.facade = sanitizeFacade(s.facade);
   // the side-table row holds 4 sets (2 + 2 upgrades); an early v2 build sold up to 6
   const sideMax = C.UPGRADES.find((u) => u.id === 'sidetable').costs.length;

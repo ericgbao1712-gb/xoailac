@@ -101,12 +101,12 @@ function vnMap(onPick) {
   C.BRANCHES.forEach((b) => {
     const lvl = s.branches?.[b.id] || 0;
     const [x, y] = PINS[b.id] || [100, 150];
-    const pin = h('button', { class: 'pin' + (lvl ? ' open' : ''), style: { left: (x / 2) + '%', top: (y / 3) + '%' }, 'aria-label': b.name },
+    const pin = h('button', { class: 'pin' + (lvl ? ' open' : '') + (s.homeCity === b.id ? ' home' : ''), style: { left: (x / 2) + '%', top: (y / 3) + '%' }, 'aria-label': b.name },
       span('pin-dot', lvl ? span('num', String(lvl)) : ico('ui_lock', 16)), span('pin-name', b.name));
     pin.addEventListener('click', () => { sfx('click'); onPick(b.id); });
     map.appendChild(pin);
   });
-  const hq = h('div', { class: 'pin hq', style: { left: '76%', top: '80%' } }, span('pin-dot', ico('ui_shop', 16)), span('pin-name', 'TP.HCM'));
+  const hq = h('div', { class: 'pin hq' + (s.homeCity ? ' was' : ''), style: { left: '76%', top: '80%' } }, span('pin-dot', ico('ui_shop', 16)), span('pin-name', 'TP.HCM'));
   map.appendChild(hq);
   return map;
 }
@@ -125,6 +125,17 @@ export function branchesView(body, api) {
   body.appendChild(vnMap((id) => { const el = cards[id]; if (!el) return; el.scrollIntoView({ block: 'center', behavior: ctx.reduced ? 'auto' : 'smooth' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }));
   body.appendChild(div('card bsum', div('grow', h('b', null, `${open}/${mainN} chi nhánh`), span('muted sm', `Mở đủ ${mainN} nơi là hoàn thành hành trình nha!`)),
     span('chip gold', ico('ui_coin', 16), span('num', '+' + vnNum(rate) + 'k/giây'))));
+  // v2.6.7 dời quán chính: pick any city with an open branch; only the view changes
+  const home = C.BRANCHES.find((b) => b.id === s.homeCity);
+  const homeCard = div('card bsum home-city', ico('ui_shop', 32),
+    div('grow', h('b', null, 'Quán chính: ' + (home ? home.name : 'TP.HCM')),
+      span('muted sm', home ? 'Đổi cảnh quầy sang thành phố này. Tiền, khách và cấp quán vẫn như cũ.' : 'Mở chi nhánh ở thành phố nào thì dời quán chính tới đó được, để đổi cảnh quầy.')));
+  if (home) {
+    const back = h('button', { class: 'btn paper sm' }, 'Về TP.HCM');
+    back.addEventListener('click', () => { sfx('click'); const r = act('setHomeCity', null); if (r && r.ok === false) return; api.rerender(); });
+    homeCard.appendChild(back);
+  }
+  body.appendChild(homeCard);
   body.appendChild(secTitle('Các chi nhánh', 'tiền về cả khi bạn đi vắng'));
 
   C.BRANCHES.forEach((b, i) => {
@@ -151,6 +162,17 @@ export function branchesView(body, api) {
       }
     }
     card.appendChild(bot);
+    if (lvl) {                                        // v2.6.7: move the main shop here (scene only)
+      const mv = div('br-bot br-home');
+      if (s.homeCity === b.id) mv.appendChild(span('chip jade', ico('ui_check', 16), 'Quán chính đang ở đây'));
+      else {
+        mv.appendChild(span('muted sm', 'Đổi cảnh quầy sang ' + b.name));
+        const go = h('button', { class: 'btn jade sm' }, ico('ui_shop', 16), 'Dời quán chính tới đây');
+        go.addEventListener('click', () => { sfx('click'); const r = act('setHomeCity', b.id); if (r && r.ok === false) return; celebrate(go); api.rerender(); });
+        mv.appendChild(go);
+      }
+      card.appendChild(mv);
+    }
     body.appendChild(card);
   });
 }

@@ -213,7 +213,7 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const { unlocksAt, perkFx, buyPrice } = await import(ROOT + '/core/economy.js');
   const empty = []; for (let l = 2; l <= 40; l++) if (!unlocksAt(l).length) empty.push(l);
   ok(empty.length === 0, 'every level 2–40 unlocks something (' + empty.join(',') + ')');
-  ok(C.LEVEL.xpToNext(22) === Math.round(450 * Math.pow(1.295, 20) * C.XP_EASE) && C.LEVEL.xpToNext(21) === Math.round(450 * Math.pow(1.295, 19) * C.XP_EASE), 'xp curve = v2.2 curve × XP_EASE');
+  ok(C.LEVEL.xpToNext(22) === Math.round(450 * Math.pow(1.295, 20) * C.XP_EASE * C.XP_LATE) && C.LEVEL.xpToNext(21) === Math.round(450 * Math.pow(1.295, 19) * C.XP_EASE), 'xp curve = v2.2 curve × XP_EASE (× XP_LATE from Lv 22)');
   ok(C.LEVEL.xpToNext(40) < C.LEVEL.xpToNext(22) * 2.5, 'Lv 40 step stays reachable (linear after 22)');
   const g = fresh(51); const s = g.state; s.money = 9e9;
   s.level = 22; s.recipes.xoailac.lvl = 5; ok(g.act.upgradeRecipe('xoailac').ok === false, 'recipe max 5 before Lv 23');
@@ -421,7 +421,8 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
 }
 // ── 18. v2.6.1 easier XP: 20 % less per level; XP already earned is settled into levels on load
 {
-  ok(C.XP_EASE < 1 && [2, 10, 22, 30, 40].every((l) => C.LEVEL.xpToNext(l) === Math.round(C.LEVEL.xpBase(l) * C.XP_EASE)), 'every level needs XP_EASE × the old amount');
+  ok(C.XP_EASE < 1 && [2, 10, 21].every((l) => C.LEVEL.xpToNext(l) === Math.round(C.LEVEL.xpBase(l) * C.XP_EASE)), 'every level needs XP_EASE × the old amount');
+  ok(C.XP_LATE === 0.9 && [22, 30, 40].every((l) => C.LEVEL.xpToNext(l) === Math.round(C.LEVEL.xpBase(l) * C.XP_EASE * 0.9)), 'v2.6.7: Lv 22+ needs 10 % less again');
   const g = fresh(111); const save = g.serialize();
   save.level = 10; save.xp = Math.round(C.LEVEL.xpBase(10) * 0.95);        // 95 % of the OLD need → over the new need
   const re = createGame(save, { headless: true, seed: 1, now: 1.8e12 });
@@ -457,5 +458,23 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const t4 = rainDay(201, 4), t1 = rainDay(202, 1);
   ok(t4.sawRain && t4.tarpInRain, 'tier 4: the tarp is out for every shower without a tap');
   ok(t1.sawRain && !t1.tarpInRain, 'tier 1: the tarp still waits for the player');
+}
+// ── 21. v2.6.7 hire quest counts the team, main shop can move to an open branch city (scene only)
+{
+  let g = fresh(211); g.state.staff.push({ id: 77, cid: 77, role: 'phucvu', name: 'A', rarity: 1, spd: 3, skl: 3, chm: 3, lvl: 1, jobs: 0, look: { lookSeed: 3 }, lookSeed: 3, hiredDay: 1, mood: 70, owed: 0, owedDays: 0, quitWarnDay: null, talkDay: 0, bonusDay: 0 });
+  g.state.quests.counters['hire:phucvu'] = 0;
+  const { mainProgress } = await import(ROOT + '/core/quests.js');
+  ok(mainProgress(g._G, C.MAIN_QUESTS.find((q) => q.id === 'q5')) >= 1, 'a waiter already on the team completes "Thuê phục vụ đầu tiên"');
+  g = fresh(212); g.state.tier = 5; g.state.money = 1e7;
+  ok(g.act.setHomeCity('dalat').ok === false && g.state.homeCity == null, 'cannot move to a city without a branch');
+  g.state.branches.dalat = 1;
+  const money = g.state.money, tier = g.state.tier;
+  ok(g.act.setHomeCity('dalat').ok && g.state.homeCity === 'dalat' && g.state.money === money && g.state.tier === tier, 'moves to Đà Lạt, nothing else changes');
+  ok(C.BRANCHES.every((b) => b.scene), 'every branch city has a scene');
+  const saved = JSON.parse(JSON.stringify(g.serialize())); const g2 = createGame(saved, { headless: true, seed: 3, now: 1.8e12 });
+  ok(g2.state.homeCity === 'dalat', 'the choice is saved');
+  saved.branches.dalat = 0; const g3 = createGame(JSON.parse(JSON.stringify(saved)), { headless: true, seed: 3, now: 1.8e12 });
+  ok(g3.state.homeCity == null, 'a city without a branch falls back to TP.HCM on load');
+  ok(g.act.setHomeCity(null).ok && g.state.homeCity == null, 'back to TP.HCM');
 }
 console.log('OK', n, 'checks');
