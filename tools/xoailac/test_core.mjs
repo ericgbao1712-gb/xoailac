@@ -204,7 +204,7 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const { unlocksAt, perkFx, buyPrice } = await import(ROOT + '/core/economy.js');
   const empty = []; for (let l = 2; l <= 40; l++) if (!unlocksAt(l).length) empty.push(l);
   ok(empty.length === 0, 'every level 2–40 unlocks something (' + empty.join(',') + ')');
-  ok(C.LEVEL.xpToNext(22) === Math.round(450 * Math.pow(1.295, 20)) && C.LEVEL.xpToNext(21) === Math.round(450 * Math.pow(1.295, 19)), 'xp curve unchanged up to Lv 22');
+  ok(C.LEVEL.xpToNext(22) === Math.round(450 * Math.pow(1.295, 20) * C.XP_EASE) && C.LEVEL.xpToNext(21) === Math.round(450 * Math.pow(1.295, 19) * C.XP_EASE), 'xp curve = v2.2 curve × XP_EASE');
   ok(C.LEVEL.xpToNext(40) < C.LEVEL.xpToNext(22) * 2.5, 'Lv 40 step stays reachable (linear after 22)');
   const g = fresh(51); const s = g.state; s.money = 9e9;
   s.level = 22; s.recipes.xoailac.lvl = 5; ok(g.act.upgradeRecipe('xoailac').ok === false, 'recipe max 5 before Lv 23');
@@ -361,7 +361,7 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
     const lv = save.level, day = save.day, money = save.money, name = save.shopName;
     const g = createGame(JSON.parse(JSON.stringify(save)), { headless: true, seed: 5, now: 1.8e12 });
     const s = g.state;
-    ok(s.v === C.VERSION && s.shopName === name && s.level === lv && s.day === day, ver + ': shop, level and day kept');
+    ok(s.v === C.VERSION && s.shopName === name && s.level >= lv && s.day === day, ver + ': shop and day kept, level never lower');
     ok(s.money >= money - 0.01, ver + ': money kept (refunds only add)');
     ok(s.brand && s.uniform && s.facade && s.deco.equipped && C.DECO_CATS.every((c) => c.id in s.deco.equipped), ver + ': new fields filled in');
     s.tutorial.done = true; runDay(g);
@@ -408,5 +408,15 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   // too many / nothing
   const g2 = fresh(102); g2.state.inventory.ot = 0; g2.state.lots = {};
   ok(g2.act.liquidate('ot', 5).ok === false, 'nothing to sell → refused');
+}
+// ── 18. v2.6.1 easier XP: 20 % less per level; XP already earned is settled into levels on load
+{
+  ok(C.XP_EASE < 1 && [2, 10, 22, 30, 40].every((l) => C.LEVEL.xpToNext(l) === Math.round(C.LEVEL.xpBase(l) * C.XP_EASE)), 'every level needs XP_EASE × the old amount');
+  const g = fresh(111); const save = g.serialize();
+  save.level = 10; save.xp = Math.round(C.LEVEL.xpBase(10) * 0.95);        // 95 % of the OLD need → over the new need
+  const re = createGame(save, { headless: true, seed: 1, now: 1.8e12 });
+  ok(re.state.level === 11 && re.state.xp === save.xp - C.LEVEL.xpToNext(10), 'old save over the new need levels up on load, keeps the rest');
+  const save2 = g.serialize(); save2.level = 10; save2.xp = 5;
+  ok(createGame(save2, { headless: true, seed: 1, now: 1.8e12 }).state.level === 10, 'no free level when the XP is not there');
 }
 console.log('OK', n, 'checks');

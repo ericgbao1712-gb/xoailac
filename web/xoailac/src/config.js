@@ -467,9 +467,12 @@ export const TIERS = [
 export const TIER_MULT = [1, 3, 8, 20, 50]; // reward/price scaling helper by tier
 
 // ───────────────────────────── LEVELS ─────────────────────────────
+export const XP_EASE = 0.8;
 export const LEVEL = {
   // Lv 1–22 unchanged. From Lv 22 each level costs +8 % of the Lv 22 step (linear), so Lv 23–40 stay reachable (~4–7 days each).
-  xpToNext: (lv) => (lv === 1 ? 60 : lv <= 22 ? Math.round(450 * Math.pow(1.295, lv - 2)) : Math.round(450 * Math.pow(1.295, 20) * (1 + 0.08 * (lv - 22)))),
+  // v2.6.1: every level needs 20 % less XP than before (XP_EASE), so the ring fills up a little sooner
+  xpBase: (lv) => (lv === 1 ? 60 : lv <= 22 ? 450 * Math.pow(1.295, lv - 2) : 450 * Math.pow(1.295, 20) * (1 + 0.08 * (lv - 22))),
+  xpToNext: (lv) => Math.round(LEVEL.xpBase(lv) * XP_EASE),
   // XP for a finished table: price/8 + 3/person + 6 if 5★, × tierXp
   xpForGroup: (potPrice, size, stars, tier) => Math.round((potPrice / 8 + 3 * size + (stars >= 5 ? 6 : 0)) * [1, 1.3, 1.7, 2.2, 2.6][tier - 1]),
   thankXp: 2,

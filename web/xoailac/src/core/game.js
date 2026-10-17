@@ -5,7 +5,7 @@ import { createRng } from './rng.js';
 import { migrate } from './state.js';
 import { createWorld, syncLayout } from './world.js';
 import {
-  UP, DECO_BY_ID, POT, tierDef, mods, addMoney, addXp, setLevel, isPotUnlocked, featureUnlocked, buyIngredient, builtTables, builtStoves, syncLots,
+  UP, DECO_BY_ID, POT, tierDef, mods, addMoney, addXp, settleXp, setLevel, isPotUnlocked, featureUnlocked, buyIngredient, builtTables, builtStoves, syncLots,
   priceBounds, buySupply, placeOrder, deliverOrders, quankhoRun, liquidate, liquidateQuote, oldStock, SUPPLIER, supplierUnlocked, recipeMaxLevel,
 } from './economy.js';
 import * as kitchen from './kitchen.js';
@@ -72,7 +72,11 @@ export function createGame(save, opts = {}) {
   syncLayout(G, true);
   workers.syncWorkers(G, true);
   syncLots(G);
-  if (state.started) staff.genCandidates(G);
+  if (state.started) {
+    const up = settleXp(G);                 // v2.6.1 easier XP curve: XP already earned may be worth a level now
+    if (up > 0) pending.push(['mom', { key: 'xpEase', text: `Bản mới lên cấp dễ hơn nè con! Kinh nghiệm con tích được đủ lên thẳng Lv ${state.level} rồi đó.` }]);
+    staff.genCandidates(G);
+  }
   if (state.flags.ui.decoRefund) {
     pending.push(['mom', { key: 'decoRefund', text: `Mấy món tranh treo tường với đồ Đặc biệt đặt trong quán khách ngoài đường đâu có thấy, Má bán lại được ${fmtMoney(state.flags.ui.decoRefund)} bỏ vô két rồi. Giờ con trang trí mặt tiền (cờ, chậu hoa, bảng hiệu) cho khách nhìn thấy nha!` }]);
     delete state.flags.ui.decoRefund;

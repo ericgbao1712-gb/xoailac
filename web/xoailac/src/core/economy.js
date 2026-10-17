@@ -223,6 +223,15 @@ export function addXp(G, n, x, y) {
   return leveled;
 }
 
+/** v2.6.1: after the XP curve got easier, a loaded save may already hold enough XP for the next level(s).
+ *  Grant them (with every unlock / mastery chest) without waiting for the next XP. Returns levels gained. */
+export function settleXp(G) {
+  const s = G.state;
+  let up = 0;
+  while (s.xp >= xpNeed(s.level) && up < 60) { s.xp -= xpNeed(s.level); s.level++; up++; onLevel(G, s.level); }
+  return up;
+}
+
 function onLevel(G, level) {
   const s = G.state;
   const unlocks = unlocksAt(level);

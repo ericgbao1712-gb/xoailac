@@ -1,7 +1,13 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 9, nhãn v2.6, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 10, nhãn v2.6.1, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.1 (17/10): lên cấp dễ hơn
+- **Đường XP:** mỗi cấp cần ít hơn 20% XP so với trước (`XP_EASE` = 0.8 trong config.js).
+- **Save cũ:** nếu XP đã tích đủ theo mức mới thì được lên cấp ngay khi tải (`settleXp`), kèm mọi mở khóa của cấp đó và lời Má báo. Không ai bị mất cấp.
+- **Mô phỏng 20 ngày:** kết thúc ở Lv 16 thay vì Lv 15.
+- **Kiểm thử:** `test_core.mjs` 202 kiểm tra đều đạt.
 
 ## v2.6 (17/10): thanh lý hàng cũ
 Commit 1180fe4. Chưa đẩy lên GitHub vì người dùng dặn "khoan up". Repo dự định: ericgbao1712-gb/xoailac.
