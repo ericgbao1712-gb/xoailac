@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+tools/art/out/
+.DS_Store
+node_modules/

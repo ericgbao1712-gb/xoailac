@@ -1,0 +1,279 @@
+<title>Xoài Lắc Ơi! Bản Thử</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;600;800&display=swap">
+<style>
+/* One cream "price board" on the game's banana-leaf green: what changed, then the ways in.
+   Single light look on purpose (it reuses Xoài Lắc Ơi!'s own colours), so every colour is set explicitly. */
+:root {
+  color-scheme: light;
+  --leaf: #86c232; --leaf-2: #5f9a1a; --leaf-3: #3d6418; --band: #2f5012;
+  --paper: #fffaf0; --paper-2: #fbf3e2; --rim: #e3d3b4; --sand: #efe2c6;
+  --ink: #3b2f22; --ink-2: #6e5b45; --ink-3: #9a8669;
+  --gold: #ffcf3d; --gold-2: #e8a91c; --mango: #f0bf34; --red: #e2433b; --red-2: #b53025;
+  --f-display: 'Baloo 2', 'Be Vietnam Pro', system-ui, sans-serif;
+  --f-body: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100%;
+  background: radial-gradient(circle at 20% 10%, rgba(255, 255, 255, .08) 0 2px, transparent 3px) 0 0 / 28px 28px, linear-gradient(180deg, #3d6418 0%, #2f5012 100%) fixed, var(--band);
+  color: var(--ink); font: 15px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 26px 40px;
+}
+.board { max-width: 600px; margin: 0 auto; background: var(--paper); border-radius: 22px; overflow: hidden;
+  box-shadow: 0 0 0 4px #fff, 0 24px 50px -10px rgba(0, 0, 0, .45); }
+.awning { height: 22px; background:
+  radial-gradient(circle at 12px 0, var(--leaf) 11.5px, transparent 12.5px) 0 10px / 48px 12px repeat-x,
+  radial-gradient(circle at 36px 0, #fff7dc 11.5px, transparent 12.5px) 0 10px / 48px 12px repeat-x,
+  repeating-linear-gradient(90deg, var(--leaf) 0 24px, #fff7dc 24px 48px) 0 0 / 100% 10px no-repeat; }
+.inner { padding: 16px clamp(16px, 5vw, 30px) 26px; display: grid; gap: 22px; }
+header { display: grid; gap: 4px; text-align: center; }
+.tag { justify-self: center; font: 800 12px/1 var(--f-body); letter-spacing: .08em; background: var(--ink); color: var(--gold); padding: 5px 10px; border-radius: 999px; }
+h1 { margin: 4px 0 0; font: 800 clamp(34px, 9vw, 46px)/1 var(--f-display); color: var(--leaf-2); transform: rotate(-2deg);
+  text-shadow: 0 4px 0 #dcecc0; text-wrap: balance; }
+.sub { margin: 0; color: var(--ink-2); font-weight: 600; text-wrap: balance; }
+h2 { margin: 0; font: 800 12.5px/1.2 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--leaf-3); }
+section { display: grid; gap: 10px; }
+
+.feat { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; align-items: start; background: #fff; border-radius: 14px; padding: 10px 12px; box-shadow: 0 0 0 1.5px var(--rim); }
+.feat canvas { width: 40px; height: 40px; image-rendering: pixelated; background: var(--paper-2); border-radius: 10px; }
+.feat h3 { margin: 0; font: 800 15px/1.3 var(--f-body); }
+.feat p { margin: 2px 0 0; font-size: 13.5px; color: var(--ink-2); }
+.feat p b { color: var(--ink); }
+.strip { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.strip canvas { width: 32px; height: 32px; background: var(--paper-2); border-radius: 8px; }
+.feat.later { background: var(--paper-2); box-shadow: 0 0 0 1.5px dashed var(--rim); }
+.feat.later h3 { color: var(--ink-2); }
+
+.ways { display: grid; gap: 10px; }
+.btn { display: grid; gap: 2px; text-align: left; width: 100%; border: 0; border-radius: 16px; padding: 12px 16px 13px;
+  font: inherit; color: var(--ink); background: #fff; box-shadow: 0 0 0 1.5px var(--rim), 0 4px 0 var(--sand); cursor: pointer; text-decoration: none; transition: transform .08s; }
+.btn strong { font: 800 16px/1.25 var(--f-body); }
+.btn span { font-size: 13px; color: var(--ink-2); }
+.btn:active { transform: translateY(3px); }
+.btn:focus-visible { outline: 3px solid var(--gold-2); outline-offset: 3px; }
+.btn.go { background: var(--leaf); color: #fff; box-shadow: 0 4px 0 var(--leaf-2); }
+.btn.go span { color: #f2fbe4; }
+.btn.hot { background: var(--mango); box-shadow: 0 4px 0 var(--gold-2); }
+.btn.hot span { color: #5a420c; }
+.pair { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 700px) { .pair { grid-template-columns: 1fr; } }
+.confirm { border: 2px dashed var(--red-2); border-radius: 14px; padding: 12px 14px; background: #fff0eb; display: grid; gap: 10px; }
+.confirm p { margin: 0; font-size: 14px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.row .btn { width: auto; flex: 1 1 140px; text-align: center; }
+.how { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
+.note { margin: 0; font-size: 12.5px; color: var(--ink-2); border-top: 2px dotted var(--rim); padding-top: 12px; }
+.status { min-height: 1.2em; margin: 0; font-size: 13px; font-weight: 700; color: var(--leaf-3); }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+</style>
+
+<main class="board">
+  <div class="awning" aria-hidden="true"></div>
+  <div class="inner">
+    <header>
+      <span class="tag">BẢN THỬ v2.6 · 17.10.2026</span>
+      <h1>Xoài Lắc Ơi!</h1>
+      <p class="sub">Bản nâng cấp đợt 1 để chơi thử trước khi đưa lên MeeGame</p>
+    </header>
+
+    <section aria-labelledby="h-new">
+      <h2 id="h-new">Có gì mới</h2>
+      <div class="feat"><canvas width="32" height="32" data-ico="eq_table"></canvas><div>
+        <h3>Màn bán hàng thoáng hơn</h3>
+        <p>Khu chọn nguyên liệu gom về <b>một lưới phím nhỏ</b> (trái cây đứng đầu, topping chưa mở thì ẩn), dock thấp còn khoảng một nửa nên <b>thấy rõ ngoài đường</b>. HUD, thanh dưới và thông báo nhỏ lại; thông báo nằm trên bầu trời, không che quầy.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="eq_table"></canvas><div>
+        <h3>Bàn ghế hai bên quán</h3>
+        <p>Có sẵn <b>2 bộ bàn nhựa</b> trên vỉa hè hai bên quầy, kê thêm được tới <b>4 bộ</b> (từ Lv 3). Bàn xếp một hàng, cách nhau đủ rộng nên không đè lên nhau, chừa lối đi giữa cho khách lên quầy. Khách mua xong ra bàn ngồi ăn, <b>ô quầy trống sớm</b> cho người sau, khách ngồi cũng chấm điểm cao hơn.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="ui_tag"></canvas><div>
+        <h3>Tự đặt giá bán</h3>
+        <p>Trong <b>Thực đơn</b>: chỉnh giá từng món, xem giá vốn, lời mỗi phần và tỉ lệ khách chê đắt. Rẻ thì đông khách, đắt thì có người bỏ đi. Giá đã đặt được lưu và không tự đổi.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="sup_lylac"></canvas><div>
+        <h3>Vật tư: ly, hộp, túi, xiên, đũa, khăn giấy</h3>
+        <p>Mỗi phần tốn 1 ly hoặc 1 hộp (hết là món đó ngưng bán), mỗi ly nước tốn 1 ly nhựa. Thiếu túi, khăn, xiên thì vẫn bán nhưng khách chấm thấp hơn. Chi phí tính vào lợi nhuận.</p>
+        <div class="strip"><canvas width="32" height="32" data-ico="sup_lylac"></canvas><canvas width="32" height="32" data-ico="sup_hop"></canvas><canvas width="32" height="32" data-ico="sup_lynuoc"></canvas><canvas width="32" height="32" data-ico="sup_xien"></canvas><canvas width="32" height="32" data-ico="sup_dua"></canvas><canvas width="32" height="32" data-ico="sup_tui"></canvas><canvas width="32" height="32" data-ico="sup_khan"></canvas></div></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="eq_truck"></canvas><div>
+        <h3>4 nhà cung cấp</h3>
+        <p><b>Chợ Cô Ba</b> giá chợ, lấy liền nhưng chỉ đi được trước giờ mở. <b>App</b> đắt hơn 12%, giao sau 40 phút. <b>Vựa sỉ</b> rẻ 20%, giao sáng mai, trái hơi dập. <b>Nhà vườn</b> đắt 30%, giao sau 2 tiếng, phần lắc ngon hơn và để lâu thêm 1 ngày.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="ui_staff"></canvas><div>
+        <h3>Nợ lương & giữ chân nhân viên</h3>
+        <p>Két không đủ trả lương thì thành <b>nợ</b>, không có tiền tự sinh ra. Nhân viên buồn dần, làm chậm, báo trước rồi mới nghỉ. Giữ người bằng <b>trả nợ</b>, <b>nói chuyện</b> hoặc <b>thưởng</b>, nhưng không phải lúc nào cũng thành công. Còn nợ thì không thuê được người mới.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="ui_coin"></canvas><div>
+        <h3>Cân lại giá</h3>
+        <p>Giá gợi ý của món giảm 5–9%. Nâng cấp đầu game rẻ hơn 20–40%, công thức rẻ hơn 17%. Đã chạy thử 20 ngày mô phỏng: lên gánh gốc me khoảng ngày 6–7, dãy ven hồ khoảng ngày 12–14.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="ui_quest"></canvas><div>
+        <h3>Mới 17.10: thêm nhiệm vụ và tính năng mở theo cấp</h3>
+        <p><b>Sổ tay quán mới</b>: 18 việc dẫn bạn thử từng tính năng, có tiền và XP. Thêm <b>7 nhiệm vụ ngày</b> (khách ngồi bàn, tiền tip, lãi trong ngày, không thiếu vật tư, không ai chê đắt…).</p>
+        <p>Mở theo cấp: <b>Lv 2</b> tự đặt giá · <b>Lv 3</b> kê thêm bàn, Vựa sỉ · <b>Lv 4</b> thưởng nóng nhân viên · <b>Lv 5</b> Nhà vườn · <b>Lv 6</b> 4 nhiệm vụ mỗi ngày · <b>Lv 8</b> Giờ vàng 14h–17h (khách +80%, giảm giá 20% trong khung giờ) · <b>Lv 12</b> Combo kèm nước (khách gọi nước nhiều hơn, nước giảm 20%).</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="ui_quest"></canvas><div>
+        <h3>Mới v2.2: mỗi cấp một tính năng, tới Lv 40</h3>
+        <p>Từ Lv 2 đến Lv 40, <b>cấp nào cũng mở một thứ mới</b>; bấm vào huy hiệu Lv trên HUD để xem cả hành trình. Một vài cấp sau Lv 22:</p>
+        <p><b>Lv 13</b> thẻ khách quen · <b>14</b> muối tôm Tây Ninh (món ngon hơn) · <b>15</b> Ngày hội học trò · <b>17</b> kho lạnh siêu lớn · <b>19</b> xe đẩy thứ hai (thêm 2 chỗ xếp hàng) · <b>20</b> bảng giá điện tử · <b>21</b> đồng phục · <b>23</b> công thức cấp 6 · <b>24</b> ly in logo · <b>25</b> chi nhánh cấp 6 · <b>26</b> quạt phun sương · <b>27</b> quản lý ca · <b>28</b> tủ trưng bày · <b>29</b> mối ruột (mua rẻ 5%) · <b>30</b> HTX Tiền Giang · <b>31</b> danh hiệu “Vua xoài lắc Sài Gòn” · <b>32</b> quầy sơ chế phụ · <b>33</b> combo nước cấp 2 · <b>34</b> chi nhánh Phú Quốc · <b>35</b> tour ăn vặt · <b>36</b> tip ví điện tử · <b>37</b> giờ vàng từ 13h · <b>38</b> mùa lễ hội · <b>39</b> thợ lắc bậc thầy · <b>40</b> Huyền thoại Xoài Lắc.</p>
+        <p>Từ <b>Lv 41</b> trở đi là cấp thành thạo: mỗi cấp một <b>rương vàng</b> mở trong sổ nhiệm vụ. Thêm 10 nhiệm vụ chính mới (Lv 25, 30, 35, 40, 10.000 phần, 6 chi nhánh…). XP sau Lv 22 tăng đều chứ không nhân lũy thừa, để Lv 40 cày được.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="ui_tag"></canvas><div>
+        <h3>Mới v2.6: thanh lý hàng cũ</h3>
+        <p>Vào <b>Kho ▸ Thanh lý</b> (buổi sáng, trước khi mở hàng): Cô Ba đầu hẻm mua lại hàng tồn, lô cũ nhất trước. Hàng <b>hết hạn sau hôm nay</b> thu 35% vốn, <b>còn 1 ngày</b> 50%, <b>còn lâu hơn</b> 60%: luôn lỗ so với lúc mua nhưng đỡ hơn để hư bỏ. Phần lỗ hiện thành một dòng riêng trong báo cáo cuối ngày.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="ak_cavien"></canvas><div>
+        <h3>Mới v2.5: món ăn kèm, tab Giá bán, quầy đổi chất liệu</h3>
+        <p><b>8 món ăn kèm</b> nhập ở Kho, có hạn dùng, khách gọi thêm thì thu thêm tiền: <b>Lv 4</b> bánh tráng trộn · <b>Lv 6</b> cá viên chiên · <b>Lv 9</b> phô mai que · <b>Lv 12</b> bò bía · <b>Lv 14</b> xoài sấy dẻo. Ba món mở bằng <b>nhiệm vụ chính</b>: bánh tráng nướng (lãi 800k/ngày), trứng cút xào me (4.0★), khô gà lá chanh (doanh thu 8 triệu/ngày). Lúc soạn phiếu có món kèm thì bấm nút <b>Ăn kèm</b> rồi mới lắc.</p>
+        <div class="strip"><canvas width="32" height="32" data-ico="ak_banhtrangtron"></canvas><canvas width="32" height="32" data-ico="ak_cavien"></canvas><canvas width="32" height="32" data-ico="ak_phomaique"></canvas><canvas width="32" height="32" data-ico="ak_bobia"></canvas><canvas width="32" height="32" data-ico="ak_xoaisay"></canvas><canvas width="32" height="32" data-ico="ak_banhtrangnuong"></canvas><canvas width="32" height="32" data-ico="ak_trungcut"></canvas><canvas width="32" height="32" data-ico="ak_khoga"></canvas></div>
+        <p><b>Giá bán</b> giờ là một tab riêng trong <b>Nâng cấp</b>, mỗi món một thẻ gọn. <b>Mặt quầy</b> đổi chất liệu theo nâng cấp Quầy sơ chế: gỗ mộc → gỗ sồi → sơn bạc hà → inox → đá cẩm thạch viền vàng. <b>Bảng hiệu</b> treo lơ lửng dưới tấm bạt, giữa màn hình.</p></div></div>
+      <div class="feat"><canvas width="32" height="32" data-ico="sup_lylac"></canvas><div>
+        <h3>Mới: tem logo, đồng phục, mặt tiền</h3>
+        <p><b>Lv 24 · Tem logo in trên ly</b> (Quán → Trang trí → Thiết kế): chọn khung tròn / bo góc / ruy băng, chữ thẳng hoặc cong, 8 màu nền, linh vật, khẩu hiệu. Tem hiện trên ly khách cầm, ly đưa qua quầy, nút LẮC và gắn cạnh bảng hiệu.</p>
+        <p><b>Lv 21 · Đồng phục</b> (Nhân viên → Đội): 8 màu × 3 kiểu (tạp dề, áo thun đồng màu, áo tối tạp dề màu). Nhân viên đã thuê giờ đứng ngoài quán, phục vụ ra lau bàn khi khách đi.</p>
+        <p><b>Mặt tiền mở dần theo cấp</b> (Quán → Trang trí), mỗi món cộng độ sang: <b>Lv 9</b> cờ đỏ vàng · <b>13</b> chậu cúc · <b>16</b> bảng vàng viền đỏ · <b>18</b> cờ xanh xoài · <b>20</b> hoa giấy · <b>22</b> bảng gỗ nâu · <b>24</b> bóng bay tim · <b>26</b> bảng hồng pastel · <b>28</b> sen đá · <b>31</b> bảng neon · <b>33</b> cờ cầu vồng · <b>35</b> bóng 7 màu · <b>36</b> xương rồng · <b>38</b> dây đèn lồng mini (sáng ban đêm) · <b>40</b> lan tím.</p>
+        <p>Đã gỡ các món trang trí không hiện ra ngoài quán (đèn dây vàng, tranh treo tường, đồ Đặc biệt). Ai đã mua được hoàn đúng số tiền đã trả.</p></div></div>
+      <div class="feat later"><canvas width="32" height="32" data-ico="ui_map"></canvas><div>
+        <h3>Chưa có trong bản này</h3>
+        <p>Thị trấn, thuê mặt bằng, nhiều cửa hàng, kết bạn, bảng xếp hạng và thách đấu. Phần trực tuyến cần máy chủ và cơ sở dữ liệu thật, nên chưa làm, và cũng không làm giả bằng dữ liệu tĩnh.</p></div></div>
+    </section>
+
+    <section aria-labelledby="h-play">
+      <h2 id="h-play">Vào chơi</h2>
+      <div class="ways">
+        <a class="btn go" href="xoailac/index.html">
+          <strong>Chơi bình thường</strong>
+          <span>Bắt đầu mới hoặc chơi tiếp save đã có trong link này.</span>
+        </a>
+        <div class="pair">
+          <button class="btn hot" type="button" id="try-busy">
+            <strong>Thử nhanh: quán đông</strong>
+            <span>Dãy ven hồ, 4 bộ bàn hai bên, đủ món → thử giá bán và nhà cung cấp.</span>
+          </button>
+          <button class="btn hot" type="button" id="try-looks">
+            <strong>Thử nhanh: quán Lv 32</strong>
+            <span>Đã mở tem logo, đồng phục và 10 món mặt tiền, có nhân viên → thử trang trí.</span>
+          </button>
+          <button class="btn hot" type="button" id="try-broke">
+            <strong>Thử nhanh: quán kẹt tiền</strong>
+            <span>Còn 40k, nợ lương 2 người, một người đòi nghỉ → thử giữ chân.</span>
+          </button>
+        </div>
+        <div class="confirm" id="confirm" hidden>
+          <p>Link này đã có save của bạn. Bản thử sẽ thay save đó; save cũ được cất sang một bản sao để khôi phục sau.</p>
+          <div class="row">
+            <button class="btn hot" type="button" id="confirm-yes"><strong>Cất save cũ và thử</strong></button>
+            <button class="btn" type="button" id="confirm-no"><strong>Thôi</strong></button>
+          </div>
+        </div>
+        <button class="btn" type="button" id="restore" hidden>
+          <strong>Khôi phục save trước khi thử</strong>
+          <span id="restore-info">Đưa save cũ của bạn trở lại.</span>
+        </button>
+        <p class="status" id="status" role="status"></p>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-how">
+      <h2 id="h-how">Gợi ý thử</h2>
+      <ol class="how">
+        <li><b>Quán đông:</b> vào <b>Thực đơn</b> tăng giá xoài lắc +20k, mở hàng và xem số khách “chê đắt” trong báo cáo cuối ngày.</li>
+        <li>Vào <b>Kho</b>, chọn <b>Vựa sỉ</b>, bỏ vào giỏ rồi đặt hàng: hàng tới vào sáng hôm sau.</li>
+        <li><b>Quán kẹt tiền:</b> vào <b>Nhân viên</b>, thử “Nói chuyện”, rồi bán một ngày và bấm “Trả nợ”.</li>
+      </ol>
+    </section>
+
+    <p class="note">Save của link thử nằm riêng trong trình duyệt của bạn, không đụng tới save trên meegame.shop. Save cũ (v1) mở bằng bản này sẽ được nâng lên v2: tiến trình giữ nguyên, có thêm xấp ly hộp Má gửi, và một bản sao v1 nguyên gốc được cất lại trong trình duyệt. Nút “Tải file” sao lưu không chạy trong link này, hãy dùng “Sao chép mã”.</p>
+  </div>
+</main>
+
+<script>
+(() => {
+  const KEY = 'xoai-lac/save/v1', BAK = 'xoai-lac/save/v1.truoc-ban-thu';
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) {} },
+  };
+  const $ = (id) => document.getElementById(id);
+  const status = (t) => { $('status').textContent = t; };
+
+  // icons cut from the game's own atlas (xoailac/assets/icons.png)
+  fetch('xoailac/src/art/data/icons.js').then((r) => r.text()).then((t) => {
+    const F = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1)).frames;
+    const img = new Image();
+    img.onload = () => document.querySelectorAll('canvas[data-ico]').forEach((c) => {
+      const f = F[c.dataset.ico]; if (!f) return;
+      const g = c.getContext('2d'); g.imageSmoothingEnabled = false;
+      g.drawImage(img, f[0], f[1], f[2], f[3], 0, 0, 32, 32);
+    });
+    img.src = 'xoailac/assets/icons.png';
+  }).catch(() => {});
+
+  // quick-test saves (v2 shape; the game's migrate() fills in everything else)
+  const ING = ['muoitom', 'ot', 'duong', 'dauphong', 'sotme', 'ximuoi', 'rauram', 'mamruoc', 'khobo', 'khomuc', 'tc_xoai', 'tc_coc', 'tc_oi', 'tc_xoaicat', 'tc_thom', 'tc_man'];
+  const SIDES = ['ak_banhtrangtron', 'ak_cavien', 'ak_phomaique', 'ak_bobia', 'ak_xoaisay', 'ak_banhtrangnuong', 'ak_trungcut', 'ak_khoga'];   // v2.5 món ăn kèm
+  const person = (i, role, extra) => Object.assign({ id: i, name: ['Bé Na', 'Anh Tèo', 'Chị Mơ', 'Bin'][i - 1], role, rarity: 3, spd: 6, skl: 5, chm: 5, trait: null,
+    lvl: 3, jobs: 40, look: { lookSeed: i * 91 }, lookSeed: i * 91, hiredDay: 1, mood: 72, owed: 0, owedDays: 0, quitWarnDay: null, talkDay: 0, bonusDay: 0 }, extra || {});
+  function testSave(kind) {
+    const now = Date.now();
+    const d = new Date(now), today = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const login = { lastDate: today, streak: 1, claimedDate: today };   // today's login gift already taken: keeps the test money as set
+    const sup = (n) => ({ ly_lac: n, hop_giay: n, ly_nuoc: n, xien: n, dua: n, tui: n, khan: n });
+    if (kind === 'looks') return JSON.stringify({
+      v: 2, savedAt: now, createdAt: now, started: true, tutorial: { step: 99, done: true }, shopName: 'Xoài Lắc Nhà Mình',
+      tier: 4, level: 32, money: 900000, day: 60, rating: { recent: [5, 5, 4, 5, 5, 5], avg: 4.5, count: 400 },
+      staff: [person(1, 'phucvu'), person(2, 'daubep'), person(3, 'phucvu')], nextStaffId: 4,
+      upgrades: { table: 1, sidetable: 2, tablestyle: 3, stovetype: 2, sign: 3, cooling: 1, tarp: 1, kho: 3 },
+      menu: { xoailac: true, coclac: true, oilac: true, xoaicat: true, manlac: true, thomlac: true },
+      inventory: Object.fromEntries(ING.map((k) => [k, 60]).concat(SIDES.map((k) => [k, 20]))), supplies: sup(200),
+      deco: { owned: ['den_bong', 'cay_none', 'tuong_tron', 'db_none', 'den_long_do', 'cay_bonsai'], equipped: { den: 'den_long_do', cay: 'cay_bonsai', tuong: 'tuong_tron', dacbiet: 'db_none' } },
+      flags: { mom: { start: true, firstSale: true, firstFive: true, lowStock: true, firstStaff: true }, seenUnlock: {}, ui: {} }, login,
+    });
+    if (kind === 'busy') return JSON.stringify({
+      v: 2, savedAt: now, createdAt: now, started: true, tutorial: { step: 99, done: true }, shopName: 'Xoài Lắc Nhà Mình',
+      tier: 3, level: 12, money: 50000, day: 8, rating: { recent: [5, 5, 4, 5, 4, 5], avg: 4.3, count: 120 },
+      staff: [person(1, 'phucvu'), person(2, 'daubep'), person(3, 'daubep')], nextStaffId: 4,
+      upgrades: { table: 1, sidetable: 2, tablestyle: 1, stovetype: 1, sign: 2, cooling: 1, tarp: 1, kho: 2 },
+      menu: { xoailac: true, coclac: true, oilac: true, xoaicat: true, manlac: true, thomlac: true },
+      inventory: Object.fromEntries(ING.map((k) => [k, 50]).concat(SIDES.map((k) => [k, 20]))), supplies: sup(150),
+      flags: { mom: { start: true, firstSale: true, firstFive: true, lowStock: true }, seenUnlock: {}, ui: {} }, login,
+    });
+    return JSON.stringify({
+      v: 2, savedAt: now, createdAt: now, started: true, tutorial: { step: 99, done: true }, shopName: 'Xoài Lắc Nhà Mình',
+      tier: 2, level: 7, money: 40, day: 9, rating: { recent: [4, 4, 3, 5], avg: 3.9, count: 60 },
+      staff: [person(1, 'phucvu', { mood: 34, owed: 230, owedDays: 2 }), person(2, 'daubep', { mood: 22, owed: 260, owedDays: 3, quitWarnDay: 8 })], nextStaffId: 3,
+      upgrades: { table: 1, tarp: 1 }, menu: { xoailac: true, coclac: true, oilac: true, xoaicat: true },
+      inventory: Object.fromEntries(ING.map((k) => [k, 25])), supplies: sup(60),
+      flags: { mom: { start: true, firstSale: true, firstFive: true, lowStock: true, firstStaff: true }, seenUnlock: {}, ui: {} }, login,
+    });
+  }
+
+  let pending = null;
+  function start(kind) {
+    if (!store.set(KEY, testSave(kind))) { status('Trình duyệt đang chặn bộ nhớ của trang, chưa nạp được save thử. Thử cửa sổ thường (không ẩn danh).'); return; }
+    location.href = 'xoailac/index.html';
+  }
+  function ask(kind) {
+    const cur = store.get(KEY);
+    if (cur && store.get(BAK) === null) { pending = kind; $('confirm').hidden = false; $('confirm-yes').focus(); return; }
+    start(kind);       // no save yet, or the player's own save is already set aside
+  }
+  $('try-busy').addEventListener('click', () => ask('busy'));
+  $('try-broke').addEventListener('click', () => ask('broke'));
+  $('try-looks').addEventListener('click', () => ask('looks'));
+  $('confirm-no').addEventListener('click', () => { pending = null; $('confirm').hidden = true; });
+  $('confirm-yes').addEventListener('click', () => {
+    const cur = store.get(KEY);
+    if (cur && !store.set(BAK, cur)) { status('Không cất được save cũ nên chưa nạp bản thử.'); return; }
+    start(pending);
+  });
+
+  function syncRestore() {
+    const bak = store.get(BAK);
+    $('restore').hidden = bak === null;
+    if (bak) try { const b = JSON.parse(bak); $('restore-info').textContent = `Save cũ: cấp ${b.level || 1}, ngày ${b.day || 1}, gánh cấp ${b.tier || 1}.`; } catch (e) {}
+  }
+  $('restore').addEventListener('click', () => {
+    const bak = store.get(BAK); if (bak === null) return;
+    if (store.set(KEY, bak)) { store.del(BAK); syncRestore(); status('Đã đưa save cũ trở lại. Bấm "Chơi bình thường" để chơi tiếp.'); }
+  });
+  syncRestore();
+})();
+</script>
