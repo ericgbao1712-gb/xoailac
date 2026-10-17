@@ -14,10 +14,13 @@ export function fmtProg(type, v) {
   return String(Math.floor(v + 1e-9));
 }
 
-function rewardChips(r) {
+const xpFor = (kind, base) => { try { return G().get?.questXp?.(kind, base) ?? base ?? 0; } catch (e) { return base || 0; } };
+const nfx = (v) => Math.round(v).toLocaleString('vi-VN');
+function rewardChips(r, kind) {
   const out = [];
+  const xp = kind ? xpFor(kind, r?.xp) : r?.xp;                   // v2.6.11: XP scales with the level
   if (r?.money) out.push(span('chip gold', ico('ui_coin', 16), span('num', fmtShort(r.money))));
-  if (r?.xp) out.push(span('chip jade', ico('ui_xp', 16), span('num', r.xp + ' XP')));
+  if (xp) out.push(span('chip jade', ico('ui_xp', 16), span('num', nfx(xp) + ' XP')));
   if (r?.deco) out.push(span('chip', ico('ui_deco', 16), C.DECO.find((d) => d.id === r.deco)?.name || 'Trang trí'));
   return out;
 }
@@ -30,7 +33,7 @@ function mainCard(api) {
   const card = div('card main' + (ready ? ' gold ready' : ''));
   const idx = (mq.index ?? S().quests?.main ?? 0) + 1, total = mq.total || C.MAIN_QUESTS.length;
   card.appendChild(div('mq-top', ico(ready ? 'ui_gift' : 'ui_trophy', 48),
-    div('grow', span('muted sm', `Mục tiêu ${idx}/${total}`), h('b', { class: 'mq-t' }, q.text), div('chips', rewardChips(q.reward), ...C.INGREDIENTS.filter((x) => x.side && x.quest === q.id).map((x) => span('chip gold', ico(x.icon, 16), 'Mở món: ' + x.name))))));
+    div('grow', span('muted sm', `Mục tiêu ${idx}/${total}`), h('b', { class: 'mq-t' }, q.text), div('chips', rewardChips(q.reward, 'main'), ...C.INGREDIENTS.filter((x) => x.side && x.quest === q.id).map((x) => span('chip gold', ico(x.icon, 16), 'Mở món: ' + x.name))))));
   const pct = Math.min(100, (mq.progress / Math.max(0.0001, mq.target)) * 100);
   card.appendChild(div('mq-bar', div('bar ' + (ready ? '' : 'jade'), h('i', { style: { '--p': pct } })), span('num', `${fmtProg(q.type, mq.progress)}/${fmtProg(q.type, mq.target)}`)));
   if (q.minReviews && mq.reviews != null) card.appendChild(span('muted sm', `Đánh giá: ${mq.reviews}/${q.minReviews}`));
@@ -58,7 +61,7 @@ function v2Card(api) {
   const ready = !!info.done;
   const card = div('card main v2' + (ready ? ' gold ready' : info.locked ? ' locked' : ''));
   card.appendChild(div('mq-top', ico(info.locked ? 'ui_lock' : ready ? 'ui_gift' : 'ui_book', 48),
-    div('grow', span('muted sm', `Việc ${info.index + 1}/${info.total}` + (info.locked ? ` · mở ở Lv ${q.minLv}` : '')), h('b', { class: 'mq-t' }, q.text), div('chips', rewardChips(q.reward)))));
+    div('grow', span('muted sm', `Việc ${info.index + 1}/${info.total}` + (info.locked ? ` · mở ở Lv ${q.minLv}` : '')), h('b', { class: 'mq-t' }, q.text), div('chips', rewardChips(q.reward, 'v2')))));
   const pct = Math.min(100, (info.progress / Math.max(0.0001, info.target)) * 100);
   card.appendChild(div('mq-bar', div('bar ' + (ready ? '' : 'jade'), h('i', { style: { '--p': pct } })), span('num', `${fmtProg(q.type, info.progress)}/${fmtProg(q.type, info.target)}`)));
   if (ready) {
@@ -98,7 +101,7 @@ function dailyCard(t, i, api) {
       api.rerender();
     });
     st.appendChild(b);
-  } else st.appendChild(span('muted sm', C.CHESTS[t.chest]?.name || 'Rương'));
+  } else st.appendChild(span('muted sm', (C.CHESTS[t.chest]?.name || 'Rương') + ' · +' + nfx(xpFor(t.chest, C.CHESTS[t.chest]?.xp)) + ' XP'));
   card.appendChild(st);
   return card;
 }

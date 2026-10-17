@@ -11,7 +11,7 @@ import { moodBand } from './workers.js';
 import { owedTotal } from './staff.js';
 import { staffSlots, roleUnlocked, roleCount, candidatesOf } from './staff.js';
 import { trayStatus } from './kitchen.js';
-import { mainQuestInfo, dailyTasks, loginInfo, v2QuestInfo } from './quests.js';
+import { mainQuestInfo, dailyTasks, loginInfo, v2QuestInfo, questXp } from './quests.js';
 import { tierInfo, forecastInfo } from './day.js';
 import { raining, exposed, needsTarp, ownsTarp, tarpOpen, weatherNow, nextShowerIn } from './rain.js';
 
@@ -264,6 +264,7 @@ export function createGetters(G) {
     tables: () => builtTables(G),
     stoves: () => builtStoves(G),
     weatherNow: () => weatherNow(G),
+    questXp: (kind, base) => questXp(G, kind, base),   // v2.6.11
     rain: () => ({ raining: raining(G), exposed: exposed(G), needsTarp: needsTarp(G), owns: ownsTarp(G), tarp: tarpOpen(G), next: nextShowerIn(G) }),
   };
 }

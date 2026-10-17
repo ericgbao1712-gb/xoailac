@@ -182,15 +182,21 @@ export function claimV2(G) {
   if (!info.quest) return fail('none', 'Sổ tay đã xong hết rồi nha!');
   if (!info.done) return fail('notReady', info.locked ? `Việc này mở ở Lv ${info.quest.minLv} nha.` : 'Việc này chưa xong nha.');
   const r = info.quest.reward || {};
+  const xp = questXp(G, 'v2', r.xp);
   if (r.money) addMoney(G, r.money, 'quest');
-  if (r.xp) addXp(G, r.xp);
+  if (xp) addXp(G, xp);
   s.quests.v2++;
   s.quests.v2Claimable = false;
   updateQuests(G);
-  return { ok: true, reward: { money: r.money || 0, xp: r.xp || 0, deco: null, ingredients: 0 } };
+  return { ok: true, reward: { money: r.money || 0, xp, deco: null, ingredients: 0 } };
 }
 
 // ───────────── rewards ─────────────
+/** v2.6.11: XP a quest / chest pays now: share of this level's EXP bar, never below its fixed amount. */
+export function questXp(G, kind, base = 0) {
+  const need = C.LEVEL.xpToNext(G.state.level || 1);
+  return Math.max(base || 0, Math.round(need * (C.QUEST_XP[kind] || 0)));
+}
 const tierMult = (G) => C.TIER_MULT[G.state.tier - 1];
 
 /** Add `each` units of up to `kinds` useful ingredients, as far as the storeroom allows. Returns total units. */
@@ -223,14 +229,15 @@ export function openChest(G, chestId) {
   const s = G.state, c = C.CHESTS[chestId] || C.CHESTS.wood;
   const money = Math.round(G.rng.range(c.money[0], c.money[1]) * tierMult(G));
   addMoney(G, money, 'chest');
-  addXp(G, c.xp);
+  const xp = questXp(G, chestId in C.QUEST_XP ? chestId : 'wood', c.xp);
+  addXp(G, xp);
   let deco = null;
   if (c.decoChance && G.rng.chance(c.decoChance)) {
     const cand = C.DECO.filter((d) => !d.default && !s.deco.owned.includes(d.id) && d.source !== 'login' && (d.minTier || 1) <= s.tier);
     if (cand.length) deco = giveDeco(G, G.rng.pick(cand).id);
   }
   const ingredients = c.ingredientPack ? giveIngredients(G, c.ingredientPack, 2) : 0;
-  return { money, xp: c.xp, deco, ingredients };
+  return { money, xp, deco, ingredients };
 }
 
 export function claimMain(G) {
@@ -238,8 +245,9 @@ export function claimMain(G) {
   if (!s.quests.mainClaimable) return fail('notReady', 'Mục tiêu này chưa xong nha.');
   const q = C.MAIN_QUESTS[s.quests.main];
   const r = q.reward || {};
+  const xp = questXp(G, 'main', r.xp);
   if (r.money) addMoney(G, r.money, 'quest');
-  if (r.xp) addXp(G, r.xp);
+  if (xp) addXp(G, xp);
   let deco = null;
   if (r.deco) deco = giveDeco(G, r.deco);
   s.quests.main++;
@@ -249,7 +257,7 @@ export function claimMain(G) {
   for (const sd of sides) { G.toast(`Mở khoá món ăn kèm: ${sd.name}! Nhập ở Kho nha.`, 'big', sd.icon); G.emit('sideUnlocked', { id: sd.id }); }
   if (q.mom && !/^tier\d/.test(q.mom)) G.mom(q.mom);   // tier lines are shown by the tier-up modal
   updateQuests(G);
-  return { ok: true, reward: { money: r.money || 0, xp: r.xp || 0, deco, ingredients: 0, sides: sides.map((x) => x.id) } };
+  return { ok: true, reward: { money: r.money || 0, xp, deco, ingredients: 0, sides: sides.map((x) => x.id) } };
 }
 
 export function claimDaily(G, i) {

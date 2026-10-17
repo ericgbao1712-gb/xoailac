@@ -1,7 +1,25 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 19, nhãn v2.6.10, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 20, nhãn v2.6.11, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.11 (17/10): nhiệm vụ thưởng nhiều EXP hơn
+- **Trước đây:** mục tiêu chính không cho EXP (chỉ cho tiền). Rương nhiệm vụ ngày cho cố định 20/40/80 EXP, Sổ tay cho 20–600 EXP. Từ Lv 20 trở đi, các con số này gần như không đáng kể so với thanh EXP (Lv 30 cần khoảng 95.000).
+- **Giờ thưởng theo % thanh EXP của cấp đang chơi** (`QUEST_XP`). Mức cố định cũ là mức tối thiểu.
+
+  | Phần thưởng | EXP |
+  |---|---|
+  | Mục tiêu chính | 15% thanh EXP |
+  | Việc trong Sổ tay quán mới | 8% |
+  | Rương gỗ / bạc (nhiệm vụ ngày) | 4% / 7% |
+  | Rương vàng (xong hết nhiệm vụ ngày, rương thành thạo) | 12% |
+
+  Ví dụ ở Lv 30: một mục tiêu chính cho khoảng 14.300 EXP. Làm hết nhiệm vụ ngày được khoảng 1/4 đến 1/3 cấp mỗi ngày.
+- **Hiển thị:** tab Nhiệm vụ hiện đúng số EXP sẽ nhận (thẻ mục tiêu, Sổ tay, dòng rương nhiệm vụ ngày).
+- **Mô phỏng:**
+  - 20 ngày: Lv 17 thay vì Lv 15–16.
+  - 60 ngày: Lv 32 thay vì Lv 24. Tăng tốc khá mạnh ở giai đoạn sau; muốn giảm thì chỉnh `QUEST_XP` trong `config.js`.
+- **Kiểm thử:** `test_core.mjs` 246 kiểm tra đều đạt.
 
 ## v2.6.10 (17/10): tốc độ ×3
 - Nút tốc độ trên HUD giờ xoay vòng 1× → 2× → 3× → 1×. Nút ×3 màu cam để phân biệt với ×2 màu vàng.
