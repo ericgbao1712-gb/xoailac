@@ -157,8 +157,7 @@ export function openSettings() {
             h('button', { class: 'btn jade sm', onclick: () => { sfx('click'); openBackup(); } }, 'Tạo mã sao lưu'),
             h('button', { class: 'btn paper sm', onclick: () => { sfx('click'); openRestore(); } }, 'Khôi phục'))),
         div('card set-card',
-          div('set-about', ico('ui_home', 32), div('grow', h('b', null, 'Xoài Lắc Ơi!'), span('muted sm', 'Game quản lý xe xoài lắc pixel. Cảm ơn bạn đã ghé xe nha!'),
-            span('set-credit', 'Ý tưởng game: ', h('b', null, 'Đèo Thiên Ân')))),
+          div('set-about', ico('ui_home', 32), div('grow', h('b', null, 'Xoài Lắc Ơi!'), span('muted sm', 'Game quản lý xe xoài lắc pixel. Cảm ơn bạn đã ghé xe nha!'))),
           div('set-soon', span('sl-l', 'Sắp ra mắt'), div('soon-row', C.NEXT_GAMES.map((g) => span('chip jade', ico('ui_star', 16), g))))),
         h('button', { class: 'btn red sm block', onclick: () => {
           ctx.confirm({
