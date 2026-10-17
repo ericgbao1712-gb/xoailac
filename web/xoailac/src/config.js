@@ -672,7 +672,7 @@ export const CHESTS = {
 export const DAILY_ALL_BONUS = 'gold';
 // v2.6.11: quests pay XP as a share of the EXP bar of the current level (so they still matter at Lv 30+);
 // the fixed `xp` of a reward / chest is the minimum. main = mục tiêu chính, v2 = Sổ tay quán mới.
-export const QUEST_XP = { main: 0.15, v2: 0.08, wood: 0.04, silver: 0.07, gold: 0.12 };
+export const QUEST_XP = { main: 0.075, v2: 0.04, wood: 0.02, silver: 0.035, gold: 0.06 };   // v2.6.12: halved (60-day sim: Lv 32 → 27; before v2.6.11: 24)
 
 // 7-day real-date login streak (money × TIER_MULT)
 export const LOGIN_REWARDS = [

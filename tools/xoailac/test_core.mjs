@@ -544,12 +544,13 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const Q = await import(ROOT + '/core/quests.js');
   const g = fresh(251); g.state.level = 30; g.state.xp = 0;
   const need = C.LEVEL.xpToNext(30);
-  ok(Q.questXp(g._G, 'main', 0) === Math.round(need * 0.15) && Q.questXp(g._G, 'gold', 80) === Math.round(need * 0.12), 'main 15 %, gold chest 12 % of the bar');
+  ok(Q.questXp(g._G, 'main', 0) === Math.round(need * C.QUEST_XP.main) && Q.questXp(g._G, 'gold', 80) === Math.round(need * C.QUEST_XP.gold), 'main / gold chest pay their share of the bar');
+  ok(C.QUEST_XP.main === 0.075 && C.QUEST_XP.gold === 0.06, 'v2.6.12: shares halved');
   g.state.level = 2;
   ok(Q.questXp(g._G, 'gold', 80) >= 80 && Q.questXp(g._G, 'v2', 20) >= 20, 'never below the old fixed amount');
   // a claimed main quest really adds that XP
   const h = fresh(252); h.state.level = 30; h.state.xp = 0; h.state.quests.main = 1; h.state.quests.mainClaimable = true;
   const r = h.act.claimMainQuest();
-  ok(r.ok && r.reward.xp === Math.round(need * 0.15) && h.state.xp === r.reward.xp, 'claimMainQuest grants and reports the scaled XP (' + r.reward.xp + ')');
+  ok(r.ok && r.reward.xp === Math.round(need * C.QUEST_XP.main) && h.state.xp === r.reward.xp, 'claimMainQuest grants and reports the scaled XP (' + r.reward.xp + ')');
 }
 console.log('OK', n, 'checks');
