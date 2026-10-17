@@ -46,6 +46,8 @@ export function nextShowerIn(G) {
 export const needsTarp = (G) => !tierDef(G).covered;
 export const ownsTarp = (G) => (G.state.upgrades.tarp || 0) > 0;
 export const tarpOpen = (G) => !!G.state.today.tarp;
+/** v2.6.5: from tier `autoTarpTier` (Chợ đêm bờ kè) the tarp rolls out by itself for every shower. */
+export const autoTarp = (G) => (G.state.tier || 1) >= (R.autoTarpTier || 99);
 /** Guests are getting wet right now. */
 export const exposed = (G) => needsTarp(G) && !tarpOpen(G) && raining(G);
 
@@ -75,7 +77,10 @@ export function rainTick(G, dtMin, angryLeave) {
     w.rainOn = on;
     if (on) {
       G.emit('rainStart', { needsTarp: needsTarp(G), owns: ownsTarp(G) });
-      if (needsTarp(G)) {
+      if (autoTarp(G)) {
+        if (!s.today.tarp) { s.today.tarp = true; G.emit('tarp', { open: true }); }
+        G.toast('Mưa rồi! Bạt tự kéo ra che cho khách.', 'info', 'wx_rain');
+      } else if (needsTarp(G)) {
         if (ownsTarp(G)) G.toast('Mưa rồi! Chạm KÉO BẠT kẻo khách ướt bỏ về!', 'bad', 'wx_rain');
         else G.toast('Mưa rồi mà chưa có bạt — khách ướt sẽ bỏ về! Mua Bạt che mưa ở Nâng cấp nha.', 'bad', 'wx_rain');
       }

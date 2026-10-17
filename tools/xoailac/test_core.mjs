@@ -443,4 +443,19 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const f = makeLook('giadinh', 7, 0), m = makeLook('giadinh', 7, 1), k = makeLook('giadinh', 7, 2);
   ok(new Set([f.sheet, m.sheet, k.sheet]).size === 3, 'family = dad + mom + kid');
 }
+// ── 20. v2.6.5 the tarp rolls out by itself from Chợ đêm bờ kè (tier 4); the vỉa hè still pulls it by hand
+{
+  const rainDay = (seed, tier) => {
+    const g = fresh(seed); g.act.debug.level(20); g.act.debug.tier(tier); g.state.weather = 'rain'; g.state.today.showers = null;
+    g.act.openShop(); let sawRain = false, tarpInRain = true, i = 0;
+    while ((g.state.phase === 'open' || g.state.phase === 'closing') && i++ < 100000) {
+      g.update(0.25);
+      if (g.get.rain().raining) { sawRain = true; if (!g.state.today.tarp) tarpInRain = false; }
+    }
+    return { sawRain, tarpInRain, tarpAfter: !!g.state.today.tarp };
+  };
+  const t4 = rainDay(201, 4), t1 = rainDay(202, 1);
+  ok(t4.sawRain && t4.tarpInRain, 'tier 4: the tarp is out for every shower without a tap');
+  ok(t1.sawRain && !t1.tarpInRain, 'tier 1: the tarp still waits for the player');
+}
 console.log('OK', n, 'checks');

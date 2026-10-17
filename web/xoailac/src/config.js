@@ -507,6 +507,7 @@ export const RAIN = {
   from: 10 * 60 + 25, to: 22 * 60 + 40,
   wetLeaveMin: 30,               // game minutes a guest sits in the rain before giving up
   tarpPullSec: 0.9,              // real seconds the unrolling animation takes
+  autoTarpTier: 4,               // v2.6.5: from Chợ đêm bờ kè on, the staff roll the tarp out by themselves when a shower starts
 };
 
 // ───────────────────────────── WEATHER & EVENTS ─────────────────────────────

@@ -463,7 +463,7 @@ export function createCounterRenderer(canvas, game) {
     fx.update(dt, view);
     let wxNow = s.weather;
     try { if (game.get && game.get.weatherNow) wxNow = game.get.weatherNow(); } catch (e) { /* keep the day's weather */ }
-    const tarpWant = s.today && s.today.tarp ? 1 : 0;
+    const tarpWant = s.today && s.today.tarp ? 1 : 0;   // v2.6.5: from Chợ đêm bờ kè the sim rolls it out by itself
     tarpK += Math.sign(tarpWant - tarpK) * Math.min(Math.abs(tarpWant - tarpK), dt / 0.9);
     amb.update(dt, { x0: view.x0, x1: view.x1, layout: L, clock: s.clock, weather: wxNow, open: s.phase === 'open' });
     const night = nightOf(s.clock);
@@ -529,8 +529,8 @@ export function createCounterRenderer(canvas, game) {
       extras.addCup(Math.round(h.x - 8) + 8, Math.round(y - 8) + 8, 16);
     }
 
-    if (tarpK > 0.01) drawCanopy(bctx, L, tarpK, time);
-    drawWeather(bctx, view, wxNow, time, L.canopy && tarpK > 0.6 ? { x0: L.canopy.x0, y0: L.canopy.yTop, x1: L.canopy.x1, y1: L.canopy.ground } : null);
+    drawWeather(bctx, view, wxNow, time, L.canopy && tarpK > 0.6 ? { x0: L.canopy.x0, y0: Math.round(L.canopy.yTop + (L.canopy.yFront - L.canopy.yTop) * tarpK) + 4, x1: L.canopy.x1, y1: L.canopy.ground } : null, L.counter.top);   // v2.6.5: dry under the tarp (rain still falls beyond its hem) and on the counter
+    if (tarpK > 0.01) drawCanopy(bctx, L, tarpK, time);   // v2.6.5: after the rain, so the showers beyond read as falling behind the sheet
     env.t = time; env.clock = s.clock; env.day = s.day; env.weather = wxNow; env.event = s.event; env.tier = s.tier;
     env.layout = null; env.up = s.upgrades; env.deco = s.deco.equipped; env.open = s.phase === 'open' || s.phase === 'closing';
     drawLighting(bctx, view, env);

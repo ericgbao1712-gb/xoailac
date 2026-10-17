@@ -1,7 +1,17 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 13, nhãn v2.6.4, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 14, nhãn v2.6.5, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.5 (17/10): mưa không rơi lên quầy, bạt tự kéo từ Chợ đêm bờ kè
+- **Quầy khô ráo:** mưa chỉ rơi tới mép trên của quầy (`drawWeather` có thêm tham số `maxY` = `counter.top`), ở mọi cấp quán.
+- **Bạt tự kéo:** từ Chợ đêm bờ kè (cấp quán 4, `RAIN.autoTarpTier`), hễ mưa là bạt tự kéo ra, kèm thông báo "Mưa rồi! Bạt tự kéo ra che cho khách.". Tạnh mưa thì bạt tự cuốn lại như trước. Người chơi không cần mua bạt hay chạm nút.
+- Ở gánh cổng trường (cấp 1) vẫn phải tự chạm KÉO BẠT như cũ.
+- **Hình bạt mới:**
+  - Bạt chỉ hiện dần về phía mép trước, nên bầu trời và bảng hiệu không còn bị phủ sọc.
+  - Dưới bạt khô ráo; phía ngoài mép bạt (bầu trời, dòng sông) vẫn thấy mưa rơi.
+  - Sửa lỗi cắt vùng mưa: trước đây phần nằm ngoài khung nhìn của vùng bạt lại bị vẽ mưa.
+- **Kiểm thử:** `test_core.mjs` 213 kiểm tra đều đạt. Kiểm tra mới: ở cấp 4 bạt luôn mở trong suốt cơn mưa; ở cấp 1 bạt vẫn chờ người chơi kéo. Mô phỏng 20 ngày không đổi (bạt chỉ là hình ở các cấp đã có mái che).
 
 ## v2.6.4 (17/10): bàn bar giữa lan can, nhóm khách gọn và không trùng mặt
 - **Bàn bar dời vào giữa lan can** (`BAR` trong `art/layouts.js`). Hàng chờ xếp bên phải trước (5 chỗ), rồi bên trái (3 chỗ), không đè lên bàn.

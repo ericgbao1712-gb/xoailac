@@ -188,7 +188,7 @@ function counterLayout(scene, nSlots, nStoves) {
     spawn: [{ x: -22, y: C0.qY - 2 }, { x: C0.w + 22, y: C0.qY - 2 }],
     waitSpots, tables, side,
     queueOff: [[0, 0], [6, -1], [-5, 1], [10, -2]],
-    canopy: { x0: -60, x1: C0.w + 60, yTop: 0, yFront: 30, ground: C0.h },
+    canopy: { x0: -60, x1: C0.w + 60, yTop: -90, yFront: 30, ground: C0.h },   // v2.6.5: the sheet starts above the top of the screen (overhead)
     kitchen: { stoves, chefSpots, pickup: { ...OFF }, ownerHome: { ...OFF } },
     staffSpots: { waiter: [{ ...OFF }, { ...OFF }, { ...OFF }], cashier: { ...OFF }, quankho: { ...OFF }, manager: { ...OFF } },
     props: [], deco: { den: [], cay: [], tuong: [], dacbiet: [] },

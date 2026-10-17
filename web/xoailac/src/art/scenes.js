@@ -237,18 +237,23 @@ export function drawCanopy(ctx, L, k, t) {
     const c = L && L.canopy;
     if (!c || k <= 0.01) return;
     const x0 = c.x0, x1 = c.x1, yT = c.yTop, yF = Math.round(yT + (c.yFront - yT) * k), W = x1 - x0, B = 8;
-    // the sheet: translucent so the tables under it still read
-    ctx.globalAlpha = 0.27;
-    for (let i = 0; i < W; i += B) {
-      ctx.fillStyle = (i / B) % 2 === 0 ? PAL.coral : PAL.cream;
-      ctx.fillRect(x0 + i, yT, Math.min(B, W - i), yF - yT);
+    // the sheet: translucent so the tables under it still read. v2.6.5: it fades in towards the hem (the part
+    // overhead, near the camera, stays clear) so the sky and the shop sign are not striped over
+    const FADE = 6, fadeH = Math.min(yF - yT, 24), ys = yF - fadeH;
+    for (let f = 0; f < FADE; f++) {
+      const a0 = ys + (fadeH * f) / FADE, a1 = ys + (fadeH * (f + 1)) / FADE;
+      ctx.globalAlpha = 0.3 * (f + 1) / FADE;
+      for (let i = 0; i < W; i += B) {
+        ctx.fillStyle = (i / B) % 2 === 0 ? PAL.coral : PAL.cream;
+        ctx.fillRect(x0 + i, a0, Math.min(B, W - i), a1 - a0);
+      }
     }
     ctx.globalAlpha = 0.5;
     ctx.fillStyle = PAL.ink2;
-    ctx.fillRect(x0, yT, 0.5, yF - yT); ctx.fillRect(x1 - 0.5, yT, 0.5, yF - yT);
+    ctx.fillRect(x0, ys, 0.5, yF - ys); ctx.fillRect(x1 - 0.5, ys, 0.5, yF - ys);
     // ripple: the sheet sags and flutters a little in the wind
     ctx.globalAlpha = 0.18;
-    const ry = yT + ((t * 14) % Math.max(1, yF - yT));
+    const ry = ys + ((t * 14) % Math.max(1, yF - ys));
     ctx.fillStyle = PAL.cream; ctx.fillRect(x0, Math.round(ry), W, 1);
     ctx.globalAlpha = 1;
     // front hem: solid scalloped stripe band
@@ -538,15 +543,20 @@ function rainTile(i) {
   rainTiles[i] = c;
   return c;
 }
-export function drawWeather(ctx, view, weather, t, hole) {
+export function drawWeather(ctx, view, weather, t, hole, maxY) {
   let clipped = false;
   try {
     if (weather !== 'rain' && weather !== 'storm') return;
-    if (hole) {                                        // no rain under the tarp
+    // v2.6.5: `maxY` = where the vendor's own roof starts (the counter top): no rain falls on the counter
+    const yEnd = maxY == null ? view.y1 : Math.min(view.y1, maxY);
+    if (hole || maxY != null) {                        // no rain under the tarp / over the counter
       ctx.save(); clipped = true;
       ctx.beginPath();
-      ctx.rect(view.x0, view.y0, view.x1 - view.x0, view.y1 - view.y0);
-      ctx.rect(hole.x0, hole.y0, hole.x1 - hole.x0, hole.y1 - hole.y0);
+      ctx.rect(view.x0, view.y0, view.x1 - view.x0, yEnd - view.y0);
+      if (hole) {                                      // the hole is cut only inside the rainy area (even-odd would add rain outside it)
+        const hx0 = Math.max(view.x0, hole.x0), hx1 = Math.min(view.x1, hole.x1), hy0 = Math.max(view.y0, hole.y0), hy1 = Math.min(yEnd, hole.y1);
+        if (hx1 > hx0 && hy1 > hy0) ctx.rect(hx0, hy0, hx1 - hx0, hy1 - hy0);
+      }
       ctx.clip('evenodd');
     }
     const layers = weather === 'storm' ? [[0, 230, 70], [1, 140, 40], [0, 180, -50]] : [[0, 200, 60], [1, 120, 36]];
@@ -555,7 +565,7 @@ export function drawWeather(ctx, view, weather, t, hole) {
       if (!c) continue;
       const oy = Math.floor((t * sp) % TILE), ox = Math.floor((t * dr * 0.3) % TILE);
       const x0 = Math.floor(view.x0 / TILE) * TILE + ox - TILE, y0 = Math.floor(view.y0 / TILE) * TILE + oy - TILE;
-      for (let yy = y0; yy < view.y1; yy += TILE) for (let xx = x0; xx < view.x1; xx += TILE) ctx.drawImage(c, xx, yy, TILE, TILE);
+      for (let yy = y0; yy < yEnd; yy += TILE) for (let xx = x0; xx < view.x1; xx += TILE) ctx.drawImage(c, xx, yy, TILE, TILE);
     }
   } catch (e) { guard(e); } finally { if (clipped) ctx.restore(); }
 }
