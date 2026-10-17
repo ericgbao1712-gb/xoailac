@@ -80,7 +80,9 @@ b, strong { font-weight: 800; }
 
 /* ---------- app shell ---------- */
 #app {
-  position: relative; height: 100%; width: 100%; max-width: 440px; margin: 0 auto;
+  /* v2.6.13: pinned to the visible screen (fixed + inset 0), so it always fills the phone's viewport even when the
+     browser bar hides/shows or the installed app runs edge to edge; no strip of the page background shows below */
+  position: fixed; inset: 0; width: 100%; max-width: 440px; margin: 0 auto;
   display: flex; flex-direction: column;
   background: var(--dusk); overflow: hidden; isolation: isolate;
 }
@@ -1627,3 +1629,9 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 @media (prefers-reduced-motion: reduce) { .xpbar .xp-track i { transition: none; } .xpbar.gain .xp-track { animation: none; } }
 /* v2.6.10 tốc độ ×3: cam đậm để phân biệt với ×2 (vàng) */
 .hbtn.on.x3 { background: #ff8a3d; color: #fff; --depth: #c25a14; }
+
+/* v2.6.13: on a phone the page behind the game is never meant to show; if a sliver ever does (browser bars,
+   gesture area), it is the same cream as the nav bar, not the green sky gradient used around the desktop frame */
+@media (max-width: 459px) {
+  html, body { background: var(--cream); }
+}

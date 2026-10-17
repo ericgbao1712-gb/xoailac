@@ -1,7 +1,18 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 21, nhãn v2.6.12, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 23, nhãn v2.6.13, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.13 (17/10): hết dải xanh dưới thanh menu trên điện thoại
+- **Lỗi:** trên điện thoại, dưới thanh menu (Kho, Thực đơn…) lộ ra một dải màu xanh lá. Đó là nền trang (dải màu trời xanh dùng làm viền khung trên máy tính) lộ ra khi khung game ngắn hơn màn hình thật. Chuyện này xảy ra khi thanh địa chỉ trình duyệt ẩn/hiện, hoặc khi game cài như ứng dụng chạy tràn viền.
+- **Sửa** (commit 73daa74):
+  - Khung game `#app` được ghim vào màn hình đang thấy (`position: fixed; inset: 0`), nên luôn cao đúng bằng màn hình và tự giãn khi thanh trình duyệt ẩn/hiện.
+  - Trên màn hẹp (dưới 460px), nền trang đổi sang màu kem giống thanh menu. Nếu có khe hở thì cũng không còn thấy dải xanh.
+  - Trên máy tính vẫn giữ khung viền gỗ giữa nền xanh như cũ.
+- **Kiểm tra:**
+  - Chụp ở 390×844 (điện thoại) và 1280×800 (máy tính): khung game cao đúng bằng màn hình, thanh menu nằm sát đáy.
+  - Tăng chiều cao màn hình thêm 60px (giống lúc thanh địa chỉ ẩn đi): khung tự giãn theo.
+  - `CSS_VER` lên xl5-v6.
 
 ## 17/10: bỏ dòng "Ý tưởng game" trong Cài đặt
 - Thẻ giới thiệu ở cuối Cài đặt chỉ còn tên game và lời cảm ơn. Commit d2edb53.
