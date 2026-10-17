@@ -9,7 +9,7 @@ const AUTOSAVE_SEC = 15;
 
 // The CDN caches style.css (JS is served no-cache), so swap the plain <link> for a versioned one.
 // Bump CSS_VER on every deploy that touches style.css.
-const CSS_VER = 'xl5-v4';
+const CSS_VER = 'xl5-v5';
 (function freshCss() {
   try {
     const old = document.querySelector('link[rel="stylesheet"][href="style.css"]');

@@ -1625,3 +1625,5 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 .xpbar.gain .xp-track { animation: xpgain .6s ease-out; }
 @keyframes xpgain { 0% { box-shadow: inset 0 2px 0 rgba(0,0,0,.25), 0 0 0 1.5px rgba(255,243,201,.35); } 30% { box-shadow: inset 0 2px 0 rgba(0,0,0,.25), 0 0 0 3px #ffe680; } 100% { box-shadow: inset 0 2px 0 rgba(0,0,0,.25), 0 0 0 1.5px rgba(255,243,201,.35); } }
 @media (prefers-reduced-motion: reduce) { .xpbar .xp-track i { transition: none; } .xpbar.gain .xp-track { animation: none; } }
+/* v2.6.10 tốc độ ×3: cam đậm để phân biệt với ×2 (vàng) */
+.hbtn.on.x3 { background: #ff8a3d; color: #fff; --depth: #c25a14; }

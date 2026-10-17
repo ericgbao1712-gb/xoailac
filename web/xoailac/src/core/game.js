@@ -396,8 +396,9 @@ export function createGame(save, opts = {}) {
 
     setSpeed: wrap((v) => {
       v = Number(v);
-      if (![1, 2, 4, 8].includes(v)) return fail('unknown', 'Tốc độ này không có.');
+      if (![1, 2, 3, 4, 8].includes(v)) return fail('unknown', 'Tốc độ này không có.');
       if (v === 2 && !featureUnlocked(G, 'speed2')) return fail('locked', `Tốc độ ×2 mở ở Lv ${C.FEATURES.speed2} nha!`);
+      if (v === 3 && !featureUnlocked(G, 'speed3')) return fail('locked', `Tốc độ ×3 mở ở Lv ${C.FEATURES.speed3} nha!`);   // v2.6.10
       state.speed = v;
       return { ok: true, speed: v };
     }),

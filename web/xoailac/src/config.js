@@ -515,7 +515,7 @@ export const LEVEL = {
 // Feature flags unlocked by level (dishes/ingredients/drinks unlock by their own unlockLv).
 export const FEATURES = {
   hire_phucvu: 2, hire_daubep: 3, deco: 4, daily: 4, reservations: 6, mkt_reviewer: 6,
-  hire_thungan: 7, mkt_livestream: 9, hire_quankho: 10, speed2: 5, manageMode: 7, extras: 3, lottery: 3,
+  hire_thungan: 7, mkt_livestream: 9, hire_quankho: 10, speed2: 5, speed3: 10, manageMode: 7, extras: 3, lottery: 3,
   // v2 (2026-10): new systems open up as the player levels
   pricing: 2,        // Nâng cấp ▸ Giá bán: tự đặt giá bán
   sideUp: 3,         // Nâng cấp: kê thêm bàn ghế hai bên quán (2 bộ có sẵn từ đầu)

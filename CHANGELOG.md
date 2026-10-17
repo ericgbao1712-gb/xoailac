@@ -1,7 +1,13 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 18, nhãn v2.6.9, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 19, nhãn v2.6.10, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.10 (17/10): tốc độ ×3
+- Nút tốc độ trên HUD giờ xoay vòng 1× → 2× → 3× → 1×. Nút ×3 màu cam để phân biệt với ×2 màu vàng.
+- ×3 mở ở Lv 10 (`FEATURES.speed3`), có trên thẻ lên cấp ("Tăng tốc ×3"). Chưa tới Lv 10 thì bấm từ 2× sẽ về 1× và báo "Tốc độ ×3 mở ở Lv 10".
+- Save có tốc độ lạ sẽ về ×1 khi tải.
+- **Kiểm thử:** `test_core.mjs` 243 kiểm tra đều đạt. Đã bấm thử trong trình duyệt đủ vòng 1× → 2× → 3× → 1×.
 
 ## v2.6.9 (17/10): thiết bị mới cho các cấp trống
 - **Vấn đề:** cả 13 thiết bị cũ đều mua hết được ở quán cấp 4 (khoảng Lv 16–22). Từ Lv 23 tới Lv 40, mỗi cấp chỉ mở perk hoặc đồ trang trí; từ Lv 41 thì chỉ có rương. Tiền gần như không còn chỗ tiêu ngoài chi nhánh.

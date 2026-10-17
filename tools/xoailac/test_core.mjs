@@ -527,4 +527,16 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const g2 = createGame(old, { headless: true, seed: 5, now: 1.8e12 });
   ok(NEW.every((id) => g2.state.upgrades[id] === 0), 'old saves start every new item at 0');
 }
+// ── 24. v2.6.10 tốc độ ×3 from Lv 10
+{
+  const g = fresh(241); g.state.level = 9;
+  ok(g.act.setSpeed(3).ok === false && g.state.speed === 1, '×3 locked before Lv 10');
+  g.state.level = 10;
+  ok(g.act.setSpeed(3).ok && g.state.speed === 3, '×3 at Lv 10');
+  const t0 = g.state.clock; g.act.openShop(); const c0 = g.state.clock; g.update(1); const d3 = g.state.clock - c0;
+  const h = fresh(242); h.state.level = 10; h.act.openShop(); const c1 = h.state.clock; h.update(1); const d1 = h.state.clock - c1;
+  ok(Math.abs(d3 - 3 * d1) < 0.01 * d1 + 1e-6, 'one real second = three times the game minutes');
+  const sv = JSON.parse(JSON.stringify(g.serialize())); sv.speed = 5;
+  ok(createGame(sv, { headless: true, seed: 1, now: 1.8e12 }).state.speed === 1, 'an unknown speed in a save falls back to ×1');
+}
 console.log('OK', n, 'checks');

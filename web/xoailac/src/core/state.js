@@ -140,6 +140,7 @@ export function migrate(save, now) {
   if (!['prep', 'open', 'closing', 'report'].includes(s.phase)) s.phase = 'prep';
   if (!(s.tier >= 1 && s.tier <= C.TIERS.length)) s.tier = 1;
   if (!(s.money >= 0)) s.money = 0;
+  if (![1, 2, 3, 4, 8].includes(s.speed)) s.speed = 1;
   s.v = C.VERSION;
   return s;
 }

@@ -68,10 +68,10 @@ export function confettiFor(handle, opts = {}) {
 export const UNLOCK_LABEL = { pot: 'Món lắc mới', ingredient: 'Nguyên liệu mới', drink: 'Đồ uống mới', role: 'Nhân viên mới', feature: 'Tính năng mới', tier: 'Mở rộng quán', supplier: 'Nhà cung cấp mới', marketing: 'Khuyến mãi mới', side: 'Món ăn kèm mới', perk: 'Tính năng mới', equip: 'Thiết bị mới', mastery: 'Cấp thành thạo' };
 export const FEATURE_NAME = {
   deco: 'Trang trí quán', daily: 'Nhiệm vụ ngày', reservations: 'Khách đặt bàn', mkt_reviewer: 'Mời Food Reviewer', mkt_livestream: 'Livestream bán hàng',
-  speed2: 'Tăng tốc ×2', manageMode: 'Chế độ quản lý', extras: 'Khách gọi thêm món', lottery: 'Cô bán vé số',
+  speed2: 'Tăng tốc ×2', speed3: 'Tăng tốc ×3', manageMode: 'Chế độ quản lý', extras: 'Khách gọi thêm món', lottery: 'Cô bán vé số',
   pricing: 'Tự đặt giá bán', sideUp: 'Kê thêm bàn ghế', staffBonus: 'Thưởng nóng nhân viên', daily4: '4 nhiệm vụ mỗi ngày',
 };
-const FEATURE_ICON = { deco: 'ui_deco', daily: 'ui_quest', reservations: 'ui_reserve', mkt_reviewer: 'ui_review', mkt_livestream: 'ui_music', speed2: 'ui_speed', manageMode: 'ui_staff', extras: 'ui_menu', lottery: 'ui_ticket',
+const FEATURE_ICON = { deco: 'ui_deco', daily: 'ui_quest', reservations: 'ui_reserve', mkt_reviewer: 'ui_review', mkt_livestream: 'ui_music', speed2: 'ui_speed', speed3: 'ui_speed', manageMode: 'ui_staff', extras: 'ui_menu', lottery: 'ui_ticket',
   pricing: 'ui_tag', sideUp: 'eq_table', staffBonus: 'ui_gift', daily4: 'ui_quest' };
 
 export function unlockIcon(u) {

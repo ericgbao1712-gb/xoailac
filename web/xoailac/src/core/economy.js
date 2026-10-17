@@ -16,7 +16,7 @@ export const SUPPLIER = Object.fromEntries(C.SUPPLIERS.map((x) => [x.id, x]));
 
 export const FEATURE_NAMES = {
   deco: 'Trang trí quán', daily: 'Nhiệm vụ hằng ngày', reservations: 'Đặt bàn trước', mkt_reviewer: 'Mời Food Reviewer',
-  mkt_livestream: 'Livestream bán hàng', speed2: 'Tốc độ ×2', manageMode: 'Chế độ Quản lý', extras: 'Khách gọi thêm', lottery: 'Vé số',
+  mkt_livestream: 'Livestream bán hàng', speed2: 'Tốc độ ×2', speed3: 'Tốc độ ×3', manageMode: 'Chế độ Quản lý', extras: 'Khách gọi thêm', lottery: 'Vé số',
   pricing: 'Tự đặt giá bán', sideUp: 'Kê thêm bàn ghế', staffBonus: 'Thưởng nóng nhân viên', daily4: '4 nhiệm vụ mỗi ngày',
 };
 

@@ -72,7 +72,11 @@ export function mountHud(root) {
   function onSpeed() {
     sfx('click');
     if (!featureOn('speed2')) { ctx.toast(`Tốc độ ×2 mở ở Lv ${C.FEATURES.speed2} nha.`, 'info', 'ui_lock'); return; }
-    act('setSpeed', S().speed === 2 ? 1 : 2);
+    // v2.6.10: 1× → 2× → 3× (from Lv 10) → 1×
+    const cur = S().speed;
+    const next = cur === 1 ? 2 : cur === 2 && featureOn('speed3') ? 3 : 1;
+    if (cur === 2 && !featureOn('speed3') && C.FEATURES.speed3) ctx.toast(`Tốc độ ×3 mở ở Lv ${C.FEATURES.speed3} nha.`, 'info', 'ui_lock');
+    act('setSpeed', next);
   }
   async function onQuest() {
     sfx('click');
@@ -131,10 +135,11 @@ export function mountHud(root) {
     try { wxN = ctx.game.get?.weatherNow?.() || s.weather; } catch (e) { /* day weather */ }
     setIco(wxImg, wxIcon(wxN), 16);
     // speed
-    const sp = s.speed === 2;
+    const sp = s.speed === 2 || s.speed === 3;
     setClass(speed, 'on', sp);
+    setClass(speed, 'x3', s.speed === 3);
     setClass(speed, 'dim', !featureOn('speed2'));
-    setText(speedLbl, featureOn('speed2') ? (sp ? '2×' : '1×') : '1×');
+    setText(speedLbl, featureOn('speed2') ? (s.speed === 3 ? '3×' : sp ? '2×' : '1×') : '1×');
     // quest
     const mq = mainQuest();
     const claim = !!(s.quests?.mainClaimable || mq.done) && !!mq.quest;
