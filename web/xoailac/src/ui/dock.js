@@ -143,7 +143,18 @@ export function mountDock(root, sceneUi) {
     const b = h('button', { class: 'key pack', type: 'button', 'aria-label': 'Đựng bằng ' + p.label.toLowerCase(), title: 'Đựng bằng ' + p.label.toLowerCase() },
       span('pk-i', ico(p.icon, 32, 'kico'), st), span('pk-l', p.label), cnt);
     onPress(b, () => {
-      const r = act('setPack', p.id);
+      // v2.6.19: with an order on the tray → that order; otherwise → what every new order (staff's too) goes in.
+      // Tapping the chosen kind again goes back to "each dish's own".
+      const info = trayInfo(), t = info?.ticket;
+      let r;
+      if (t && !t.extra && info.box) {
+        r = act('setPack', p.id);
+        if (r && r.ok !== false) act('setPackPref', p.id);
+      } else {
+        const cur = S().packPref || null;
+        r = act('setPackPref', cur === p.id ? null : p.id);
+        if (r && r.ok !== false) ctx.toast(r.packPref ? `Đơn mới đựng bằng ${p.label.toLowerCase()}` : 'Đơn mới đựng theo từng món', 'info', p.icon, 'packpref');
+      }
       if (r && r.ok === false) { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); return; }
       sfx('click'); vibrate(8); tickNow();
     });
@@ -153,15 +164,16 @@ export function mountDock(root, sceneUi) {
   });
   trayBox.append(trayHead, traySlots);
   function updatePack(info) {
+    // v2.6.19: always on screen while selling (staff make the orders too); lit = the tray order's container, or the
+    // shop's choice for new orders when nothing is on the tray
     const t = info?.ticket;
-    const show = !!t && !t.extra && !!info.box;
-    packBtns.forEach((b) => { b.hidden = !show; });
-    if (!show) return;
+    const cur = t && !t.extra && info.box ? info.box : (S().packPref || null);
+    packBtns.forEach((b) => { b.hidden = false; });
     const br = activeLooks(S()).brand, bk = br ? JSON.stringify(br) + S().shopName : '';
     packBtns.forEach((b) => {
-      setClass(b, 'on', info.box === b._id);
+      setClass(b, 'on', cur === b._id);
       setText(b._cnt, String(Math.floor(S().supplies?.[b._id] || 0)));
-      setClass(b, 'zero', (S().supplies?.[b._id] || 0) < 1 && info.box !== b._id);
+      setClass(b, 'zero', (S().supplies?.[b._id] || 0) < 1 && cur !== b._id);
       if (b._st._k !== bk) { b._st._k = bk; if (br) { const u = stampURL(br, 14); if (u) b._st.src = u; else b._st._k = ''; } }
       b._st.hidden = !br;
     });

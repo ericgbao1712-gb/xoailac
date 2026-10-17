@@ -573,4 +573,16 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   for (let k = 0; k < 400 && g.state.supplies.hop_giay === boxes; k++) g.update(0.25);
   ok(g.state.supplies.hop_giay === boxes - 1 && g.state.supplies.ly_lac === cups, 'the box was used, not a cup');
 }
+// ── 27. v2.6.19 the shop's container choice applies to every new order (staff's too)
+{
+  const g = fresh(271); g.state.level = 12; g.state.tutorial = { step: 99, done: true };
+  for (const x of C.SUPPLIES) g.state.supplies[x.id] = 50;
+  ok(g.act.setPackPref('hop_giay').ok && g.state.packPref === 'hop_giay', 'choose boxes for new orders');
+  g.act.openShop(); let t = null, i = 0;
+  while (!t && i++ < 4000) { g.update(0.25); t = g.world.tickets.find((x) => !x.extra && C.DISH_PACK[x.pot] && C.DISH_PACK[x.pot].box === 'ly_lac'); }
+  ok(t && t.box === 'hop_giay', 'a cup dish ordered now goes in a box');
+  ok(g.act.setPackPref(null).ok && g.state.packPref === null && g.act.setPackPref('chen').ok === false, 'back to each dish\'s own; unknown kinds refused');
+  const sv = JSON.parse(JSON.stringify(g.serialize())); sv.packPref = 'xyz';
+  ok(createGame(sv, { headless: true, seed: 1, now: 1.8e12 }).state.packPref === null, 'a bad value in a save is dropped');
+}
 console.log('OK', n, 'checks');

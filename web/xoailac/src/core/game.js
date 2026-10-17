@@ -229,6 +229,12 @@ export function createGame(save, opts = {}) {
     addDrinks: wrap(() => kitchen.addDrinksAct(G)),
     addSides: wrap(() => kitchen.addSidesAct(G)),
     setPack: wrap((box) => kitchen.setPackAct(G, box)),   // v2.6.14 ly / hộp
+    // v2.6.19: container for every new order (player's and staff's); null = each dish's own
+    setPackPref: wrap((box) => {
+      if (box != null && !C.CONTAINER_IDS.includes(box)) return fail('unknown', 'Không có loại này.');
+      state.packPref = box || null;
+      return { ok: true, packPref: state.packPref };
+    }),
     liquidate: wrap((id, n) => liquidate(G, id, n)),
     serve: wrap((grade) => kitchen.serveAct(G, grade)),
     collect: wrap((tableIdx) => customers.collectCoins(G, tableIdx, 'player')),

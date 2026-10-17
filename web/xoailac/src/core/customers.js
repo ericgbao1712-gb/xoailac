@@ -440,6 +440,8 @@ const supplyLeft = (G, id, reserved) => (G.state.supplies[id] || 0) - (reserved[
 export function boxFor(G, potId, reserved) {
   const pk = C.DISH_PACK[potId];
   if (!pk) return null;
+  const pref = G.state.packPref;                                    // v2.6.19: the shop's chosen container comes first
+  if (pref && supplyLeft(G, pref, reserved) >= 1) return pref;
   if (supplyLeft(G, pk.box, reserved) >= 1) return pk.box;
   return C.CONTAINER_IDS.find((id) => id !== pk.box && supplyLeft(G, id, reserved) >= 1) || false;
 }

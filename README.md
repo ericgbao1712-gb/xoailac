@@ -1,4 +1,4 @@
-# Xoài Lắc Ơi! — mã nguồn bản thử v2.6.18
+# Xoài Lắc Ơi! — mã nguồn bản thử v2.6.19
 
 Đây là toàn bộ mã nguồn của bản chơi thử mới nhất (17/10/2026), đúng như bản đang chạy trên link chơi thử.
 Chi tiết từng bản v2 → v2.6 ở `CHANGELOG.md` (mới nhất: **thanh lý hàng cũ** ở Kho ▸ Thanh lý).
@@ -9,11 +9,11 @@ Chi tiết từng bản v2 → v2.6 ở `CHANGELOG.md` (mới nhất: **thanh l�
 |---|---|
 | `web/xoailac/` | Game: `index.html`, `style.css`, `src/` (JavaScript ES modules, không cần build), `assets/` (ảnh pixel) |
 | `web/xoai-lac-ban-thu.html` | Trang giới thiệu bản thử (danh sách tính năng mới, nút "Thử nhanh" nạp save mẫu). Trang này nằm cạnh thư mục `xoailac/` |
-| `tools/xoailac/test_core.mjs` | 252 kiểm thử phần lõi (chạy bằng Node, không cần trình duyệt) |
+| `tools/xoailac/test_core.mjs` | 256 kiểm thử phần lõi (chạy bằng Node, không cần trình duyệt) |
 | `tools/xoailac/sim.mjs` | Mô phỏng cân bằng: bot chơi N ngày rồi in lãi, khách, cấp quán |
 | `tools/xoailac/fixtures/` | Mã sao lưu do chính các bản cũ tạo ra, để kiểm tra mã cũ vẫn dùng được |
 | `tools/art/` | Script Python vẽ icon pixel (vật tư, món ăn kèm) và ghép vào `assets/icons.png` |
-| `CHANGELOG.md` | Nhật ký thay đổi từ v2 đến v2.6.18 |
+| `CHANGELOG.md` | Nhật ký thay đổi từ v2 đến v2.6.19 |
 
 ## Chạy thử trên máy
 
@@ -32,7 +32,7 @@ Thêm `#debug` vào cuối địa chỉ game (`/xoailac/#debug`) để hiện b�
 
 ```bash
 cd tools/xoailac
-node test_core.mjs            # in "OK 252 checks" nếu tất cả đều đạt
+node test_core.mjs            # in "OK 256 checks" nếu tất cả đều đạt
 SUMMARY=1 node sim.mjs 20 1   # 20 ngày, seed 1
 ```
 
