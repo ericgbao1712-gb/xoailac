@@ -62,6 +62,15 @@ export function mainProgress(G, q) {
       if (t.startsWith('potsSoldOf:')) return s.stats.potsSoldOf[t.slice(11)] || 0;
       // v2.6.7: a 'hire' quest also counts the staff of that role already on the team (old saves, restores)
       if (t.startsWith('hire:')) return Math.max(s.quests.counters[t] || 0, (s.staff || []).filter((m) => m.role === t.slice(5)).length);
+      // v2.6.8: same for upgrades: what is already built counts
+      if (t.startsWith('upgrade:')) {
+        const id = t.slice(8);
+        // from the 2nd shop on the tarp cannot be bought (tán cây / mái che): the Nâng cấp tab shows it as owned, so
+        // the quest counts it as done instead of staying at 0/1 forever
+        const covered = id === 'tarp' && (C.TIERS[(s.tier || 1) - 1] || {}).covered ? 1 : 0;
+        return Math.max(s.quests.counters[t] || 0, (s.upgrades || {})[id] || 0, covered);
+      }
+      if (t === 'staffHired') return Math.max(s.quests.counters[t] || 0, (s.staff || []).length);
       return s.quests.counters[t] || 0;
   }
 }

@@ -477,4 +477,15 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   ok(g3.state.homeCity == null, 'a city without a branch falls back to TP.HCM on load');
   ok(g.act.setHomeCity(null).ok && g.state.homeCity == null, 'back to TP.HCM');
 }
+// ── 22. v2.6.8 "Mua bạt che mưa" never sticks at 0/1 in a covered shop (the tarp cannot be bought there)
+{
+  const { mainProgress } = await import(ROOT + '/core/quests.js');
+  const q6 = C.MAIN_QUESTS.find((q) => q.id === 'q6');
+  let g = fresh(221); g.state.tier = 3; g.state.upgrades.tarp = 0; g.state.quests.counters['upgrade:tarp'] = 0;
+  ok(g.get.upgradeInfo('tarp').canBuy === false && mainProgress(g._G, q6) >= 1, 'covered tier: tarp shown as owned → quest done');
+  g = fresh(222); g.state.upgrades.tarp = 1; g.state.quests.counters['upgrade:tarp'] = 0;
+  ok(mainProgress(g._G, q6) >= 1, 'a tarp already owned counts');
+  g = fresh(223);
+  ok(mainProgress(g._G, q6) === 0, 'tier 1 without a tarp: still 0/1');
+}
 console.log('OK', n, 'checks');

@@ -1,7 +1,12 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 16, nhãn v2.6.7, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 17, nhãn v2.6.8, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.8 (17/10): nhiệm vụ "Mua bạt che mưa" không còn kẹt
+- **Lỗi:** từ quán thứ 2 trở đi (đã có tán cây/mái che), tab Nâng cấp hiện bạt là "Có tán che" và không cho mua. Nhưng nhiệm vụ chỉ đếm lần bấm mua, nên người chơi rời gánh cổng trường trước khi mua bạt sẽ kẹt ở nhiệm vụ này mãi (0/1). Các nhiệm vụ chính đi lần lượt, nên những nhiệm vụ sau cũng không tới được.
+- **Sửa:** nhiệm vụ "Mua …" (`upgrade:*`) đếm cả nâng cấp đã có. Riêng bạt: ở quán có mái che thì tính là đã có. Save đang kẹt sẽ thấy nhiệm vụ xong ngay và nhận thưởng 80k.
+- **Kiểm thử:** `test_core.mjs` 224 kiểm tra đều đạt. Ở gánh cổng trường chưa có bạt thì nhiệm vụ vẫn 0/1 như cũ.
 
 ## v2.6.7 (17/10): EXP từ Lv 22 giảm thêm 10%, hiện đủ phục vụ, dời quán chính tới thành phố có chi nhánh
 - **EXP:** từ Lv 22 trở lên, mỗi cấp cần ít hơn 10% so với v2.6.1 (`XP_LATE` = 0.9). Ví dụ: Lv 32 → 33 cần khoảng 103.000 thay vì 114.017. Save đang dư EXP thì được lên cấp ngay khi vào game (`settleXp`).
