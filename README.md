@@ -51,7 +51,3 @@ SUMMARY=1 node sim.mjs 20 1   # 20 ngày, seed 1
 - Khi đổi `style.css`, tăng `CSS_VER` trong `src/main.js`.
 - Các file `.js` chưa có số phiên bản trong đường dẫn: nếu CDN cache lâu, người chơi cần tải lại trang (Ctrl+Shift+R) sau khi cập nhật.
 
-## Chưa có trong bản này
-
-- Thị trấn, thuê mặt bằng, nhiều cửa hàng.
-- Kết bạn, bảng xếp hạng, thách đấu. Phần trực tuyến cần máy chủ và cơ sở dữ liệu thật, nên chưa làm và cũng không làm giả.
