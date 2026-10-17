@@ -124,7 +124,9 @@ export function mountToasts({ toastRoot, sceneUi }) {
   // v2 systems
   const SUP = Object.fromEntries(C.SUPPLIES.map((x) => [x.id, x]));
   on('supplyLow', (p) => ctx.toast(`Sắp hết ${SUP[p.id]?.name?.toLowerCase() || 'vật tư'} — nhập thêm ở Kho nha.`, 'info', SUP[p.id]?.icon, 'sup_' + p.id));
-  on('supplyOut', (p) => ctx.toast(SUP[p.id]?.need === 'optional' ? `Hết ${SUP[p.id]?.name?.toLowerCase()} — khách hơi phiền đó!` : `Hết ${SUP[p.id]?.name?.toLowerCase() || 'vật tư'}! Món cần nó tạm ngưng bán.`, 'bad', SUP[p.id]?.icon, 'sup_' + p.id));
+  on('supplyOut', (p) => ctx.toast(SUP[p.id]?.need === 'optional' ? `Hết ${SUP[p.id]?.name?.toLowerCase()} — khách hơi phiền đó!`
+    : (C.CONTAINER_IDS || []).includes(p.id) ? `Hết ${SUP[p.id]?.name?.toLowerCase()}! Món sẽ đựng bằng loại còn lại.`      // v2.6.14 ly ↔ hộp
+    : `Hết ${SUP[p.id]?.name?.toLowerCase() || 'vật tư'}! Món cần nó tạm ngưng bán.`, 'bad', SUP[p.id]?.icon, 'sup_' + p.id));
   on('priceLeave', (p) => ctx.toast(`Khách chê đắt, bỏ đi (${p.n} lượt hôm nay)`, 'info', 'emo_money', 'priceLeave'));
   on('orderPlaced', (p) => { const sp = C.SUPPLIERS.find((x) => x.id === p.order?.sup); ctx.toast(`Đã đặt hàng ${sp ? sp.name : ''} — đang giao tới`, 'info', sp?.icon || 'eq_truck', 'order'); });
   on('staffWarn', (p) => ctx.toast(`${p.staff?.name || 'Nhân viên'} muốn nghỉ việc! Xem mục Nhân viên nha.`, 'bad', 'ui_staff', 'staff_' + p.staff?.id));
