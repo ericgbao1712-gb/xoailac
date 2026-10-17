@@ -16,7 +16,8 @@ const g = () => ctx.game.get || {};
 
 function supplierCard(x, active, api) {
   const pct = Math.round((x.priceMult - 1) * 100);
-  const when = x.delay === 'morning' ? 'Giao sáng mai' : x.delay > 0 ? `Giao sau ~${x.delay >= 60 ? (x.delay / 60) + ' tiếng' : x.delay + ' phút'}` : 'Lấy liền';
+  const od = Math.min(C.DELIVERY_MAX, x.openDelay != null ? x.openDelay : (x.delay === 'morning' ? C.DELIVERY_MAX : x.delay || 0));
+  const when = x.delay > 0 || x.delay === 'morning' ? `Giao trong ${od} phút` : 'Lấy liền';   // v2.6.3: ≤ DELIVERY_MAX while selling
   const q = x.quality > 0 ? 'Ngon hơn' : x.quality < 0 ? 'Hơi dập' : 'Bình thường';
   const el = h('button', { class: 'sup-card' + (active ? ' on' : '') + (x.unlocked ? '' : ' locked'), 'aria-pressed': String(active) },
     div('sup-h', ico(x.icon, 32), span('sup-n', x.name)),
@@ -100,7 +101,7 @@ function cartBar(body, sup, api) {
   const n = Object.values(items).reduce((a, b) => a + b, 0);
   if (!n) return;
   const q = g().quoteOrder?.(sup.id, items);
-  const when = sup.delay === 'morning' ? 'sáng mai' : (q?.arrive?.label || `sau ~${sup.delay} phút`);
+  const when = q?.arrive?.label || 'ngay';
   const btn = h('button', { class: 'btn red sm' }, 'Đặt hàng');
   btn.addEventListener('click', () => {
     const r = act('orderSupplies', sup.id, items);
@@ -221,7 +222,7 @@ export const khoSheet = {
 
     // ---- auto restock
     const hasMgr = D.hasStaff('quankho'), hasSup = (s.upgrades?.supplier || 0) > 0;
-    if (hasMgr) body.appendChild(noteBox('role_quankho', 'Quản kho lo nhập trái cây, topping, món ăn kèm và ly hộp mỗi sáng, **không mất phí giao**. Đang bán mà món nào sắp hết (còn 2 phần) thì **tự chạy đi chợ** mua thêm, khoảng 25 phút về.', 'jade'));
+    if (hasMgr) body.appendChild(noteBox('role_quankho', 'Quản kho lo nhập trái cây, topping, món ăn kèm và ly hộp mỗi sáng, **không mất phí giao**. Đang bán mà món nào sắp hết (còn 2 phần) thì **tự chạy ra chợ mua về liền**.', 'jade'));
     else if (hasSup) {
       const on = !!s.autoRestock;
       body.appendChild(div('card row auto' + (on ? ' jade' : ''),

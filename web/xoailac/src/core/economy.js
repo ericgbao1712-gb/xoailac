@@ -621,11 +621,17 @@ export function supplierPrice(G, supId, id, qty = 1) {
 }
 const absMin = (s) => s.day * 1440 + s.clock;
 /** When an order placed now arrives: { at (absolute minutes), label } */
+/** Minutes a supplier needs before / during selling (v2.6.3: never more than C.DELIVERY_MAX). */
+export const openDelayOf = (sup) => Math.min(C.DELIVERY_MAX, sup.openDelay != null ? sup.openDelay : (sup.delay === 'morning' ? C.DELIVERY_MAX : sup.delay || 0));
 export function arrivalOf(G, sup) {
   const s = G.state;
-  if (sup.delay === 'morning') return { at: (s.day + 1) * 1440 + C.TIME.dayStart, label: 'sáng mai' };
-  const start = s.phase === 'report' ? (s.day + 1) * 1440 + C.TIME.dayStart : absMin(s);
-  return { at: start + (sup.delay || 0), label: s.phase === 'report' ? `sáng mai ${Math.floor((C.TIME.dayStart + sup.delay) / 60)}:${String((C.TIME.dayStart + sup.delay) % 60).padStart(2, '0')}` : '' };
+  if (s.phase === 'report') {                 // after closing: the morning, as before
+    if (sup.delay === 'morning') return { at: (s.day + 1) * 1440 + C.TIME.dayStart, label: 'sáng mai' };
+    const d = sup.delay || 0;
+    return { at: (s.day + 1) * 1440 + C.TIME.dayStart + d, label: `sáng mai ${Math.floor((C.TIME.dayStart + d) / 60)}:${String((C.TIME.dayStart + d) % 60).padStart(2, '0')}` };
+  }
+  const d = openDelayOf(sup);
+  return { at: absMin(s) + d, label: d > 0 ? (s.phase === 'prep' ? `${d} phút sau khi mở hàng` : `trong ${d} phút`) : 'ngay' };
 }
 /** Quote an order (no side effects). items = { id: qty }. */
 export function quoteOrder(G, supId, items) {
@@ -692,10 +698,17 @@ export function quankhoRun(G, dtMin) {
   total = round2(total);
   addMoney(G, -total, 'order');
   const order = { id: s.nextOrderId++, sup: 'quankho', label: 'Quản kho đi chợ', items, unit, total, fee: 0, at: absMin(s) + Q.minutes, placedDay: s.day, placedClock: Math.round(s.clock) };
-  s.orders.push(order);
   G.counter('buyIngredients', 1);
-  G.emit('orderPlaced', { order });
-  G.toast(`Sắp hết ${names.slice(0, 3).join(', ')}${names.length > 3 ? '…' : ''}: Quản kho chạy đi chợ mua thêm (−${fmtMoney(total)}), ~${Q.minutes} phút về.`, 'info', 'role_quankho');
+  const what = `${names.slice(0, 3).join(', ')}${names.length > 3 ? '…' : ''}`;
+  if (Q.minutes > 0) {
+    s.orders.push(order);
+    G.emit('orderPlaced', { order });
+    G.toast(`Sắp hết ${what}: Quản kho chạy đi chợ mua thêm (−${fmtMoney(total)}), ~${Q.minutes} phút về.`, 'info', 'role_quankho');
+  } else {                                     // v2.6.3: the market is next door, back right away
+    receiveOrder(G, order, true);
+    G.emit('orderArrived', { order });
+    G.toast(`Sắp hết ${what}: Quản kho chạy ra chợ mua về liền (−${fmtMoney(total)}).`, 'good', 'role_quankho');
+  }
   return order;
 }
 
@@ -715,7 +728,7 @@ export function placeOrder(G, supId, items) {
   for (const l of q.lines) { order.items[l.id] = l.n; order.unit[l.id] = l.unit; if (SUPPLY[l.id]) G.counter('supplyBought:' + l.id, l.n); }
   G.counter('buyIngredients', 1);
   G.counter('order:' + sup.id, 1);
-  if (!(sup.delay > 0) && sup.delay !== 'morning') { receiveOrder(G, order, true); return { ok: true, order, delivered: true, cost: q.total }; }
+  if (q.arrive.at <= absMin(G.state) + 1e-6) { receiveOrder(G, order, true); return { ok: true, order, delivered: true, cost: q.total }; }
   s.orders.push(order);
   G.emit('orderPlaced', { order });
   return { ok: true, order, delivered: false, cost: q.total };

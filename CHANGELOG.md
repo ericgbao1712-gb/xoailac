@@ -1,7 +1,22 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 11, nhãn v2.6.2, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 12, nhãn v2.6.3, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.3 (17/10): quản kho về liền, giao hàng tối đa 10 phút
+- **Quản kho:** khi hàng sắp hết thì mua về ngay (`QUANKHO.minutes` = 0), không còn chờ 25 phút.
+- **Đặt hàng trước hoặc trong lúc bán:** giao trong tối đa `DELIVERY_MAX` = 10 phút. Mỗi nhà cung cấp có `openDelay` riêng:
+
+  | Nhà cung cấp | Giao |
+  |---|---|
+  | App | 5 phút |
+  | HTX | 8 phút |
+  | Nhà vườn | 10 phút |
+  | Vựa sỉ | 10 phút |
+
+  Đặt buổi sáng thì hàng tới bấy nhiêu phút sau khi mở hàng. Đặt sau khi đóng cửa vẫn giao sáng mai.
+- **Đánh đổi:** vựa sỉ mất cái giá phải trả là "chờ tới mai", giờ chỉ còn trái hơi dập và đơn tối thiểu 200k.
+- **Kiểm thử:** `test_core.mjs` 206 kiểm tra đều đạt.
 
 ## v2.6.2 (17/10): thanh EXP
 - HUD có thêm hàng EXP giữa hàng tiền và hàng nhiệm vụ: thanh vàng, số "EXP hiện có / EXP cần", % và cấp kế tiếp. Thanh nháy viền mỗi khi nhận EXP; bấm vào thì mở Hành trình lên cấp.

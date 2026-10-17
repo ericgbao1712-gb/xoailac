@@ -100,7 +100,7 @@ export const SIDE_CHANCE = { first: 0.32, second: 0.25 };
 // v2.6 thanh lý hàng cũ: Cô Ba buys stock back in the morning (prep only), oldest lots first, at a share of what each
 // portion cost: rates[min(days left, 2)] — 0 = expires after today. Always below every supplier price, so no buy-low-sell-high.
 export const LIQUIDATE = { buyer: 'Cô Ba đầu hẻm', rates: [0.35, 0.5, 0.6] };
-export const QUANKHO = { checkEvery: 5, lowAt: 2, minBuy: 6, usageShare: 0.5, minutes: 25, supplyLowAt: 8, supplyBuy: 50, keepMoney: 50, sideMin: 4 };
+export const QUANKHO = { checkEvery: 5, lowAt: 2, minBuy: 6, usageShare: 0.5, minutes: 0, supplyLowAt: 8, supplyBuy: 50, keepMoney: 50, sideMin: 4 };
 
 // ───────────────────────────── DISHES (array name kept from Lẩu Ơi!) ─────────────────────────────
 // One "phần" per group, shared, served in a bag / cup / bowl. broth: colour key the art uses for the fruit (palette.js BROTH)
@@ -256,7 +256,7 @@ export const STAFF = {
     phucvu:  { name: 'Phục vụ',  icon: 'ui_staff', unlockLv: 2,  minTier: 1, max: 99, desc: 'Đứng quầy đưa ly, rót nước mời khách đang xếp hàng — khách đợi lâu hơn, tip nhiều hơn.' },
     daubep:  { name: 'Thợ lắc',  icon: 'eq_pot',  unlockLv: 3,  minTier: 1, max: 99, desc: 'Gọt trái, pha muối và lắc từng phần cho mỗi phiếu.' },
     thungan: { name: 'Thu ngân', icon: 'ui_coin',  unlockLv: 7,  minTier: 2, max: 1,  desc: 'Khách kiên nhẫn hơn 20%, tip nhiều hơn.' },
-    quankho: { name: 'Quản kho', icon: 'ui_kho',   unlockLv: 10, minTier: 3, max: 1,  desc: 'Mỗi sáng tự nhập đủ trái cây, topping, món ăn kèm, ly hộp. Đang bán mà sắp hết thì tự chạy đi chợ mua thêm.' },
+    quankho: { name: 'Quản kho', icon: 'ui_kho',   unlockLv: 10, minTier: 3, max: 1,  desc: 'Mỗi sáng tự nhập đủ trái cây, topping, món ăn kèm, ly hộp. Đang bán mà sắp hết thì tự chạy ra chợ mua về liền.' },
   },
   slotsByTier: [2, 4, 6, 9, 9],
   rarityWeights: [40, 30, 18, 9, 3],          // ★1..★5
@@ -756,17 +756,20 @@ export const SUPPLY_MISS_SAT = 0.15;      // per missing optional item, on that 
 // delay: game minutes after ordering (time runs only while the shop is open; an order placed in the evening arrives
 // next morning), or 'morning' = start of the next day. quality is added to the dish quality of portions made with
 // those items (lots remember it). sells: 'all' | 'fresh' (fruit, chilli, herbs = shelf 2 days).
+// v2.6.3: an order placed before or during selling arrives within DELIVERY_MAX game minutes (openDelay per supplier);
+// only orders placed after closing wait for the next morning.
+export const DELIVERY_MAX = 10;
 export const SUPPLIERS = [
   { id: 'cho',  name: 'Chợ đầu hẻm — Cô Ba', icon: 'ui_shop',  priceMult: 1,    fee: 0,  delay: 0,         quality: 0,     sells: 'all',   unlockLv: 1, prepOnly: true,
     desc: 'Giá chợ, tự xách về liền. Chỉ đi chợ được lúc chưa mở hàng.' },
-  { id: 'app',  name: 'Đi chợ hộ qua app',   icon: 'ui_phone', priceMult: 1.12, fee: 15, delay: 40,        quality: 0,     sells: 'all',   unlockLv: 1,
-    desc: 'Đặt lúc nào cũng được, shipper giao sau khoảng 40 phút. Đắt hơn 12% và tốn 15k phí ship mỗi đơn.' },
-  { id: 'vua',  name: 'Vựa sỉ Bình Điền',    icon: 'eq_truck', priceMult: 0.8,  fee: 0,  delay: 'morning', quality: -0.06, sells: 'all',   unlockLv: 3, minOrder: 200,
-    desc: 'Rẻ hơn 20%, xe vựa giao sáng hôm sau, đơn tối thiểu 200k. Trái hơi dập nên phần lắc kém ngon một chút.' },
-  { id: 'htx',  name: 'Hợp tác xã Tiền Giang', icon: 'eq_truck', priceMult: 0.9,  fee: 0,  delay: 60,        quality: 0.05,  sells: 'all',   unlockLv: 30,
-    desc: 'Mối ruột của quán lớn: rẻ hơn chợ 10%, giao sau khoảng 1 tiếng, hàng ngon hơn một chút.' },
-  { id: 'vuon', name: 'Nhà vườn Cái Bè',     icon: 'fr_xoai',  priceMult: 1.3,  fee: 0,  delay: 120,       quality: 0.12,  sells: 'fresh', unlockLv: 5, shelfBonus: 1,
-    desc: 'Trái cây, ớt, rau răm hái trong ngày: phần lắc ngon hơn hẳn và để lâu thêm 1 ngày. Giá cao hơn 30%, giao sau khoảng 2 tiếng.' },
+  { id: 'app',  name: 'Đi chợ hộ qua app',   icon: 'ui_phone', priceMult: 1.12, fee: 15, delay: 40, openDelay: 5, quality: 0,     sells: 'all',   unlockLv: 1,
+    desc: 'Đặt lúc nào cũng được, shipper giao trong 5 phút. Đắt hơn 12% và tốn 15k phí ship mỗi đơn.' },
+  { id: 'vua',  name: 'Vựa sỉ Bình Điền',    icon: 'eq_truck', priceMult: 0.8,  fee: 0,  delay: 'morning', openDelay: 10, quality: -0.06, sells: 'all',   unlockLv: 3, minOrder: 200,
+    desc: 'Rẻ hơn 20%, xe vựa giao trong 10 phút (đặt sau khi đóng cửa thì sáng mai), đơn tối thiểu 200k. Trái hơi dập nên phần lắc kém ngon một chút.' },
+  { id: 'htx',  name: 'Hợp tác xã Tiền Giang', icon: 'eq_truck', priceMult: 0.9,  fee: 0,  delay: 60, openDelay: 8, quality: 0.05,  sells: 'all',   unlockLv: 30,
+    desc: 'Mối ruột của quán lớn: rẻ hơn chợ 10%, giao trong 8 phút, hàng ngon hơn một chút.' },
+  { id: 'vuon', name: 'Nhà vườn Cái Bè',     icon: 'fr_xoai',  priceMult: 1.3,  fee: 0,  delay: 120, openDelay: 10, quality: 0.12,  sells: 'fresh', unlockLv: 5, shelfBonus: 1,
+    desc: 'Trái cây, ớt, rau răm hái trong ngày: phần lắc ngon hơn hẳn và để lâu thêm 1 ngày. Giá cao hơn 30%, giao trong 10 phút.' },
 ];
 
 // ───────────────────────────── SIDE TABLES (bàn ghế hai bên quán) ─────────────────────────────

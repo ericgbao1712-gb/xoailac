@@ -91,11 +91,20 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   const r3 = g.act.orderSupplies('vuon', { tc_xoai: 6 });
   ok(r3.ok && g.state.orders.length === 2, 'vườn order queued');
   g.act.openShop();
-  for (let i = 0; i < 2000 && g.state.orders.length === 2; i++) g.update(0.25);
-  ok(g.state.orders.length === 1 && g.state.clock >= 600 + 119, 'vườn arrives ~2 game hours after opening (' + Math.round(g.state.clock) + ')');
+  for (let i = 0; i < 2000 && g.state.orders.length > 0; i++) g.update(0.25);
+  // v2.6.3: orders placed before / during selling arrive within C.DELIVERY_MAX game minutes
+  ok(g.state.orders.length === 0 && g.state.clock <= 600 + C.DELIVERY_MAX + 1, 'vườn + vựa orders arrive within ' + C.DELIVERY_MAX + ' min of opening (' + Math.round(g.state.clock) + ')');
   ok(g.state.lots.tc_xoai.some((l) => l.q > 0.1 && l.e >= g.state.day + 2), 'vườn lot: quality + extra shelf day');
-  g.act.debug.endDay(); g.act.startNextDay();
-  ok(g.state.orders.length === 0 && g.state.lots.tc_xoai.some((l) => l.q < 0), 'vựa truck arrives next morning with lower quality');
+  ok(g.state.lots.tc_xoai.some((l) => l.q < 0), 'vựa lot: lower quality');
+  const t0 = g.state.clock; g.act.orderSupplies('app', { tc_xoai: 4 });
+  for (let i = 0; i < 400 && g.state.orders.length > 0; i++) g.update(0.25);
+  ok(g.state.orders.length === 0 && g.state.clock - t0 <= C.DELIVERY_MAX + 0.5, 'app order while selling arrives within ' + C.DELIVERY_MAX + ' min');
+  ok(C.SUPPLIERS.every((x) => x.prepOnly || Math.min(C.DELIVERY_MAX, x.openDelay ?? C.DELIVERY_MAX) <= C.DELIVERY_MAX), 'no supplier takes longer than the cap while selling');
+  g.act.debug.endDay();
+  const rv = g.act.orderSupplies('vua', { tc_xoai: 20, ly_lac: 100 });
+  ok(rv.ok && !rv.delivered && g.state.orders.length === 1, 'evening vựa order waits for the morning');
+  g.act.startNextDay();
+  ok(g.state.orders.length === 0, 'and arrives the next morning');
   ok(g.act.buyIngredient('tc_xoai', 5).ok === true, 'chợ in the morning works');
   g.act.openShop();
   ok(g.act.buyIngredient('tc_xoai', 5).ok === false, 'chợ closed while selling');
