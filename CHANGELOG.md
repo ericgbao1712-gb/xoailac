@@ -1,7 +1,11 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
-Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 10, nhãn v2.6.1, có nút "Thử nhanh: quán Lv 32").
+Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP).
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 11, nhãn v2.6.2, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.2 (17/10): thanh EXP
+- HUD có thêm hàng EXP giữa hàng tiền và hàng nhiệm vụ: thanh vàng, số "EXP hiện có / EXP cần", % và cấp kế tiếp. Thanh nháy viền mỗi khi nhận EXP; bấm vào thì mở Hành trình lên cấp.
+- Đã chụp kiểm tra ở màn rộng 390px, 360px và trên máy tính.
 
 ## v2.6.1 (17/10): lên cấp dễ hơn
 - **Đường XP:** mỗi cấp cần ít hơn 20% XP so với trước (`XP_EASE` = 0.8 trong config.js).

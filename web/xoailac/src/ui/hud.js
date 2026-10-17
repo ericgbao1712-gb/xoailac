@@ -29,6 +29,14 @@ export function mountHud(root) {
 
   const r1 = div('hud-row r1', lvl, money, rating, clock);
 
+  // ---- v2.6.2 EXP bar: how far to the next level, in numbers
+  const xpFill = h('i');
+  const xpTxt = span('xp-t', '');
+  const xpPct = span('xp-p', '');
+  const xpBar = h('button', { class: 'xpbar', 'aria-label': 'Kinh nghiệm', onclick: () => { sfx('click'); ctx.modals?.roadmap(); } },
+    span('xp-lv', 'EXP'), div('xp-track', xpFill, xpTxt), xpPct);
+  const rx = div('hud-row rx', xpBar);
+
   // ---- row 2
   const qIco = ico('ui_quest', 32, 'qi');
   const qText = span('qtext', '');
@@ -44,7 +52,7 @@ export function mountHud(root) {
   const pauseBtn = h('button', { class: 'hbtn pause', 'aria-label': 'Tạm dừng', onclick: () => { sfx('click'); openPause(); } }, ico('ui_pause', 32));
   const r2 = div('hud-row r2', quest, pauseBtn, speed, gear);
 
-  root.append(r1, r2);
+  root.append(r1, rx, r2);
 
   // tutorial hooks
   quest.dataset.tut = 'quest';
@@ -53,7 +61,7 @@ export function mountHud(root) {
   let shown = null, hold = 0;
   const onCollected = () => { hold = performance.now() + 420; };
   ctx.game.on('collected', onCollected);
-  ctx.game.on('xp', () => { lvl.classList.remove('glow'); void lvl.offsetWidth; lvl.classList.add('glow'); });
+  ctx.game.on('xp', () => { lvl.classList.remove('glow'); void lvl.offsetWidth; lvl.classList.add('glow'); xpBar.classList.remove('gain'); void xpBar.offsetWidth; xpBar.classList.add('gain'); });
   ctx.game.on('rush', (e) => { rushTag.hidden = !e.on; });
 
   function fmtM(k) {
@@ -112,6 +120,10 @@ export function mountHud(root) {
     const lv = levelInfo();
     setText(lvNum, lv.level);
     setStyleVar(ringFill, '--p', Math.round(lv.pct));
+    setStyleVar(xpFill, '--p', lv.pct.toFixed(1));
+    const nf = (v) => Math.floor(v).toLocaleString('vi-VN');
+    setText(xpTxt, `${nf(lv.xp)} / ${nf(lv.need)}`);
+    setText(xpPct, `${Math.floor(lv.pct)}% → Lv ${lv.level + 1}`);
     setText(ratingNum, fmtRating(s.rating?.avg ?? 3.5));
     setText(wd, weekday(s.day));
     setText(clockT, fmtClock(s.clock));
