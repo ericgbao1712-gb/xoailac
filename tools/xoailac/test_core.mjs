@@ -229,8 +229,8 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   s.level = 36; ok(!inHours(gv, 13, g._G), 'giờ vàng 14h before Lv 37'); s.level = 37; ok(inHours(gv, 13, g._G), 'giờ vàng from 13h at Lv 37');
   s.level = 40; s.xp = 0; const ch0 = s.masteryChests || 0;
   const { addXp } = await import(ROOT + '/core/economy.js'); addXp(g._G, C.LEVEL.xpToNext(40) + 1);
-  ok(s.level === 41 && s.masteryChests === ch0 + 1, 'Lv 41 gives a mastery chest');
-  const m0 = s.money; ok(g.act.openMasteryChest().ok && s.money > m0 && s.masteryChests === ch0, 'mastery chest opens and pays');
+  ok(s.level === 41 && s.masteryChests === ch0 && C.PERKS.some((p) => p.lv === 41 && p.mastery), 'v2.6.24: Lv 41 gives its own reward (no more identical gold chest)');
+  s.masteryChests = 1; const m0 = s.money; ok(g.act.openMasteryChest().ok && s.money > m0 && s.masteryChests === 0, 'an old gold mastery chest still opens and pays');
   ok(C.MAIN_QUESTS.length === 47 && C.MAIN_QUESTS[36].id === 'q37', '10 main quests appended, old indexes kept');
 }
 // ── 12. v2.3 looks: tem logo Lv 24, đồng phục Lv 21, mặt tiền Lv 31 (saved, sanitized, gated)
@@ -642,5 +642,33 @@ const runDay = (g, bot = true) => { g.act.openShop(); let i = 0; const S = g.sta
   ok(g.act.setSetting('song', 'auto').ok, 'back to auto');
   const sv = JSON.parse(JSON.stringify(g.serialize())); sv.settings.song = 'bad';
   ok(createGame(sv, { headless: true, seed: 1, now: 1.8e12 }).state.settings.song === 'auto', 'a bad song id in a save goes back to auto');
+}
+// ── 30. v2.6.24 cấp thành thạo: mỗi cấp một phần thưởng riêng
+{
+  const { perkFx, addXp } = await import(ROOT + '/core/economy.js');
+  const names = [];
+  for (let lv = 41; lv <= C.MASTERY.namedTo; lv++) { const r = C.masteryReward(lv); names.push(r.name); }
+  ok(new Set(names).size === names.length, `Lv 41–${C.MASTERY.namedTo}: ${names.length} rewards, all different names`);
+  ok([45, 50, 55, 60, 65, 100].every((lv) => C.masteryReward(lv).milestone) && ![41, 42, 43, 44, 46, 61].some((lv) => C.masteryReward(lv).milestone), 'milestones every 5 levels');
+  const g = fresh(301); const s = g.state; s.level = 40; s.xp = 0;
+  const q40 = perkFx(g._G).quality;
+  addXp(g._G, C.LEVEL.xpToNext(40) + 1);
+  ok(s.level === 41 && Math.abs(perkFx(g._G).quality - q40 - 0.01) < 1e-9, 'Lv 41 bí kíp: quality +0.01');
+  s.level = 41; ok((perkFx(g._G).kindDemand.sinhvien || 1) === 1, 'no học trò bonus yet'); s.level = 42; ok(perkFx(g._G).kindDemand.sinhvien === 1.15, 'Lv 42: học trò ×1.15');
+  s.level = 44; s.xp = 0; const t0 = s.staffTickets || 0, d0 = s.diamondChests || 0;
+  addXp(g._G, C.LEVEL.xpToNext(44) + 1);
+  ok(s.level === 45 && s.diamondChests === d0 + 1 && s.staffTickets === t0 + 1, 'Lv 45 mốc: diamond chest + ★3+ ticket');
+  const m0 = s.money; const r = g.act.openDiamondChest();
+  ok(r.ok && r.chest === 'diamond' && s.money > m0 && s.diamondChests === d0, 'diamond chest opens and pays');
+  ok(g.act.openDiamondChest().ok === false, 'no chest left → refused');
+  const fac = (cat, id) => C.FACADE.items[cat].find((x) => x.id === id);
+  ok(fac('bunting', 'kim').lv === 43 && fac('balloon', 'vangkim').lv === 48 && fac('flower', 'mai').lv === 53 && fac('sign', 'kim').lv === 58, 'exclusive decorations at Lv 43 / 48 / 53 / 58');
+  s.level = 100; s.xp = 0; const c0 = s.masteryChests || 0; addXp(g._G, C.LEVEL.xpToNext(100) + 1);
+  ok(s.level === 101 && s.masteryChests === c0 + 1, 'past Lv 100: a gold chest per level as before');
+  // old save at Lv 57 gets its 3 milestone diamond chests once
+  const sv = JSON.parse(JSON.stringify(fresh(302).serialize())); sv.level = 57; sv.diamondChests = 0; delete sv.flags.ui.masteryV2;
+  const h = createGame(sv, { headless: true, seed: 1, now: 1.8e12 });
+  ok(h.state.diamondChests === 3, 'old Lv 57 save: 3 diamond chests for Lv 45/50/55');
+  ok(createGame(JSON.parse(JSON.stringify(h.serialize())), { headless: true, seed: 1, now: 1.8e12 }).state.diamondChests === 3, '…only once');
 }
 console.log('OK', n, 'checks');

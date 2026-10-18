@@ -110,9 +110,9 @@ export function unlocksAtLevel(level) {
   for (const u of C.UPGRADES) (u.minLv || []).forEach((lv, i) => {
     if (lv !== level || level <= 1 || u.id === 'kho') return;                 // kho Lv 17 is the Kho lạnh perk card
     const nm = u.levels ? u.levels[i + 1] : u.name + (i ? ' cấp ' + (i + 1) : '');
-    out.push({ type: 'equip', id: u.id, name: nm || u.name, desc: (i ? u.name + ' cấp ' + (i + 1) + '. ' : '') + u.desc });
+    out.push({ type: 'equip', id: u.id, name: nm || u.name, desc: i ? `Mở mua cấp ${i + 1} trong Nâng cấp.` : u.desc });   // v2.6.24: no repeated long text per level
   });
-  if (level >= C.MASTERY.fromLv) out.push({ type: 'mastery', id: 'mastery' + level, name: 'Rương thành thạo' + (level % C.MASTERY.ticketEvery === 0 ? ' + vé tuyển ★3+' : ''), desc: 'Mỗi cấp từ Lv 41 nhận 1 rương vàng (mở ở sổ nhiệm vụ)' + (level % C.MASTERY.ticketEvery === 0 ? '; cấp chia hết cho 5 tặng thêm vé tuyển nhân viên.' : '.') });
+  if (level > C.MASTERY.namedTo) out.push({ type: 'mastery', id: 'mastery' + level, name: 'Rương thành thạo' + (level % C.MASTERY.ticketEvery === 0 ? ' + vé tuyển ★3+' : ''), desc: 'Sau Lv 100 mỗi cấp nhận 1 rương vàng (mở ở sổ nhiệm vụ)' + (level % C.MASTERY.ticketEvery === 0 ? '; cấp chia hết cho 5 tặng thêm vé tuyển nhân viên.' : '.') });
   return out;
 }
 

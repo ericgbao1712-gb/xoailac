@@ -21,6 +21,7 @@ export const SIGN_STYLES = {
   neon: { edge: '#2a1630', fill: '#3a1f45', hi: '#5a3166', text: '#ffd1f0', stroke: '#e0379a', glow: '#ff5fc8' },
   nau:  { edge: '#4a2a14', fill: '#7a4a22', hi: '#9a6a3a', text: '#fff6e6', stroke: '#3b2010' },
   hong: { edge: '#c2386f', fill: '#ffd6e4', hi: '#fff0f5', text: '#c2386f', stroke: '#ffffff' },
+  kim:  { edge: '#8a6a1e', fill: '#1d1a17', hi: '#34302a', text: '#ffd76a', stroke: '#5a4210' },   // v2.6.24 Lv 58
 };
 const LAMP_KIND = { den_long_do: ['den_long_do', 'den_cam'], den_hoian: ['den_hoian1', 'den_hoian2'], den_chum: ['den_chum1', 'den_chum2'] };
 // v2.6.7: every waiter on the team shows (was capped at 2); extra spots by the outer tables and the walkway

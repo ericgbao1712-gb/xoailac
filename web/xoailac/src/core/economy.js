@@ -219,7 +219,7 @@ export function unlocksAt(level) {
   for (const u of C.UPGRADES) (u.minLv || []).forEach((lv, i) => {
     if (lv !== level || level <= 1 || u.id === 'kho') return;                 // kho Lv 17 is the Kho lạnh perk card
     const nm = u.levels ? u.levels[i + 1] : u.name + (i ? ' cấp ' + (i + 1) : '');
-    out.push({ type: 'equip', id: u.id, name: nm || u.name, desc: (i ? u.name + ' cấp ' + (i + 1) + '. ' : '') + u.desc });
+    out.push({ type: 'equip', id: u.id, name: nm || u.name, desc: i ? `Mở mua cấp ${i + 1} trong Nâng cấp.` : u.desc });   // v2.6.24: no repeated long text per level
   });
   return out;
 }
@@ -254,9 +254,15 @@ function onLevel(G, level) {
   const unlocks = unlocksAt(level);
   for (const u of unlocks) if (u.type === 'pot') s.menu[u.id] = true; // new pots go straight on the menu
   G.modsDirty = true;
-  if (level >= C.MASTERY.fromLv) {
-    // Cấp thành thạo: every level from 41 pays out a chest (+ a ★3+ hiring ticket every 5th level)
-    unlocks.push({ type: 'mastery', id: 'mastery' + level, name: 'Rương thành thạo' + (level % C.MASTERY.ticketEvery === 0 ? ' + vé tuyển ★3+' : ''), desc: 'Mỗi cấp từ Lv 41 nhận 1 rương vàng (mở ở sổ nhiệm vụ)' + (level % C.MASTERY.ticketEvery === 0 ? '; cấp chia hết cho 5 tặng thêm vé tuyển nhân viên.' : '.') });
+  const mr = C.masteryReward(level);
+  if (mr && mr.milestone) {
+    // v2.6.24 mốc thành thạo (Lv 45, 50, 55…): a diamond chest (opened in the quest book) + a ★3+ hiring ticket.
+    // The other mastery levels give their own perk (C.PERKS 'm_<lv>'), already in `unlocks`.
+    s.diamondChests = (s.diamondChests || 0) + 1;
+    s.staffTickets = (s.staffTickets || 0) + 1;
+  } else if (level > C.MASTERY.namedTo) {
+    // past the named levels: every level pays out a gold chest (+ a ★3+ hiring ticket every 5th level), as before
+    unlocks.push({ type: 'mastery', id: 'mastery' + level, name: 'Rương thành thạo' + (level % C.MASTERY.ticketEvery === 0 ? ' + vé tuyển ★3+' : ''), desc: 'Sau Lv 100 mỗi cấp nhận 1 rương vàng (mở ở sổ nhiệm vụ)' + (level % C.MASTERY.ticketEvery === 0 ? '; cấp chia hết cho 5 tặng thêm vé tuyển nhân viên.' : '.') });
     s.masteryChests = (s.masteryChests || 0) + 1;
     if (level % C.MASTERY.ticketEvery === 0) s.staffTickets = (s.staffTickets || 0) + 1;
   }

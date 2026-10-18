@@ -1,7 +1,38 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 34, nhãn v2.6.23, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 35, nhãn v2.6.24, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.24 (18/10): cấp thành thạo, mỗi cấp một phần thưởng riêng
+Commit 2a2b8c2.
+- **Trước đây:** từ Lv 41 cấp nào cũng thưởng đúng một thứ, "Rương thành thạo" (rương vàng). Hành trình lên cấp và sổ nhiệm vụ toàn những dòng giống hệt nhau. Thiết bị Bảo trì bậc thầy cấp 2–10 cũng lặp lại cả đoạn mô tả dài ở mỗi cấp.
+- **Giờ chia thành khối 5 cấp, mỗi vị trí trong khối là một loại thưởng khác nhau.** Lv 41–60 được đặt tên riêng:
+
+  | Loại | Lv | Phần thưởng |
+  |---|---|---|
+  | Bí kíp (món ngon hơn +0,01) | 41 / 46 / 51 / 56 | muối tôm rang củi · ớt hiểm giã tay · me Thái sên đường · đường thốt nốt An Giang |
+  | Khách ruột (một kiểu khách ghé nhiều hơn 15%) | 42 / 47 / 52 / 57 | học trò · dân văn phòng · gia đình · khách Tây |
+  | Trang trí độc quyền (mặt tiền) | 43 / 48 / 53 / 58 | cờ đỏ viền kim tuyến · chùm bóng vàng kim · chậu mai vàng · bảng đen chữ vàng kim |
+  | Bí quyết kinh doanh | 44 / 49 / 54 / 59 | tip +2% · giá nhập −2% · cả đội nhanh +3% · độ sang +3% |
+  | Mốc: danh hiệu + **Rương kim cương** + vé tuyển ★3+ | 45 / 50 / 55 / 60 | "Bàn tay vàng" · "Chủ chuỗi xoài lắc" · "Đại sứ ăn vặt" · "Huyền thoại Sài Gòn" |
+
+- **Lv 61–100:** lặp lại 5 loại trên với tên đánh số (Bí kíp gia truyền I, II…; Khách ruột xoay vòng 8 kiểu khách; Quán nổi tiếng; Bí quyết kinh doanh; Mốc thành thạo). Hiệu ứng bằng một nửa để không phá cân bằng. Sau Lv 100 thì mỗi cấp một rương vàng như cũ.
+- **Rương kim cương:** tiền 1.500–3.000 × hệ số cấp quán, 6% thanh EXP, 40% ra đồ trang trí, 20 phần nguyên liệu. Mở trong sổ Nhiệm vụ. Icon mới (`tools/art/draw_chest.py`, đổi màu từ rương vàng). `ASSET_VER` lên xl8.
+- **Save cũ:**
+  - Hiệu ứng mới tính theo cấp nên có ngay khi vào game.
+  - Ai đã qua các mốc (45, 50…) được bù rương kim cương một lần, kèm lời Má báo.
+  - Rương vàng đang có vẫn mở được.
+- **Hành trình lên cấp:** các cấp Bảo trì bậc thầy sau cấp 1 chỉ ghi "Mở mua cấp n trong Nâng cấp", không lặp lại cả đoạn mô tả.
+- **Kiểm tra:**
+  - Lv 41–100: 60 phần thưởng, không tên nào trùng.
+  - Hiệu ứng thật:
+    - Lv 41 làm món ngon hơn +0,01.
+    - Lv 42 tăng khách học trò ×1,15.
+    - Lv 45 cho rương kim cương và vé tuyển; rương mở được và có tiền.
+    - Lv 101 cho rương vàng như cũ.
+  - Save cũ ở Lv 57 nhận đúng 3 rương, chỉ một lần.
+  - Chụp hành trình Lv 41–46 và cả 4 món trang trí mới.
+  - `test_core.mjs` 332 kiểm tra đều đạt.
 
 ## v2.6.23 (18/10): mã sao lưu ra tiến trình thấp hơn, tiền lên xuống thất thường
 Commit 84d1359.

@@ -89,6 +89,10 @@ export function createGame(save, opts = {}) {
     pending.push(['mom', { key: 'sideRefund', text: `Vỉa hè chỉ kê vừa 4 bộ bàn thôi con, mấy bộ dư Má bán lại được ${fmtMoney(state.flags.ui.sideRefund)} rồi bỏ vô két cho con đó.` }]);
     delete state.flags.ui.sideRefund;
   }
+  if (state.flags.ui.masteryGift) {
+    const n = state.flags.ui.masteryGift; delete state.flags.ui.masteryGift;
+    pending.push(['mom', { key: 'masteryGift', text: `Cấp thành thạo giờ mỗi cấp một phần thưởng riêng rồi con. Má bù cho con ${n} rương kim cương của các mốc đã qua, mở trong sổ Nhiệm vụ nha!` }]);
+  }
   if (state.flags.ui.v2Gift) {
     delete state.flags.ui.v2Gift;
     pending.push(['mom', { key: 'v2Gift', text: 'Má gom sẵn cho con mấy xấp ly, hộp, túi với khăn giấy rồi đó. Từ giờ mỗi phần bán ra tốn một cái ly/hộp — nhớ coi Kho mà nhập thêm nha con!' }]);
@@ -392,12 +396,19 @@ export function createGame(save, opts = {}) {
     buyLottery: wrap(() => day.buyLottery(G)),
     claimMainQuest: wrap(() => quests.claimMain(G)),
     claimV2Quest: wrap(() => quests.claimV2(G)),
-    /** Cấp thành thạo: open one of the gold chests earned from Lv 41 on. */
+    /** Cấp thành thạo: open one of the gold chests (old saves, and every level past Lv 100). */
     openMasteryChest: wrap(() => {
       if (!(state.masteryChests > 0)) return fail('none', 'Chưa có rương thành thạo nào nha.');
       state.masteryChests--;
       const r = quests.openChest(G, C.MASTERY.chest);
       return { ok: true, chest: C.MASTERY.chest, reward: r };
+    }),
+    /** v2.6.24 mốc thành thạo: open a diamond chest. */
+    openDiamondChest: wrap(() => {
+      if (!(state.diamondChests > 0)) return fail('none', 'Chưa có rương kim cương nào nha.');
+      state.diamondChests--;
+      const r = quests.openChest(G, 'diamond');
+      return { ok: true, chest: 'diamond', reward: r };
     }),
     claimDaily: wrap((i) => quests.claimDaily(G, i)),
     claimDailyAll: wrap(() => quests.claimDailyAll(G)),

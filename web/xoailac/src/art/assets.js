@@ -9,7 +9,7 @@
 // Keep DETAIL in sync with `DETAIL` in src/render/renderer.js.
 export const DETAIL = 2;
 // The CDN caches PNGs for a long time: bump ASSET_VER whenever any assets/*.png changes.
-export const ASSET_VER = 'xl7';
+export const ASSET_VER = 'xl8';
 
 const hasDOM = typeof document !== 'undefined';
 const atlases = new Map();     // file → { img, flipped }

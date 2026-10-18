@@ -59,7 +59,7 @@ export function defaultState(now = Date.now()) {
     supplies, supplyAvg, supplyUseYesterday: {},
     orders: [], nextOrderId: 1, supplier: 'cho',  // deliveries on their way · supplier picked in the Kho
     wageDebt: [],                                // { name, amount } owed to people who already left
-    staff: [], candidates: { day: 0, list: [] }, staffTickets: 0, masteryChests: 0, ownerMode: 'work', nextStaffId: 1, nextCid: 1,
+    staff: [], candidates: { day: 0, list: [] }, staffTickets: 0, masteryChests: 0, diamondChests: 0, ownerMode: 'work', nextStaffId: 1, nextCid: 1,
     rating: { recent: [], avg: C.RATING.prior, count: 0 },
     reviews: [], nextReviewId: 1, combo: { best: 0 },
     weather: 'sun', event: null,
@@ -115,6 +115,13 @@ export function migrate(save, now) {
   if (decoRefund > 0) { s.money = (s.money || 0) + decoRefund; s.flags.ui.decoRefund = decoRefund; }
   if (s.homeCity != null && !(C.BRANCHES.some((b) => b.id === s.homeCity) && (s.branches || {})[s.homeCity] > 0)) s.homeCity = null;
   if (s.packPref != null && !(C.CONTAINER_IDS || []).includes(s.packPref)) s.packPref = null;
+  // v2.6.24: mastery levels reached before the new rewards get their milestone diamond chests once
+  if (!s.flags.ui.masteryV2) {
+    s.flags.ui.masteryV2 = true;
+    let n = 0;
+    for (let lv = C.MASTERY.fromLv; lv <= Math.min(s.level || 1, C.MASTERY.namedTo); lv++) { const r = C.masteryReward(lv); if (r && r.milestone) n++; }
+    if (n > 0) { s.diamondChests = (s.diamondChests || 0) + n; s.flags.ui.masteryGift = n; }
+  }
   if (s.settings && s.settings.song !== 'auto' && !C.SONG_IDS.includes(s.settings.song)) s.settings.song = 'auto';   // v2.6.21
   s.brand = sanitizeBrand(s.brand); s.uniform = sanitizeUniform(s.uniform); s.facade = sanitizeFacade(s.facade);
   // the side-table row holds 4 sets (2 + 2 upgrades); an early v2 build sold up to 6

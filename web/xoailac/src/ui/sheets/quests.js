@@ -139,10 +139,15 @@ export function questsView(body, api) {
   const s = S();
   body.appendChild(secTitle('Mục tiêu chính'));
   body.appendChild(mainCard(api));
+  if ((s.diamondChests || 0) > 0) {                     // v2.6.24 mốc thành thạo
+    const b = h('button', { class: 'btn red sm' }, 'Mở rương');
+    b.addEventListener('click', () => { const r = act('openDiamondChest'); if (r.ok === false) return; sfx('chest'); ctx.modals.chest?.('diamond', r.reward || {}, { title: 'Rương kim cương!' }); api.rerender(); });
+    body.appendChild(div('card daily gold ready', div('dq-top', ico('ui_chest_diamond', 48), div('grow', h('b', null, `Rương kim cương ×${s.diamondChests}`), span('muted', 'Quà mốc thành thạo (Lv 45, 50, 55…).')), b)));
+  }
   if ((s.masteryChests || 0) > 0) {
     const b = h('button', { class: 'btn red sm' }, 'Mở rương');
     b.addEventListener('click', () => { const r = act('openMasteryChest'); if (r.ok === false) return; sfx('chest'); ctx.modals.chest?.(r.chest || 'gold', r.reward || {}, { title: 'Rương thành thạo!' }); api.rerender(); });
-    body.appendChild(div('card daily gold ready', div('dq-top', ico('ui_chest_gold', 48), div('grow', h('b', null, `Rương thành thạo ×${s.masteryChests}`), span('muted', 'Từ Lv 41 mỗi lần lên cấp được một rương vàng.')), b)));
+    body.appendChild(div('card daily gold ready', div('dq-top', ico('ui_chest_gold', 48), div('grow', h('b', null, `Rương thành thạo ×${s.masteryChests}`), span('muted', 'Rương vàng của cấp thành thạo.')), b)));
   }
   const v2 = v2Card(api);
   if (v2) { body.appendChild(secTitle('Sổ tay quán mới', 'làm quen tính năng mới')); body.appendChild(v2); }

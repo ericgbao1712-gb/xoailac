@@ -467,6 +467,7 @@ export const FACADE = {
       { id: 'go', name: 'Gỗ xanh (gốc)', lv: 1, amb: 0 }, { id: 'vang', name: 'Bảng vàng viền đỏ', lv: 16, amb: 6 },
       { id: 'nau', name: 'Gỗ nâu chữ trắng', lv: 22, amb: 8 }, { id: 'hong', name: 'Bảng hồng pastel', lv: 26, amb: 10 },
       { id: 'neon', name: 'Đèn neon hồng', lv: 31, amb: 14 },
+      { id: 'kim', name: 'Bảng đen chữ vàng kim', lv: 58, amb: 16 },   // v2.6.24 thành thạo
     ],
     bunting: [
       { id: 'none', name: 'Không treo', lv: 1, amb: 0 },
@@ -474,6 +475,7 @@ export const FACADE = {
       { id: 'xoai', name: 'Cờ xanh xoài', lv: 18, amb: 6, cols: ['#7bbf2a', '#ffe08a', '#4f9a2a'] },
       { id: 'cauvong', name: 'Cờ cầu vồng', lv: 33, amb: 9, cols: ['#e2433b', '#f08a24', '#ffcf3d', '#4f9a2a', '#2f7fd0', '#8a55c8'] },
       { id: 'longmini', name: 'Dây đèn lồng mini', lv: 38, amb: 12, cols: ['#e2433b', '#ffcf3d', '#f08a24'] },
+      { id: 'kim', name: 'Cờ đỏ viền kim tuyến', lv: 43, amb: 13, cols: ['#c0221c', '#ffd76a', '#8e1612'] },   // v2.6.24 thành thạo
     ],
     flower: [
       { id: 'none', name: 'Không đặt', lv: 1, amb: 0 },
@@ -482,11 +484,13 @@ export const FACADE = {
       { id: 'sen', name: 'Sen đá', lv: 28, amb: 8, cols: ['#8fd19e', '#4f9a6a'] },
       { id: 'xuongrong', name: 'Xương rồng ra hoa', lv: 36, amb: 10, cols: ['#4f9a2a', '#ff7ab0'] },
       { id: 'lan', name: 'Lan tím', lv: 40, amb: 12, cols: ['#a066d8', '#7a3fb0'] },
+      { id: 'mai', name: 'Chậu mai vàng', lv: 53, amb: 15, cols: ['#ffd23a', '#f2a81d'] },   // v2.6.24 thành thạo
     ],
     balloon: [
       { id: 'none', name: 'Không treo', lv: 1, amb: 0 },
       { id: 'tim', name: 'Bóng bay trái tim', lv: 24, amb: 5, cols: ['#e2433b', '#ff7ab0'] },
       { id: 'maucau', name: 'Chùm bóng 7 màu', lv: 35, amb: 9, cols: ['#e2433b', '#f08a24', '#ffcf3d', '#4f9a2a', '#2f7fd0', '#8a55c8', '#ff7ab0'] },
+      { id: 'vangkim', name: 'Chùm bóng vàng kim', lv: 48, amb: 14, cols: ['#ffd76a', '#f2a81d', '#fff3c9'] },   // v2.6.24 thành thạo
     ],
   },
   def: { sign: 'go', bunting: 'none', flower: 'none', balloon: 'none' },
@@ -684,11 +688,12 @@ export const CHESTS = {
   wood:   { name: 'Rương gỗ',  money: [80, 150],  xp: 20, decoChance: 0 },
   silver: { name: 'Rương bạc', money: [150, 300], xp: 40, decoChance: 0.05, ingredientPack: 5 },
   gold:   { name: 'Rương vàng', money: [300, 600], xp: 80, decoChance: 0.15, ingredientPack: 10 },
+  diamond: { name: 'Rương kim cương', money: [1500, 3000], xp: 300, decoChance: 0.4, ingredientPack: 20 },   // v2.6.24: mốc thành thạo (Lv 45, 50, 55…)
 }; // money × TIER_MULT[tier-1]
 export const DAILY_ALL_BONUS = 'gold';
 // v2.6.11: quests pay XP as a share of the EXP bar of the current level (so they still matter at Lv 30+);
 // the fixed `xp` of a reward / chest is the minimum. main = mục tiêu chính, v2 = Sổ tay quán mới.
-export const QUEST_XP = { main: 0.03, v2: 0.015, wood: 0.005, silver: 0.01, gold: 0.02 };   // v2.6.18 (v2.6.14: 0.0375 / 0.02 / 0.01 / 0.0175 / 0.03)
+export const QUEST_XP = { main: 0.03, v2: 0.015, wood: 0.005, silver: 0.01, gold: 0.02, diamond: 0.06 };   // v2.6.18 (v2.6.14: 0.0375 / 0.02 / 0.01 / 0.0175 / 0.03)
 // v2.6.14: the two containers a portion can go in; the player can switch on the tray (both carry the shop's logo)
 export const CONTAINER_IDS = ['ly_lac', 'hop_giay'];
 
@@ -911,7 +916,7 @@ export const PERKS = [
   { lv: 37, id: 'p_giovang2',  name: 'Giờ vàng 13h–17h', icon: 'ui_clock', fx: { goldenFrom: 13 }, desc: 'Giờ vàng bắt đầu sớm hơn 1 tiếng.' },
   { lv: 38, id: 'f_bunting_longmini', name: 'Dây đèn lồng mini', icon: 'ui_deco', facade: { cat: 'bunting', id: 'longmini' }, desc: 'Trang trí mới: dây đèn lồng nhỏ, sáng lung linh buổi tối.' },
   { lv: 39, id: 'p_baclac',    name: 'Thợ lắc bậc thầy', icon: 'role_daubep', fx: { staffXp: 1.5 }, desc: 'Nhân viên lên cấp nhanh hơn 50%.' },
-  { lv: 40, id: 'p_huyenthoai', name: 'Huyền thoại Xoài Lắc', icon: 'ui_trophy', fx: { quality: 0.05, tip: 1.05 }, desc: 'Món ngon hơn, tip +5%, mở Cấp thành thạo (từ Lv 41 mỗi cấp một rương vàng).' },
+  { lv: 40, id: 'p_huyenthoai', name: 'Huyền thoại Xoài Lắc', icon: 'ui_trophy', fx: { quality: 0.05, tip: 1.05 }, desc: 'Món ngon hơn, tip +5%, mở Cấp thành thạo: từ Lv 41 mỗi cấp một phần thưởng riêng (bí kíp, khách ruột, trang trí độc quyền, bí quyết kinh doanh, mốc rương kim cương).' },
   // v2.4 extra decorations on levels that already open something else
   { lv: 9, id: 'f_bunting_tet', name: 'Cờ đỏ vàng', icon: 'ui_deco', facade: { cat: 'bunting', id: 'tet' }, desc: 'Trang trí mới: dây cờ đỏ vàng trước quán (Quán → Trang trí).' },
   { lv: 16, id: 'f_sign_vang', name: 'Bảng hiệu vàng viền đỏ', icon: 'ui_deco', facade: { cat: 'sign', id: 'vang' }, desc: 'Trang trí mới: bảng hiệu vàng chữ đỏ.' },
@@ -922,4 +927,51 @@ export const PERKS = [
   { lv: 35, id: 'f_balloon_maucau', name: 'Chùm bóng 7 màu', icon: 'ui_deco', facade: { cat: 'balloon', id: 'maucau' }, desc: 'Trang trí mới: bóng bay 7 màu hai bên bảng hiệu.' },
   { lv: 40, id: 'f_flower_lan', name: 'Chậu lan tím', icon: 'ui_deco', facade: { cat: 'flower', id: 'lan' }, desc: 'Trang trí mới: chậu lan tím sang trọng.' },
 ];
-export const MASTERY = { fromLv: 41, chest: 'gold', ticketEvery: 5 };   // each level ≥ 41: a gold chest; every 5th also a ★3+ hiring ticket
+export const MASTERY = { fromLv: 41, chest: 'gold', ticketEvery: 5, namedTo: 100 };
+// v2.6.24 Cấp thành thạo: every level from 41 used to give the same "Rương thành thạo" (gold chest), so the
+// roadmap was one identical line per level. Now the levels run in blocks of 5, each level its own reward:
+//   x1 Bí kíp (món ngon hơn) · x2 Khách ruột (một kiểu khách ghé nhiều hơn) · x3 Trang trí độc quyền (to Lv 58)
+//   x4 Bí quyết kinh doanh (tip / giá nhập / tốc độ / độ sang) · x5 Mốc: Rương kim cương + vé tuyển ★3+ + danh hiệu
+// Lv 41–60 are hand-named; 61–100 repeat the five kinds with numbered names and half the effect. Past 100: a gold chest.
+const MASTERY_HAND = {
+  41: { name: 'Bí kíp: muối tôm rang củi', icon: 'ing_muoitom', fx: { quality: 0.01 }, desc: 'Muối tôm thơm hơn: mọi phần lắc ngon hơn một chút.' },
+  42: { name: 'Hội học trò trung thành', icon: 'ui_heart', fx: { kindDemand: { sinhvien: 1.15 } }, desc: 'Học trò ghé nhiều hơn 15%.' },
+  43: { name: 'Cờ đỏ viền kim tuyến', icon: 'ui_deco', facade: { cat: 'bunting', id: 'kim' }, desc: 'Trang trí độc quyền: dây cờ đỏ viền vàng kim (Quán → Trang trí).' },
+  44: { name: 'Ví điện tử 2.0', icon: 'ui_coin', fx: { tip: 1.02 }, desc: 'Khách quét mã nhanh, tip thêm 2%.' },
+  45: { name: 'Danh hiệu "Bàn tay vàng"', icon: 'ui_trophy', milestone: true, desc: 'Rương kim cương + vé tuyển nhân viên ★3+.' },
+  46: { name: 'Bí kíp: ớt hiểm giã tay', icon: 'ing_ot', fx: { quality: 0.01 }, desc: 'Vị cay thơm hơn: phần lắc ngon hơn một chút.' },
+  47: { name: 'Dân văn phòng ghiền', icon: 'ui_heart', fx: { kindDemand: { vanphong: 1.15 } }, desc: 'Dân văn phòng ghé nhiều hơn 15%.' },
+  48: { name: 'Chùm bóng vàng kim', icon: 'ui_deco', facade: { cat: 'balloon', id: 'vangkim' }, desc: 'Trang trí độc quyền: chùm bóng vàng kim hai bên bảng hiệu.' },
+  49: { name: 'Mối sỉ thân thiết', icon: 'ui_coin', fx: { buyPrice: 0.98 }, desc: 'Giá nhập rẻ thêm 2%.' },
+  50: { name: 'Danh hiệu "Chủ chuỗi xoài lắc"', icon: 'ui_trophy', milestone: true, desc: 'Rương kim cương + vé tuyển nhân viên ★3+.' },
+  51: { name: 'Bí kíp: me Thái sên đường', icon: 'ing_sotme', fx: { quality: 0.01 }, desc: 'Sốt me sánh hơn: phần lắc ngon hơn một chút.' },
+  52: { name: 'Gia đình cuối tuần', icon: 'ui_heart', fx: { kindDemand: { giadinh: 1.15 } }, desc: 'Gia đình ghé nhiều hơn 15%.' },
+  53: { name: 'Chậu mai vàng', icon: 'ui_deco', facade: { cat: 'flower', id: 'mai' }, desc: 'Trang trí độc quyền: chậu mai vàng trên quầy.' },
+  54: { name: 'Ca trưởng tận tâm', icon: 'ui_staff', fx: { staffSpeed: 1.03 }, desc: 'Cả đội làm nhanh hơn 3%.' },
+  55: { name: 'Danh hiệu "Đại sứ ăn vặt"', icon: 'ui_trophy', milestone: true, desc: 'Rương kim cương + vé tuyển nhân viên ★3+.' },
+  56: { name: 'Bí kíp: đường thốt nốt An Giang', icon: 'ing_duong', fx: { quality: 0.01 }, desc: 'Ngọt thanh hơn: phần lắc ngon hơn một chút.' },
+  57: { name: 'Khách Tây review 5 sao', icon: 'ui_heart', fx: { kindDemand: { khachtay: 1.15 } }, desc: 'Khách Tây ghé nhiều hơn 15%.' },
+  58: { name: 'Bảng đen chữ vàng kim', icon: 'ui_deco', facade: { cat: 'sign', id: 'kim' }, desc: 'Trang trí độc quyền: bảng hiệu đen chữ vàng kim.' },
+  59: { name: 'Biển LED đầu hẻm', icon: 'ui_megaphone', fx: { ambience: 0.03 }, desc: 'Quán sang hơn 3%.' },
+  60: { name: 'Danh hiệu "Huyền thoại Sài Gòn"', icon: 'ui_trophy', milestone: true, desc: 'Rương kim cương + vé tuyển nhân viên ★3+.' },
+};
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+const MASTERY_CYCLE = [   // Lv 61–100: same five kinds, numbered, half the effect
+  (n) => ({ name: `Bí kíp gia truyền ${ROMAN[n]}`, icon: 'ui_book', fx: { quality: 0.005 }, desc: 'Phần lắc ngon hơn một chút.' }),
+  (n) => { const k = ['hoiban', 'capdoi', 'doandulich', 'sinhvien', 'vanphong', 'giadinh', 'khachtay', 'chutu'][(n - 1) % 8];
+           const nm = { hoiban: 'hội bạn', capdoi: 'cặp đôi', doandulich: 'đoàn du lịch', sinhvien: 'học trò', vanphong: 'dân văn phòng', giadinh: 'gia đình', khachtay: 'khách Tây', chutu: 'chú Tư' }[k];
+           return { name: `Khách ruột ${ROMAN[n]}: ${nm}`, icon: 'ui_heart', fx: { kindDemand: { [k]: 1.08 } }, desc: `Khách ${nm} ghé nhiều hơn 8%.` }; },
+  (n) => ({ name: `Quán nổi tiếng ${ROMAN[n]}`, icon: 'ui_megaphone', fx: { ambience: 0.015 }, desc: 'Quán sang hơn 1,5%.' }),
+  (n) => ({ name: `Bí quyết kinh doanh ${ROMAN[n]}`, icon: 'ui_coin', fx: n % 2 ? { tip: 1.01 } : { buyPrice: 0.99 }, desc: n % 2 ? 'Tip thêm 1%.' : 'Giá nhập rẻ thêm 1%.' }),
+  (n) => ({ name: `Mốc thành thạo Lv ${60 + n * 5}`, icon: 'ui_trophy', milestone: true, desc: 'Rương kim cương + vé tuyển nhân viên ★3+.' }),
+];
+export function masteryReward(lv) {
+  if (lv < MASTERY.fromLv || lv > MASTERY.namedTo) return null;
+  if (MASTERY_HAND[lv]) return MASTERY_HAND[lv];
+  const k = (lv - 61) % 5, n = Math.floor((lv - 61) / 5) + 1;
+  return MASTERY_CYCLE[k](n);
+}
+for (let lv = MASTERY.fromLv; lv <= MASTERY.namedTo; lv++) {
+  const r = masteryReward(lv);
+  PERKS.push({ lv, id: 'm_' + lv, mastery: true, ...r, desc: r.desc + (r.milestone ? '' : '') });
+}

@@ -65,7 +65,7 @@ export function openTierUp(p = {}) {
 }
 
 // ================================================================ chest
-const CHEST_ICON = { wood: 'ui_chest_wood', silver: 'ui_chest_silver', gold: 'ui_chest_gold', gift: 'ui_gift' };
+const CHEST_ICON = { wood: 'ui_chest_wood', silver: 'ui_chest_silver', gold: 'ui_chest_gold', diamond: 'ui_chest_diamond', gift: 'ui_gift' };
 
 /** chest(kind, reward:{money,xp,ingredients,deco,staffTicket}, {title, sub}) */
 export function openChest(kind = 'wood', reward = {}, { title, sub } = {}) {
