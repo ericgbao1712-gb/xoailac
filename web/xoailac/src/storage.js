@@ -36,6 +36,9 @@ export async function writeSave(obj) {
   }
 }
 
+/** v2.6.23: which open copy of the game may write the save (see main.js). */
+export const OWNER_KEY = 'xoai-lac/save/owner';
+
 /** Delete the save. Resolves true when nothing is left behind. */
 export async function clearSave() {
   try {

@@ -1692,3 +1692,10 @@ body { background: radial-gradient(circle at 20% 15%, rgba(255, 236, 160, .55) 0
 .song-now { flex-basis: 100%; }
 .song-pick.compact { margin-top: 6px; padding-top: 8px; border-top: 1.5px dashed rgba(138, 85, 48, .2); }
 .song-pick.compact .song-b { min-height: 32px; font-size: 12px; }
+
+/* v2.6.23 bản cũ (quán đang mở ở tab khác) */
+#stale-ov { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; padding: 16px; background: rgba(30, 22, 14, .72); }
+#stale-ov .stale-card { max-width: 320px; display: grid; gap: 10px; padding: 18px 18px 16px; border-radius: 18px; background: var(--paper, #fffaf0); color: var(--ink, #3b2f22); text-align: center; box-shadow: 0 0 0 3px #fff, 0 16px 40px rgba(0, 0, 0, .4); font: 600 14px/1.45 var(--f-body, system-ui); }
+#stale-ov b { font-size: 17px; }
+#stale-ov p { margin: 0; }
+#stale-ov .btn { justify-self: center; padding: 10px 18px; }

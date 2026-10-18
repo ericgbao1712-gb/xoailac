@@ -1,7 +1,31 @@
 # Xoài Lắc Ơi! — nâng cấp v2: đợt 1 (16/10/2026), v2.1 → v2.5 (17/10/2026)
 
 Repo nội bộ: `web/xoailac/`. Các commit: fc847cd (phần lõi), d14db27 (giao diện), 5f01cc0 (sửa charset và ASSET_VER), ee7e010 (v2.1), 60dd040 (v2.2), 813726b (v2.3), 41cb6d2 (v2.4), 19329ff (v2.5), 41ffb38 (v2.5.1), 9499e32 (v2.5.2), 9d3ed4e (kiểm thử mã sao lưu), 1180fe4 (v2.6), v2.6.1 (XP dễ hơn), v2.6.2 (thanh EXP), v2.6.3 (giao hàng nhanh), 70f966c (v2.6.4: bàn bar giữa, nhóm khách gọn), 4ac4bfd (v2.6.5: mưa và bạt), 2456cbc (v2.6.6: cài như ứng dụng), 7f7a723 (v2.6.7: EXP, phục vụ, dời quán chính), 9c0ebf5 (v2.6.8: nhiệm vụ bạt che mưa), 1165752 (v2.6.9: thiết bị mới), a3b4ae3 (v2.6.10: tốc độ ×3), ea12584 (v2.6.11: EXP nhiệm vụ), ea4f7f4 (v2.6.12: giảm một nửa).
-Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 33, nhãn v2.6.22, có nút "Thử nhanh: quán Lv 32").
+Đã có link chơi thử: artifact "Xoài Lắc Ơi! Bản Thử" (bản thứ 34, nhãn v2.6.23, có nút "Thử nhanh: quán Lv 32").
+
+## v2.6.23 (18/10): mã sao lưu ra tiến trình thấp hơn, tiền lên xuống thất thường
+Commit 84d1359.
+- **Người dùng báo:**
+  1. Đang chơi ở một cấp nhất định nhưng bấm sao lưu lại ra mã của tiến trình thấp hơn.
+  2. Số tiền có lúc lên xuống thất thường.
+- **Đã loại trừ:**
+  - Mã sao lưu lấy đúng trạng thái đang chơi trong bộ nhớ. Thử tạo save rồi nạp lại (giữa ca, cùng lúc và sau 1 giờ): cấp, EXP, tiền, ngày, cấp quán đều giữ nguyên.
+  - Kiểm toán tiền: chạy bot 60 ngày, so từng lần tiền đổi với các sự kiện `money`. Không có lần nào tiền đổi mà không qua `addMoney` (0 bất thường).
+- **Nguyên nhân thật** (đã tái hiện bằng 2 tab Chromium):
+  - Mọi bản game đang mở đều tự lưu mỗi 15 giây vào cùng một chỗ (`localStorage`). Ví dụ: 2 tab, ứng dụng cài trên màn hình chính + tab trình duyệt, khung xem trước trên claude.ai + một tab, hay tab điện thoại giữ chạy nền.
+  - Bản mở trước (tiến trình cũ) cứ ghi đè lên tiến trình mới. Lần mở game sau đó, hoặc khi điện thoại tự tải lại tab, game nạp bản cũ: cấp thấp hơn, tiền khác.
+  - Tiền còn bị nhảy thêm vì "thu nhập lúc vắng mặt" tính theo giờ lưu của bản cũ.
+  - Mã sao lưu tạo trong bản game đó vì vậy cũng là tiến trình cũ.
+- **Sửa** (`main.js`, `storage.js`):
+  - Bản game mở sau cùng (vừa nạp tiến trình mới nhất) giữ quyền lưu, ghi dấu vào `xoai-lac/save/owner`.
+  - Mọi bản khác lập tức ngừng lưu, tạm dừng và hiện khung "Quán đang mở ở nơi khác" với nút "Chơi ở đây (tải bản mới nhất)". Bấm nút thì bản đó tải lại tiến trình mới nhất và giành quyền lưu. Bản kia sẽ chuyển sang khung này.
+  - Có kiểm tra lại quyền lưu trước mỗi lần lưu (phòng khi trình duyệt không báo sự kiện `storage`) và khi quay lại tab.
+- **Kiểm tra** (`tools/xoailac/two_tabs_test.py`, Playwright, 2 tab):
+  - Tab A lưu Lv 10, mở tab B: A bị phủ khung, B chơi tiếp lên Lv 20.
+  - A cố lưu (đổi tiền thành 7k) và chờ 16 giây tự lưu: save vẫn là Lv 20 / 50.000k.
+  - Bấm "Chơi ở đây" ở A: A nạp Lv 20, mã sao lưu từ A ra Lv 20, B chuyển sang bị phủ.
+  - `test_core.mjs` 320 kiểm tra đều đạt.
+- **Lưu ý cho người chơi:** save cũ đã bị ghi đè trước bản này thì không lấy lại được. Có mã sao lưu đúng thì khôi phục bằng mã.
 
 ## v2.6.22 (18/10): bài nhạc mới nghe ra khác hẳn, quạt không đè lên ghế
 Commit ef5e725.
