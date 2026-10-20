@@ -33,12 +33,12 @@ def background(S):
             px[x, y] = c + (255,)
     g = ImageDraw.Draw(im)
     band = round(S * 0.13); n = 6; w = S / n
-    g.rectangle((0, 0, S, band * 0.55), fill=(47, 80, 18))
+    # stripes start right at the top edge: the old dark-green rod showed as a green rim on iOS home screens
     for i in range(n):
         col = (122, 186, 52) if i % 2 == 0 else (255, 247, 220)
         x0 = i * w
-        g.rectangle((x0, band * 0.55 - 1, x0 + w, band * 0.8), fill=col)
-        g.ellipse((x0, band * 0.55, x0 + w, band * 0.8 + w * 0.5), fill=col)
+        g.rectangle((x0, 0, x0 + w, band * 0.5), fill=col)
+        g.ellipse((x0, band * 0.1, x0 + w, band * 0.5 + w * 0.5), fill=col)
     return im
 
 def compose(S, scale, bg=True):
