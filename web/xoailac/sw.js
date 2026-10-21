@@ -2,7 +2,7 @@
 // and lets it open without a connection. Network first: an online player always gets the newest files (the
 // server sends them no-cache), the copy in the cache is only used when the network fails.
 // Saves live in localStorage and are never touched here.
-const CACHE = 'xoailac-v2';
+const CACHE = 'xoailac-v3';
 const CORE = ['./', 'index.html', 'style.css', 'manifest.json', 'src/main.js', 'assets/app/icon-192.png'];
 
 self.addEventListener('install', (e) => {

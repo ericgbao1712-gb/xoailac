@@ -770,7 +770,7 @@ export const MOM = {
 };
 
 // Teaser for the next games in the series (shown at the ending + settings)
-export const NEXT_GAMES = ['Lẩu Ơi!', 'Bánh tráng trộn', 'Phở Việt Nam'];
+export const NEXT_GAMES = ['Tiramisu', 'Buffet Lẩu Tobooki'];   // màn chào + Cài đặt ▸ Sắp ra mắt
 
 // ═════════════════════════════ v2 SYSTEMS (2026-10) ═════════════════════════════
 
